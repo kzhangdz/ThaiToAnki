@@ -29,7 +29,7 @@ class ThaiLanguageSearchResults(
     // if that's the case, generate a ThaiLanguageData object?
     private fun parseTopResult(): Int? {
         val htmlTitle = htmlResults.getElementsByTag("title")
-        val title = htmlTitle.`val`()
+        val title = htmlTitle.text()
 
         // if we directly went to a definition page
         if (title.contains(searchWord)){
@@ -50,18 +50,33 @@ class ThaiLanguageSearchResults(
         else{
             val htmlTable = htmlResults.getElementsByClass(TABLE_CLASS)
             if (htmlTable != null){
-                // get the row with the top result, the second row
-                val row = htmlTable.select("tr")[1]
-                Log.d("ThaiLanguageSearchResults", row.`val`())
+                // get a list of hrefs from the table. the top one should be the top result
 
-                // select the <a href="/id/1234"> under the second <td>
-                val link = row.select("a[href]")
+                // need to grab the first arrow. Should be in this element
+                // <a href="/id/224923"><img src="/img/phr_link.gif"></a>
+                val arrow = htmlTable.select("a[href]>img")[0]
+                val link = arrow.parent()
 
                 val href = link.attr("href")
 
                 // extract the id from the href
                 val id = extractId(href)
                 return id
+
+
+
+                // get the row with the top result, the second row
+//                val row = htmlTable.select("tr")[1]
+//                Log.d("ThaiLanguageSearchResults", row.`val`())
+//
+//                // select the <a href="/id/1234"> under the second <td>
+//                val link = row.select("a[href]")
+//
+//                val href = link.attr("href")
+//
+//                // extract the id from the href
+//                val id = extractId(href)
+//                return id
             }
             else{
                 return null

@@ -71,6 +71,7 @@ fun SearchForm(
             value = searchValue,
             label = { Text(text = stringResource(R.string.search_bar_label)) },
             shape = RoundedCornerShape(50.dp),
+            singleLine = true,
             onValueChange = onSearchValueChanged,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search

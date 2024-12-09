@@ -95,12 +95,16 @@ class ThaiLanguageData(
         // first row should contain the alternate word and part of speech
 
         // change this to a map of maps
-        val categories: List<String> = listOf(
-            "definition",
-            "synonyms",
-            "examples",
-            "sample", // sentences
+        val categories: Map<String, Pair<Int, Int>> = mapOf(
+            "definition" to Pair(0, 0),
+            "synonyms" to Pair(0, 0),
+            "examples" to Pair(0, 0),
+            "sample" to Pair(0, 0), // sentences
         )
+
+        // TODO: the code will break if sections are missing. maybe store starting indices as a value in a map?
+        // or loop to get the end indices as well? That would be when the category changes.
+        // when the current category is not found, but the tr contains a different one
 
         // break up the parts of the list by their categories
         var startingIndex = 0
@@ -138,6 +142,19 @@ class ThaiLanguageData(
             Log.d(LOG_TAG, section.toString())
         }
 
+        // iterate through the sections to build the Definition object
+        sections.forEach{ section ->
+            when (section.key){
+                "definition" -> {
+                    // TODO: get the values back
+                    parseDefinitionFromSection(section.value)
+                }
+                "synonyms" -> {
+                    parseSynonymsFromSection(section.value)
+                }
+            }
+        }
+
 //        for(row in definitionBlock){
 //            val test = row.getElementsMatchingText("definition")
 //        }
@@ -155,8 +172,32 @@ class ThaiLanguageData(
         return Definition("", "")
     }
 
-    // handles each category in the definition, such as definition, synonyms, etc.
-    private fun parseDefinitionSection(definitionSection: Definition, category: String){
+    private fun parseDefinitionFromSection(definitionSection: List<Element>): String{
+        try {
+            val element: Element = definitionSection[0]
+            val b = element.select("b")
+            val definition = b.text()
+
+            return definition
+        }
+        catch (e: Exception){
+            return ""
+        }
+    }
+
+    private fun parseSynonymsFromSection(definitionSection: List<Element>): List<Definition>{
+        try{
+            for (element in definitionSection){
+
+                //TODO: parsing
+
+            }
+
+            return emptyList()
+        }
+        catch(e: Exception){
+            return emptyList()
+        }
 
     }
 }
