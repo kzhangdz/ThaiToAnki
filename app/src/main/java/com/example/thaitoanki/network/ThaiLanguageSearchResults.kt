@@ -31,6 +31,8 @@ class ThaiLanguageSearchResults(
         val htmlTitle = htmlResults.getElementsByTag("title")
         val title = htmlTitle.text()
 
+        // TODO: still doesn't work. only compounds have arrows. i.e. search เฉย
+        // maybe search for the number 1?
         // if we directly went to a definition page
         if (title.contains(searchWord)){
             //select <link rel="canonical" href="http://www.thai-language.com/id/133189" />

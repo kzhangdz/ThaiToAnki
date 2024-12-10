@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.jsoup.select.Selector
+import kotlin.math.truncate
 
 /*
 class to hold data retrieved from thai-language.com
@@ -92,15 +93,75 @@ class ThaiLanguageData(
     // get the data within a definition block
     private fun parseDefinitionBlock(definitionBlock: List<Element>): Definition{
 
+        val definitionBlockElements = Elements(definitionBlock)
+
+        val sectionStartTds = definitionBlockElements.select("td[style*=background-color]")
+
+        val sectionNames = sectionStartTds.map {
+            td ->
+            td.text()
+        }
+
+        // TODO: need a function to modify sectionNames a little bit.
+        // i.e. sometimes 'sample sentences' is just 'sample sentence'
+
+        val sectionStartRows = sectionStartTds.map {
+            td ->
+            td.parent()
+        }
+
+        val sectionStartIndices = sectionStartRows.map{
+            row ->
+            definitionBlock.indexOf(row)
+        }
+
+        val sectionEndIndices: MutableList<Int> = mutableListOf()
+        for (i in sectionStartRows.indices){
+            val nextIndex = i + 1
+            if (nextIndex >= sectionStartIndices.size){
+                val lastIndex = definitionBlock.size
+
+                // go back two elements
+                //<tr> <td style="height:9px"></td> </tr>
+                //<tr style="background-color:#C0C0C0"> <td colspan="4" style="padding-bottom:1px; padding-top:0px"></td> </tr>
+
+                sectionEndIndices.add(lastIndex - 2)
+            }
+            else{
+                sectionEndIndices.add(sectionStartIndices[nextIndex])
+            }
+        }
+
+        Log.d(LOG_TAG, sectionStartIndices.toString())
+
+        val sections: MutableMap<String, List<Element>> = mutableMapOf()
+
+        for (i in sectionStartRows.indices){
+            val category = sectionNames[i]
+
+            val startIndex = sectionStartIndices[i]
+            val endIndex = sectionEndIndices[i]
+
+            val section: List<Element> = definitionBlock.slice(startIndex..<endIndex)
+
+            sections[category] = section
+
+            Log.d(LOG_TAG, section.toString())
+        }
+
+
         // first row should contain the alternate word and part of speech
 
-        // change this to a map of maps
-        val categories: Map<String, Pair<Int, Int>> = mapOf(
+        // change this to a map of maps (startingIndex, endIndex)
+        val categoryIndices: MutableMap<String, Pair<Int, Int>> = mutableMapOf(
             "definition" to Pair(0, 0),
             "synonyms" to Pair(0, 0),
+            "related" to Pair(0, 0), // words
             "examples" to Pair(0, 0),
             "sample" to Pair(0, 0), // sentences
         )
+
+        val categories = categoryIndices.keys.toList()
 
         // TODO: the code will break if sections are missing. maybe store starting indices as a value in a map?
         // or loop to get the end indices as well? That would be when the category changes.
@@ -108,32 +169,65 @@ class ThaiLanguageData(
 
         // break up the parts of the list by their categories
         var startingIndex = 0
-        val startingIndices: MutableList<Int> = mutableListOf()
+        //val startingIndices: MutableList<Int> = mutableListOf()
         for (category in categories){
+            var currentCategoryStartIndex = 0
+            var currentCategoryEndIndex = 0
 
             for(i in startingIndex..<definitionBlock.size){
                 val row = definitionBlock[i]
                 val matchingSection = row.getElementsMatchingText(category)
 
+                //var justSetStartIndex = false
+
                 if (matchingSection.size > 0){
-                    startingIndices.add(i)
-                    startingIndex = i
-                    continue
+                    currentCategoryStartIndex = i
+                    //justSetStartIndex = true
+                    //startingIndices.add(i)
+                    //startingIndex = i
                 }
+
+                // reached the next section
+                // or reached the end of the rows
+                // only run if you didn't set the start index, to avoid accidentally setting the end index the same as the start
+                if (hasReachedNextSection(row, category, categories) || i == definitionBlock.size - 1) {
+                    // break after finding the end index
+                    currentCategoryEndIndex = i
+                    startingIndex = i
+                    break
+                }
+
             }
+
+            categoryIndices[category] = Pair(currentCategoryStartIndex, currentCategoryEndIndex)
         }
 
-        for(index in startingIndices){
-            Log.d(LOG_TAG, definitionBlock[index].toString())
-        }
+//        for(index in startingIndices){
+//            Log.d(LOG_TAG, definitionBlock[index].toString())
+//        }
 
         // slice the sections based on the starting indices. last one, force it to definitionBlock.size - 1
-        val sections: MutableMap<String, List<Element>> = mutableMapOf()
-        for (i in 0..<categories.size){
-            val category = categories[i]
+//        val sections: MutableMap<String, List<Element>> = mutableMapOf()
+//        for (i in 0..<categories.size){
+//            val category = categories[i]
+//
+//            val startIndex = startingIndices[i]
+//            val endIndex = startingIndices.getOrNull(i + 1) ?: categories.size
+//
+//            val section: List<Element> = definitionBlock.slice(startIndex..<endIndex)
+//
+//            sections[category] = section
+//
+//            Log.d(LOG_TAG, section.toString())
+//        }
 
-            val startIndex = startingIndices[i]
-            val endIndex = startingIndices.getOrNull(i + 1) ?: categories.size
+        //val sections: MutableMap<String, List<Element>> = mutableMapOf()
+
+        for (entry in categoryIndices.entries){
+            val category = entry.key
+
+            val startIndex = entry.value.first
+            val endIndex = entry.value.second
 
             val section: List<Element> = definitionBlock.slice(startIndex..<endIndex)
 
@@ -170,6 +264,30 @@ class ThaiLanguageData(
 //        </tr>
 
         return Definition("", "")
+    }
+
+    // the next section has been reached if the passed-in <tr> element
+    // has a style attr w/ background-color
+    private fun hasReachedNextSection(row: Element, category: String, categories: List<String>): Boolean{
+        val td = row.select("td[style*=background-color]")
+        val returnedCategory = td[0].text()
+
+        // no results
+        if(td.size <= 0){
+            return false
+        }
+
+//        // if the current cell isn't a category we're counting, skip it
+//        if (returnedCategory !in categories){
+//            return false
+//        }
+
+        // if we've reached the next category
+        if (!returnedCategory.contains(category)){
+            return true
+        }
+
+        return false
     }
 
     private fun parseDefinitionFromSection(definitionSection: List<Element>): String{
