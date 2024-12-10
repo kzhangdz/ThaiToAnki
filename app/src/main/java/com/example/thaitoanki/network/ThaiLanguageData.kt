@@ -93,6 +93,7 @@ class ThaiLanguageData(
     // get the data within a definition block
     private fun parseDefinitionBlock(definitionBlock: List<Element>): Definition{
 
+        // first row should contain the alternate word and part of speech
         val definitionBlockElements = Elements(definitionBlock)
 
         val sectionStartTds = definitionBlockElements.select("td[style*=background-color]")
@@ -149,101 +150,15 @@ class ThaiLanguageData(
             Log.d(LOG_TAG, section.toString())
         }
 
-
-        // first row should contain the alternate word and part of speech
-
-        // change this to a map of maps (startingIndex, endIndex)
-        val categoryIndices: MutableMap<String, Pair<Int, Int>> = mutableMapOf(
-            "definition" to Pair(0, 0),
-            "synonyms" to Pair(0, 0),
-            "related" to Pair(0, 0), // words
-            "examples" to Pair(0, 0),
-            "sample" to Pair(0, 0), // sentences
-        )
-
-        val categories = categoryIndices.keys.toList()
-
-        // TODO: the code will break if sections are missing. maybe store starting indices as a value in a map?
-        // or loop to get the end indices as well? That would be when the category changes.
-        // when the current category is not found, but the tr contains a different one
-
-        // break up the parts of the list by their categories
-        var startingIndex = 0
-        //val startingIndices: MutableList<Int> = mutableListOf()
-        for (category in categories){
-            var currentCategoryStartIndex = 0
-            var currentCategoryEndIndex = 0
-
-            for(i in startingIndex..<definitionBlock.size){
-                val row = definitionBlock[i]
-                val matchingSection = row.getElementsMatchingText(category)
-
-                //var justSetStartIndex = false
-
-                if (matchingSection.size > 0){
-                    currentCategoryStartIndex = i
-                    //justSetStartIndex = true
-                    //startingIndices.add(i)
-                    //startingIndex = i
-                }
-
-                // reached the next section
-                // or reached the end of the rows
-                // only run if you didn't set the start index, to avoid accidentally setting the end index the same as the start
-                if (hasReachedNextSection(row, category, categories) || i == definitionBlock.size - 1) {
-                    // break after finding the end index
-                    currentCategoryEndIndex = i
-                    startingIndex = i
-                    break
-                }
-
-            }
-
-            categoryIndices[category] = Pair(currentCategoryStartIndex, currentCategoryEndIndex)
-        }
-
-//        for(index in startingIndices){
-//            Log.d(LOG_TAG, definitionBlock[index].toString())
-//        }
-
-        // slice the sections based on the starting indices. last one, force it to definitionBlock.size - 1
-//        val sections: MutableMap<String, List<Element>> = mutableMapOf()
-//        for (i in 0..<categories.size){
-//            val category = categories[i]
-//
-//            val startIndex = startingIndices[i]
-//            val endIndex = startingIndices.getOrNull(i + 1) ?: categories.size
-//
-//            val section: List<Element> = definitionBlock.slice(startIndex..<endIndex)
-//
-//            sections[category] = section
-//
-//            Log.d(LOG_TAG, section.toString())
-//        }
-
-        //val sections: MutableMap<String, List<Element>> = mutableMapOf()
-
-        for (entry in categoryIndices.entries){
-            val category = entry.key
-
-            val startIndex = entry.value.first
-            val endIndex = entry.value.second
-
-            val section: List<Element> = definitionBlock.slice(startIndex..<endIndex)
-
-            sections[category] = section
-
-            Log.d(LOG_TAG, section.toString())
-        }
-
         // iterate through the sections to build the Definition object
         sections.forEach{ section ->
             when (section.key){
+                // TODO: more flexible keys, like synonym vs. synonyms
                 "definition" -> {
                     // TODO: get the values back
                     parseDefinitionFromSection(section.value)
                 }
-                "synonyms" -> {
+                "synonym", "synonyms" -> {
                     parseSynonymsFromSection(section.value)
                 }
             }
