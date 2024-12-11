@@ -135,6 +135,7 @@ class ThaiLanguageData(
 
         Log.d(LOG_TAG, sectionStartIndices.toString())
 
+        // extract the elements for each section
         val sections: MutableMap<String, List<Element>> = mutableMapOf()
 
         for (i in sectionStartRows.indices){
@@ -151,12 +152,13 @@ class ThaiLanguageData(
         }
 
         // iterate through the sections to build the Definition object
+        var definition = ""
         sections.forEach{ section ->
             when (section.key){
                 // TODO: more flexible keys, like synonym vs. synonyms
                 "definition" -> {
                     // TODO: get the values back
-                    parseDefinitionFromSection(section.value)
+                    definition = parseDefinitionFromSection(section.value)
                 }
                 "synonym", "synonyms" -> {
                     parseSynonymsFromSection(section.value)
@@ -164,21 +166,9 @@ class ThaiLanguageData(
             }
         }
 
-//        for(row in definitionBlock){
-//            val test = row.getElementsMatchingText("definition")
-//        }
+        val wordDefinition = Definition(baseWord = word, definition = definition)
 
-        // extract the word. if it's null, use the passed-in word argument
-
-        // extract the definition
-        //definitionBlock.select("tr")[0].get
-
-//        <tr>
-//            <td style="background-color:#808080; color:white; padding-left:7px; padding-right:7px; max-width:100px;">definition</td>
-//            <td colspan="3" class="df"><br><b>to quit; to stop; to give up; cancel; suspend; discontinue; abolish; cease; exit; split up</b><br><br></td>
-//        </tr>
-
-        return Definition("", "")
+        return wordDefinition
     }
 
     // the next section has been reached if the passed-in <tr> element
