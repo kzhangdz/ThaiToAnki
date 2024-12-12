@@ -2,6 +2,7 @@ package com.example.thaitoanki.network
 
 import android.util.Log
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 
 /*
 class to hold data retrieved from thai-language.com
@@ -52,20 +53,21 @@ class ThaiLanguageSearchResults(
         else{
             val htmlTable = htmlResults.getElementsByClass(TABLE_CLASS)
             if (htmlTable != null){
-                // TODO: need to find the row marked with 1.
-                
+                // get the row marked with 1.
+                val td = htmlTable[0].select("td:contains(1.)")
+                val tr = td.parents()[0]
 
-
-
-
-
-
-                // get a list of hrefs from the table. the top one should be the top result
-
-                // need to grab the first arrow. Should be in this element
-                // <a href="/id/224923"><img src="/img/phr_link.gif"></a>
-                val arrow = htmlTable.select("a[href]>img")[0]
-                val link = arrow.parent()
+                // check for arrow
+                //<a href="/id/224923"><img src="/img/phr_link.gif"></a>
+                val arrow = tr.select("a[href]>img[src*=phr_link]")
+                var link: Element = Element("temp")
+                if (arrow.size > 0){
+                    link = arrow[0].parent()
+                }
+                else{
+                    // if there is no arrow, click on the link directly
+                    link = tr.select("a[href]")[0]
+                }
 
                 val href = link.attr("href")
 
@@ -73,20 +75,6 @@ class ThaiLanguageSearchResults(
                 val id = extractId(href)
                 return id
 
-
-
-                // get the row with the top result, the second row
-//                val row = htmlTable.select("tr")[1]
-//                Log.d("ThaiLanguageSearchResults", row.`val`())
-//
-//                // select the <a href="/id/1234"> under the second <td>
-//                val link = row.select("a[href]")
-//
-//                val href = link.attr("href")
-//
-//                // extract the id from the href
-//                val id = extractId(href)
-//                return id
             }
             else{
                 return null

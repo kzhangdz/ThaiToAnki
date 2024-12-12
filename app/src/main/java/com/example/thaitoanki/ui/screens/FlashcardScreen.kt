@@ -72,7 +72,11 @@ fun Flashcard(
                 defaultElevation = 6.dp
             )
         ) {
-            Text(flashcardInfo[0].definition)
+            Text(
+                flashcardInfo[0].definition,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+            )
         }
     }
 }
