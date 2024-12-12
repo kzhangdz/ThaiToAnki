@@ -52,6 +52,14 @@ class ThaiLanguageSearchResults(
         else{
             val htmlTable = htmlResults.getElementsByClass(TABLE_CLASS)
             if (htmlTable != null){
+                // TODO: need to find the row marked with 1.
+                
+
+
+
+
+
+
                 // get a list of hrefs from the table. the top one should be the top result
 
                 // need to grab the first arrow. Should be in this element

@@ -96,6 +96,9 @@ class ThaiLanguageData(
         // first row should contain the alternate word and part of speech
         val definitionBlockElements = Elements(definitionBlock)
 
+        // TODO: get the alternate word and part of speech
+        // parsePartOfSpeechFromSection()
+
         val sectionStartTds = definitionBlockElements.select("td[style*=background-color]")
 
         val sectionNames = sectionStartTds.map {
@@ -153,6 +156,7 @@ class ThaiLanguageData(
 
         // iterate through the sections to build the Definition object
         var definition = ""
+        var sentences: List<Definition> = listOf()
         sections.forEach{ section ->
             when (section.key){
                 // TODO: more flexible keys, like synonym vs. synonyms
@@ -163,10 +167,21 @@ class ThaiLanguageData(
                 "synonym", "synonyms" -> {
                     parseSynonymsFromSection(section.value)
                 }
+                "example", "examples" -> {
+
+                }
+                "sample sentence", "sample sentences" -> {
+                    sentences = parseSentencesFromSection(section.value)
+                }
             }
         }
 
-        val wordDefinition = Definition(baseWord = word, definition = definition)
+        // TODO: replace word w/ alternate word
+        val wordDefinition = Definition(
+            baseWord = word,
+            definition = definition,
+            sentences = sentences
+        )
 
         return wordDefinition
     }
@@ -222,5 +237,37 @@ class ThaiLanguageData(
             return emptyList()
         }
 
+    }
+
+    private fun parseSentencesFromSection(definitionSection: List<Element>): List<Definition> {
+        try{
+            val sentences: MutableList<Definition> = mutableListOf()
+
+            for (element in definitionSection){
+                val div = element.select("div[class=igt]")
+                val children = div[0].children()
+
+                val text = div.text()
+                val sentence = children[0].text()
+                val romanization = children[2].text()
+                val meaning = text.replace(sentence, "").replace(romanization, "").trim()
+
+                val definition = Definition(
+                    sentence,
+                    definition = meaning,
+                    romanization = romanization
+                )
+
+                Log.d(LOG_TAG, sentence)
+
+                sentences.add(definition)
+            }
+
+            return sentences
+        }
+        catch(e: Exception){
+            Log.e(LOG_TAG, e.toString())
+            return emptyList()
+        }
     }
 }
