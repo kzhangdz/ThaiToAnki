@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.thaitoanki.ThaiLanguageApplication
 import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.network.ThaiLanguageData
 import com.example.thaitoanki.network.ThaiLanguageSearchResults
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,21 +35,40 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     // public variable that acts as our getter method for the state. read-only state flow
     val uiState: StateFlow<ThaiLanguageUiState> = _uiState.asStateFlow()
 
-    var loadingStatus: LoadingStatus = LoadingStatus.Loading
+    var loadingStatus: LoadingStatus = LoadingStatus.Success //LoadingStatus.Loading
+        private set
 
     var searchValue by mutableStateOf("")
         private set
 
     // TODO: function to reset view model, especially after a cancel
+    fun resetView(){
+        _uiState.value = ThaiLanguageUiState()
+
+        updateLoadingStatus(LoadingStatus.Success)
+        updateSearchValue("")
+    }
+
+
+    fun updateLoadingStatus(updatedStatus: LoadingStatus){
+        loadingStatus = updatedStatus
+    }
 
     fun updateSearchValue(updatedSearchValue: String){
         searchValue = updatedSearchValue
     }
 
-    fun updateDefinition(definition: String){
+//    fun updateDefinition(definition: String){
+//        _uiState.update {
+//            currentState ->
+//            currentState.copy(definition = definition)
+//        }
+//    }
+
+    fun updateDefinitions(definitions: List<Definition>){
         _uiState.update {
             currentState ->
-            currentState.copy(definition = definition)
+            currentState.copy(currentDefinitions = definitions)
         }
     }
 
@@ -56,6 +76,8 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     Functions for querying data
      */
     fun searchDictionary(){
+        updateLoadingStatus(LoadingStatus.Loading)
+
         viewModelScope.launch {
             loadingStatus = try {
 
@@ -81,7 +103,9 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
                 // TODO: branch for no results
 
 
-                updateDefinition(searchResult.html())
+                if (wordData != null) {
+                    updateDefinitions(wordData.definitions)
+                }
                 LoadingStatus.Success
 
             } catch (e: IOException) {

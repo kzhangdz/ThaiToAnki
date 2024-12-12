@@ -45,9 +45,9 @@ fun HomeScreen(
             onSearchButtonClicked = onSearchButtonClicked,
             onKeyboardDone = onKeyboardDone,
             modifier = Modifier
-                .padding(
-                    horizontal = dimensionResource(R.dimen.padding_medium)
-                )
+//                .padding(
+//                    horizontal = dimensionResource(R.dimen.padding_medium)
+//                )
                 .fillMaxWidth()
         )
     }
@@ -67,6 +67,7 @@ fun SearchForm(
         modifier = modifier
     )
     {
+        // TODO: change this into a SearchBar
         OutlinedTextField(
             value = searchValue,
             label = { Text(text = stringResource(R.string.search_bar_label)) },

@@ -1,5 +1,6 @@
 package com.example.thaitoanki.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,31 +18,48 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.thaitoanki.R
+import com.example.thaitoanki.network.Definition
 
 @Composable
 fun FlashcardScreen(
-    flashcardInfo: String,
-    modifier: Modifier = Modifier
+    loadingStatus: LoadingStatus,
+    flashcardInfo: List<Definition>,
+    modifier: Modifier = Modifier,
 ){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
-        Flashcard(
-            flashcardInfo = flashcardInfo,
-            modifier = modifier
-        )
-        FlashcardScreenButtonGroup(
+        if(loadingStatus == LoadingStatus.Loading){
+            LoadingScreen()
+        }
+        else if(loadingStatus == LoadingStatus.Error){
+            // TODO: change to error screen
+            Text("Temp")
+        }
+        else{
+            Flashcard(
+                flashcardInfo = flashcardInfo
+            )
+            FlashcardScreenButtonGroup(
 
-        )
+            )
+        }
     }
 }
 
 @Composable
 fun Flashcard(
-    flashcardInfo: String,
+    flashcardInfo: List<Definition>,
     modifier: Modifier = Modifier
 ){
-    Text(flashcardInfo)
+    if(flashcardInfo.isEmpty()){
+        Text("No definition found")
+    }
+    else {
+        Text(flashcardInfo[0].definition)
+    }
 }
 
 @Composable
@@ -96,9 +114,10 @@ fun FlashcardScreenButtonGroup(
 @Composable
 fun FlashcardScreenPreview() {
     FlashcardScreen(
-        flashcardInfo = "testsetestset",
+        flashcardInfo = listOf(Definition("test", "")),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        loadingStatus = LoadingStatus.Success
     )
 }

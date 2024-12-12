@@ -8,15 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.thaitoanki.R
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HomeScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
-import okhttp3.internal.wait
 
 enum class ThaiToAnkiScreen(){
     Start,
@@ -67,6 +68,9 @@ fun ThaiToAnkiApp(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.padding_medium)
+                        )
                 )
             }
 
@@ -74,10 +78,14 @@ fun ThaiToAnkiApp(
                 route = ThaiToAnkiScreen.Flashcard.name
             ) {
                 FlashcardScreen(
-                    flashcardInfo = uiState.definition,
+                    loadingStatus = viewModel.loadingStatus,
+                    flashcardInfo = uiState.currentDefinitions,
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.padding_medium)
+                        )
                 )
             }
         }
