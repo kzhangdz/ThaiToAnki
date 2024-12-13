@@ -1,9 +1,14 @@
 package com.example.thaitoanki.ui.screens
 
+import android.util.Log
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,14 +26,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.thaitoanki.R
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
@@ -37,25 +49,57 @@ fun HomeScreen(
     onSearchButtonClicked: () -> Unit,
     onKeyboardSearch: () -> Unit,
     onClearButtonClicked: () -> Unit,
+    onDragUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        verticalArrangement = Arrangement.Center,
+    //var offsetX by remember { mutableStateOf(0f) }
+    //var offsetY by remember { mutableStateOf(0f) }
+
+    Box(
         modifier = modifier
-    )
-    {
-        SearchForm(
-            searchValue = searchValue,
-            onSearchValueChanged = onSearchValueChanged,
-            onSearchButtonClicked = onSearchButtonClicked,
-            onKeyboardSearch = onKeyboardSearch,
-            onClearButtonClicked = onClearButtonClicked,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
+                .fillMaxSize()
+                //.offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .pointerInput(Unit){
+                    detectDragGestures { change, dragAmount ->
+                        // TODO: dragging is too sensitive. creates multiple pages. switch to a pager?
+                        change.consume()
+
+                        val (x,y) = dragAmount
+                        when {
+                            x > 0 ->{ /* right */ }
+                            x < 0 ->{ /* left */ }
+                        }
+                        when {
+                            y > 0 -> { /* down */ }
+                            y < 0 -> {
+                                /* up */
+                                onDragUp()
+                            }
+                        }
+
+                        //offsetX += dragAmount.x
+                        //offsetY += dragAmount.y
+                    }
+                }
+        )
+        {
+            SearchForm(
+                searchValue = searchValue,
+                onSearchValueChanged = onSearchValueChanged,
+                onSearchButtonClicked = onSearchButtonClicked,
+                onKeyboardSearch = onKeyboardSearch,
+                onClearButtonClicked = onClearButtonClicked,
+                modifier = Modifier
 //                .padding(
 //                    horizontal = dimensionResource(R.dimen.padding_medium)
 //                )
-                .fillMaxWidth()
-        )
+                    .fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -83,6 +127,7 @@ fun SearchForm(
             singleLine = true,
             trailingIcon = {
                 IconButton(
+                    enabled = searchValue != "",
                     onClick = {
                         onClearButtonClicked()
                     }
@@ -135,6 +180,7 @@ fun HomeScreenPreview() {
         onSearchButtonClicked = {},
         onKeyboardSearch = {},
         onClearButtonClicked = {},
+        onDragUp = {},
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())

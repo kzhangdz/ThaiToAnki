@@ -67,7 +67,7 @@ fun FlashcardScreen(
                 Text("No definition found")
             }
             else {
-                // TODO: set hard height for flashcard
+                // TODO: Carousel of flashcards
                 Flashcard(
                     flashcardInfo = flashcardInfo,
                     modifier = Modifier
@@ -195,6 +195,7 @@ fun FlashcardBack(
     }
 }
 
+// TODO: button to merge flashcards into one
 @Composable
 fun FlashcardScreenButtonGroup(
     modifier: Modifier = Modifier
