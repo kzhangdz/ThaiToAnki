@@ -41,6 +41,10 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     var searchValue by mutableStateOf("")
         private set
 
+    /*
+    Setting variables
+     */
+
     // TODO: function to reset view model, especially after a cancel
     fun resetView(){
         _uiState.value = ThaiLanguageUiState()
@@ -56,6 +60,13 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
 
     fun updateSearchValue(updatedSearchValue: String){
         searchValue = updatedSearchValue
+    }
+
+    fun updateIsFlashcardShowingBack(updatedValue: Boolean){
+        _uiState.update {
+            currentState ->
+            currentState.copy(isFlashcardShowingBack = updatedValue)
+        }
     }
 
 //    fun updateDefinition(definition: String){

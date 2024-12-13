@@ -1,5 +1,6 @@
 package com.example.thaitoanki.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,7 @@ fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     flashcardInfo: List<Definition>,
     isShowingBack: Boolean = false,
+    onFlashcardClick: () -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -50,14 +52,22 @@ fun FlashcardScreen(
             Text("Temp")
         }
         else{
-            // TODO: set hard height for flashcard
-            Flashcard(
-                flashcardInfo = flashcardInfo,
-                isShowingBack = isShowingBack,
-                modifier = Modifier
-                    .height(250.dp)
-                    .fillMaxWidth()
-            )
+            if(flashcardInfo.isEmpty()){
+                Text("No definition found")
+            }
+            else {
+                // TODO: set hard height for flashcard
+                Flashcard(
+                    flashcardInfo = flashcardInfo,
+                    isShowingBack = isShowingBack,
+                    modifier = Modifier
+                        .height(250.dp)
+                        .fillMaxWidth()
+                        .clickable {
+                            onFlashcardClick()
+                        }
+                )
+            }
             Spacer(
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
             )
@@ -74,31 +84,26 @@ fun Flashcard(
     isShowingBack: Boolean = false,
     modifier: Modifier = Modifier
 ){
-    if(flashcardInfo.isEmpty()){
-        Text("No definition found")
-    }
-    else {
-        ElevatedCard(
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 6.dp
-            ),
-            modifier = modifier
+    // TODO: make the column scrollable? or clickable to expand
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        modifier = modifier
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.padding_small))
+                .fillMaxSize()
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.padding_small))
-                    .fillMaxSize()
-            ) {
-                if (isShowingBack){
-                    FlashcardBack(flashcardInfo)
-                }
-                else{
-                    FlashcardFront(flashcardInfo)
-                }
+            if (isShowingBack){
+                FlashcardBack(flashcardInfo)
             }
-
+            else{
+                FlashcardFront(flashcardInfo)
+            }
         }
     }
 }
@@ -186,6 +191,7 @@ fun FlashcardScreenPreview() {
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
+        onFlashcardClick = {},
         loadingStatus = LoadingStatus.Success
     )
 }
@@ -199,6 +205,7 @@ fun FlashcardScreenBackPreview() {
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
+        onFlashcardClick = {},
         loadingStatus = LoadingStatus.Success
     )
 }
