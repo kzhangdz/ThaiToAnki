@@ -1,6 +1,7 @@
 package com.example.thaitoanki.ui
 
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -66,8 +67,9 @@ fun ThaiToAnkiApp(
                         navController.navigate(ThaiToAnkiScreen.Flashcard.name)
                     },
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
+                        .fillMaxSize()
+//                        .fillMaxHeight()
+//                        .fillMaxWidth()
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
@@ -80,9 +82,12 @@ fun ThaiToAnkiApp(
                 FlashcardScreen(
                     loadingStatus = viewModel.loadingStatus,
                     flashcardInfo = uiState.currentDefinitions,
+                    // TODO: change to variable
+                    isShowingBack = false,
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
+                        .fillMaxSize()
+//                        .fillMaxHeight()
+//                        .fillMaxWidth()
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
