@@ -65,7 +65,7 @@ fun HomeScreen(
                 //.offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .pointerInput(Unit){
                     detectDragGestures { change, dragAmount ->
-                        // TODO: dragging is too sensitive. creates multiple pages. switch to a pager?
+                        // TODO: dragging is too sensitive. creates multiple pages. switch to a verticalpager?
                         change.consume()
 
                         val (x,y) = dragAmount
