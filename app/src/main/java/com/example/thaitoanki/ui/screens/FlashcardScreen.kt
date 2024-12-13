@@ -1,7 +1,10 @@
 package com.example.thaitoanki.ui.screens
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +23,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,12 +40,14 @@ import androidx.compose.ui.unit.sp
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
 
+// TODO: add animation for flipping card.
+// The flip attribute does not need to be in the view model
+// It should live entirely on this page
+
 @Composable
 fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     flashcardInfo: List<Definition>,
-    isShowingBack: Boolean = false,
-    onFlashcardClick: () -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -59,13 +70,9 @@ fun FlashcardScreen(
                 // TODO: set hard height for flashcard
                 Flashcard(
                     flashcardInfo = flashcardInfo,
-                    isShowingBack = isShowingBack,
                     modifier = Modifier
                         .height(250.dp)
                         .fillMaxWidth()
-                        .clickable {
-                            onFlashcardClick()
-                        }
                 )
             }
             Spacer(
@@ -81,28 +88,67 @@ fun FlashcardScreen(
 @Composable
 fun Flashcard(
     flashcardInfo: List<Definition>,
-    isShowingBack: Boolean = false,
     modifier: Modifier = Modifier
 ){
+    var isRotated by rememberSaveable { mutableStateOf(false) }
+
+    val rotation by animateFloatAsState(
+        targetValue = if (isRotated) 180f else 0f,
+        animationSpec = tween(500)
+    )
+
+    val animateFront by animateFloatAsState(
+        targetValue = if (!isRotated) 1f else 0f,
+        animationSpec = tween(500)
+    )
+
+    val animateBack by animateFloatAsState(
+        targetValue = if (isRotated) 1f else 0f,
+        animationSpec = tween(500)
+    )
+
     // TODO: make the column scrollable? or clickable to expand
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        modifier = modifier
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.padding_small))
-                .fillMaxSize()
-        ) {
-            if (isShowingBack){
-                FlashcardBack(flashcardInfo)
+    Box(
+        modifier = Modifier
+            .graphicsLayer {
+                rotationY = rotation
+                cameraDistance = 8 * density
             }
-            else{
-                FlashcardFront(flashcardInfo)
+            .clickable {
+                isRotated = !isRotated
+            }
+    ) {
+        ElevatedCard(
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+            modifier = modifier
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+                    .fillMaxSize()
+            ) {
+                if (isRotated) {
+                    FlashcardBack(
+                        flashcardInfo,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                alpha = animateBack
+                                rotationY = rotation
+                            }
+                    )
+                } else {
+                    FlashcardFront(
+                        flashcardInfo,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                alpha = animateFront
+                                rotationY = rotation
+                            })
+                }
             }
         }
     }
@@ -191,7 +237,6 @@ fun FlashcardScreenPreview() {
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
-        onFlashcardClick = {},
         loadingStatus = LoadingStatus.Success
     )
 }
@@ -201,11 +246,9 @@ fun FlashcardScreenPreview() {
 fun FlashcardScreenBackPreview() {
     FlashcardScreen(
         flashcardInfo = listOf(Definition("test", "")),
-        isShowingBack = true,
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
-        onFlashcardClick = {},
         loadingStatus = LoadingStatus.Success
     )
 }

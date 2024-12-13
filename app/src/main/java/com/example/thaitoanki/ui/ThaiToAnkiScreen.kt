@@ -82,11 +82,6 @@ fun ThaiToAnkiApp(
                 FlashcardScreen(
                     loadingStatus = viewModel.loadingStatus,
                     flashcardInfo = uiState.currentDefinitions,
-                    // TODO: change to variable
-                    isShowingBack = uiState.isFlashcardShowingBack,
-                    onFlashcardClick = {
-                        viewModel.updateIsFlashcardShowingBack(!uiState.isFlashcardShowingBack)
-                    },
                     modifier = Modifier
                         .fillMaxSize()
 //                        .fillMaxHeight()

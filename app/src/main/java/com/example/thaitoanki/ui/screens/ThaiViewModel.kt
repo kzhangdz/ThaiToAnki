@@ -62,13 +62,6 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
         searchValue = updatedSearchValue
     }
 
-    fun updateIsFlashcardShowingBack(updatedValue: Boolean){
-        _uiState.update {
-            currentState ->
-            currentState.copy(isFlashcardShowingBack = updatedValue)
-        }
-    }
-
 //    fun updateDefinition(definition: String){
 //        _uiState.update {
 //            currentState ->
@@ -89,6 +82,7 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     fun searchDictionary(){
         updateLoadingStatus(LoadingStatus.Loading)
 
+        // TODO: the code might not be properly awaiting for a response to finish before continuing. need to properly await
         viewModelScope.launch {
             loadingStatus = try {
 
