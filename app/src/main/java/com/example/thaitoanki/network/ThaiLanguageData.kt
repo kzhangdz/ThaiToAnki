@@ -96,9 +96,6 @@ class ThaiLanguageData(
         // first row should contain the alternate word and part of speech
         val definitionBlockElements = Elements(definitionBlock)
 
-        // TODO: get the alternate word and part of speech
-        // parsePartOfSpeechFromSection()
-
         val sectionStartTds = definitionBlockElements.select("td[style*=background-color]")
 
         val sectionNames = sectionStartTds.map {
@@ -138,7 +135,16 @@ class ThaiLanguageData(
 
         Log.d(LOG_TAG, sectionStartIndices.toString())
 
-        // extract the elements for each section
+        // TODO: get the part of speech and alternate word
+        val partOfSpeechIndex: Int = sectionStartIndices[0] - 1
+        val partOfSpeechSection: Element = definitionBlock[partOfSpeechIndex]
+        val partOfSpeech: String = parsePartOfSpeechFromSection(partOfSpeechSection)
+        val alternateWord: String = parseAlternateWordFromSection(partOfSpeechSection, word)
+
+
+
+
+        // extract the elements for each remaining section
         val sections: MutableMap<String, List<Element>> = mutableMapOf()
 
         for (i in sectionStartRows.indices){
@@ -178,8 +184,9 @@ class ThaiLanguageData(
 
         // TODO: replace word w/ alternate word
         val wordDefinition = Definition(
-            baseWord = word,
+            baseWord = alternateWord,
             definition = definition,
+            partOfSpeech = partOfSpeech,
             sentences = sentences
         )
 
@@ -208,6 +215,33 @@ class ThaiLanguageData(
         }
 
         return false
+    }
+
+    private fun parseAlternateWordFromSection(definitionSection: Element, baseWord: String): String{
+        try {
+            val span = definitionSection.select("span[class=th2]")
+            val alternateWord = span.text()
+
+            if(alternateWord == ""){
+                return baseWord
+            }
+            return alternateWord
+        }
+        catch (e: Exception){
+            return baseWord
+        }
+    }
+
+    private fun parsePartOfSpeechFromSection(definitionSection: Element): String{
+        try {
+            val span = definitionSection.select("span[style=font-size:x-small]")
+            val partOfSpeech = span.text()
+
+            return partOfSpeech
+        }
+        catch (e: Exception){
+            return ""
+        }
     }
 
     private fun parseDefinitionFromSection(definitionSection: List<Element>): String{

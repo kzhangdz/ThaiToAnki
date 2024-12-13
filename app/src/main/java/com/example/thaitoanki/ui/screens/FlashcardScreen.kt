@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -45,8 +46,10 @@ fun FlashcardScreen(
             Text("Temp")
         }
         else{
+            // TODO: set hard height for flashcard
             Flashcard(
-                flashcardInfo = flashcardInfo
+                flashcardInfo = flashcardInfo,
+                modifier = Modifier.height(256.dp)
             )
             Spacer(
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
@@ -61,6 +64,7 @@ fun FlashcardScreen(
 @Composable
 fun Flashcard(
     flashcardInfo: List<Definition>,
+    isShowingBack: Boolean = false,
     modifier: Modifier = Modifier
 ){
     if(flashcardInfo.isEmpty()){
@@ -72,27 +76,47 @@ fun Flashcard(
                 defaultElevation = 6.dp
             )
         ) {
-            Text(
-                flashcardInfo[0].definition,
+            Column(
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_small))
-            )
+            ) {
+                if (isShowingBack){
+                    FlashcardBack(flashcardInfo)
+                }
+                else{
+                    FlashcardFront(flashcardInfo)
+                }
+            }
+
         }
     }
 }
 
 @Composable
 fun FlashcardFront(
+    flashcardInfo: List<Definition>,
     modifier: Modifier = Modifier
 ){
-
+    Text(
+        flashcardInfo[0].baseWord
+    )
 }
 
 @Composable
 fun FlashcardBack(
+    flashcardInfo: List<Definition>,
     modifier: Modifier = Modifier
 ){
-
+    Text(
+        flashcardInfo[0].partOfSpeech
+    )
+    Text(
+        flashcardInfo[0].definition
+    )
+    //TODO: dropdown menu for sentences
+    Text(
+        flashcardInfo[0].sentences[0].baseWord
+    )
 }
 
 @Composable
