@@ -10,9 +10,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,7 +35,8 @@ fun HomeScreen(
     searchValue: String,
     onSearchValueChanged: (String) -> Unit,
     onSearchButtonClicked: () -> Unit,
-    onKeyboardDone: () -> Unit,
+    onKeyboardSearch: () -> Unit,
+    onClearButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -43,7 +48,8 @@ fun HomeScreen(
             searchValue = searchValue,
             onSearchValueChanged = onSearchValueChanged,
             onSearchButtonClicked = onSearchButtonClicked,
-            onKeyboardDone = onKeyboardDone,
+            onKeyboardSearch = onKeyboardSearch,
+            onClearButtonClicked = onClearButtonClicked,
             modifier = Modifier
 //                .padding(
 //                    horizontal = dimensionResource(R.dimen.padding_medium)
@@ -59,7 +65,8 @@ fun SearchForm(
     searchValue: String,
     onSearchValueChanged: (String) -> Unit,
     onSearchButtonClicked: () -> Unit,
-    onKeyboardDone: () -> Unit,
+    onKeyboardSearch: () -> Unit,
+    onClearButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -68,17 +75,30 @@ fun SearchForm(
     )
     {
         // TODO: change this into a SearchBar
+        // TODO: null/"" validation
         OutlinedTextField(
             value = searchValue,
             label = { Text(text = stringResource(R.string.search_bar_label)) },
             shape = RoundedCornerShape(50.dp),
             singleLine = true,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        onClearButtonClicked()
+                    }
+                ) {
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.clear)
+                    )
+                }
+                           },
             onValueChange = onSearchValueChanged,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Search
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onKeyboardDone() }
+                onSearch = { onKeyboardSearch() }
             ),
             modifier = Modifier.fillMaxWidth()
         )
@@ -113,7 +133,8 @@ fun HomeScreenPreview() {
         searchValue = "",
         onSearchValueChanged = {},
         onSearchButtonClicked = {},
-        onKeyboardDone = {},
+        onKeyboardSearch = {},
+        onClearButtonClicked = {},
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())

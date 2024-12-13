@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.compose.material:material:1.8.0-alpha04")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

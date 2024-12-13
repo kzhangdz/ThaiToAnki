@@ -62,9 +62,12 @@ fun ThaiToAnkiApp(
                         viewModel.searchDictionary()
                         navController.navigate(ThaiToAnkiScreen.Flashcard.name)
                     },
-                    onKeyboardDone = {
+                    onKeyboardSearch = {
                         viewModel.searchDictionary()
                         navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+                    },
+                    onClearButtonClicked = {
+                        viewModel.updateSearchValue("")
                     },
                     modifier = Modifier
                         .fillMaxSize()
