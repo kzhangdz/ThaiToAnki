@@ -42,10 +42,6 @@ class ThaiLanguageData(
             // select the last table in the old-content div, which has all blocks
             val contentDiv = htmlResults.select("div[id=old-content]")[0]
 
-            // TODO: this isn't working. can't just select the last table. e.g. ข้าว
-            // the green boxes under category are labeled as tables
-            // also need to adjust error handling so it's not just stuck on loading
-
             val table = contentDiv.select("div[id=old-content]>table").last()
             val tableBody = table.child(0)
             val tableRows = tableBody.children()

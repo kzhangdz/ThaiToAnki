@@ -64,6 +64,8 @@ fun ThaiToAnkiApp(
             composable(
                 route = ThaiToAnkiScreen.Start.name
             ) {
+                // TODO: put HomeScreen and HistoryScreen into a single VerticalPager
+
                 HomeScreen(
                     searchValue = viewModel.searchValue,
                     onSearchValueChanged = {
