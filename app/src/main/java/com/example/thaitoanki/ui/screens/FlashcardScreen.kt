@@ -64,7 +64,7 @@ fun FlashcardScreen(
         }
         else{
             if(flashcardInfo.isEmpty()){
-                Text("No definition found")
+                Text("No definitions found")
             }
             else {
                 // TODO: Carousel of flashcards

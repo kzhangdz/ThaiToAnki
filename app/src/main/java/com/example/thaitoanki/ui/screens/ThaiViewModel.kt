@@ -105,9 +105,6 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
                     wordData = ThaiLanguageData(searchValue, searchResult)
                 }
 
-                // TODO: branch for no results
-
-
                 if (wordData != null) {
                     updateDefinitions(wordData.definitions)
                 }
