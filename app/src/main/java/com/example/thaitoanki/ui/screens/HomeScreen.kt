@@ -2,6 +2,8 @@ package com.example.thaitoanki.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ fun HomeScreen(
 
     VerticalPager(
         state = pagerState,
+        flingBehavior = PagerDefaults.flingBehavior(state = pagerState, ),
         modifier = modifier
     ) {
         if (pagerState.currentPage == 1) {
@@ -72,7 +75,7 @@ fun HomeScreen(
                 onNavigationButtonClick = {
                     //TODO
                     scope.launch {
-                        pagerState.scrollToPage(0)
+                        pagerState.scrollToPage(1)
                     }
                 },
                 modifier = Modifier

@@ -19,6 +19,7 @@ import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
+import com.example.thaitoanki.ui.screens.HomeScreen
 import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 
@@ -59,33 +60,9 @@ fun ThaiToAnkiApp(
             ) {
                 // TODO: put HomeScreen and HistoryScreen into a single VerticalPager
 
-                SearchScreen(
-                    searchValue = viewModel.searchValue,
-                    onSearchValueChanged = {
-                        viewModel.updateSearchValue(it)
-                    },
-                    onSearchButtonClicked = {
-                        viewModel.searchDictionary()
-                        navController.navigate(ThaiToAnkiScreen.Flashcard.name)
-                    },
-                    onKeyboardSearch = {
-                        viewModel.searchDictionary()
-                        navController.navigate(ThaiToAnkiScreen.Flashcard.name)
-                    },
-                    onClearButtonClicked = {
-                        viewModel.updateSearchValue("")
-                    },
-                    onDragUp = {
-                        navController.navigate(ThaiToAnkiScreen.History.name)
-                    },
-                    onNavigationButtonClick = {
-                        //TODO
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            horizontal = dimensionResource(R.dimen.padding_medium)
-                        )
+                HomeScreen(
+                    viewModel = viewModel,
+                    navController = navController
                 )
             }
 
