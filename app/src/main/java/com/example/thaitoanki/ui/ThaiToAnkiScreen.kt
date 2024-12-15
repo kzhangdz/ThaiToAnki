@@ -83,8 +83,6 @@ fun ThaiToAnkiApp(
                     },
                     modifier = Modifier
                         .fillMaxSize()
-//                        .fillMaxHeight()
-//                        .fillMaxWidth()
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
@@ -99,8 +97,6 @@ fun ThaiToAnkiApp(
                     flashcardInfo = uiState.currentDefinitions,
                     modifier = Modifier
                         .fillMaxSize()
-//                        .fillMaxHeight()
-//                        .fillMaxWidth()
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
