@@ -187,7 +187,7 @@ fun SearchForm(
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+fun SearchScreenPreview() {
     SearchScreen(
         searchValue = "",
         onSearchValueChanged = {},
