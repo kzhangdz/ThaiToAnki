@@ -1,16 +1,9 @@
 package com.example.thaitoanki.ui
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,7 +19,7 @@ import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
-import com.example.thaitoanki.ui.screens.HomeScreen
+import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 
 enum class ThaiToAnkiScreen(){
@@ -66,7 +59,7 @@ fun ThaiToAnkiApp(
             ) {
                 // TODO: put HomeScreen and HistoryScreen into a single VerticalPager
 
-                HomeScreen(
+                SearchScreen(
                     searchValue = viewModel.searchValue,
                     onSearchValueChanged = {
                         viewModel.updateSearchValue(it)
@@ -84,6 +77,9 @@ fun ThaiToAnkiApp(
                     },
                     onDragUp = {
                         navController.navigate(ThaiToAnkiScreen.History.name)
+                    },
+                    onNavigationButtonClick = {
+                        //TODO
                     },
                     modifier = Modifier
                         .fillMaxSize()
@@ -133,6 +129,9 @@ fun ThaiToAnkiApp(
                         Definition("test", "test"),
                         Definition("test2", "test2")
                     ),
+                    onNavigationButtonClick = {
+                        //TODO
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
