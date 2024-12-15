@@ -1,17 +1,20 @@
 package com.example.thaitoanki.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import com.example.thaitoanki.R
@@ -31,6 +34,7 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { 2 }) //HomeTabs.entries.size
     //val selectedTabIndex = rememberSaveable{ derivedStateOf { pagerState.currentPage } }
 
+    // TODO: the search page doesn't seem to render properly when scrolling back up
     VerticalPager(
         state = pagerState,
         flingBehavior = PagerDefaults.flingBehavior(state = pagerState, ),
@@ -50,6 +54,7 @@ fun HomeScreen(
                     .padding(
                         horizontal = dimensionResource(R.dimen.padding_medium)
                     )
+                    //.background(color = MaterialTheme.colorScheme.error)
             )
         }
         else{
