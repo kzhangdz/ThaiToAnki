@@ -83,6 +83,8 @@ fun ThaiToAnkiApp(
     viewModel: ThaiViewModel = viewModel(factory = ThaiViewModel.Factory),
     navController: NavHostController = rememberNavController()
 ) {
+    //TODO: instead of removing the app bar, just put Settings in the title
+    //https://stackoverflow.com/questions/66493551/jetpack-compose-navigation-get-route-of-current-destination-as-string
     // State of topBar, set state to false, if current page route is "settings"
     var topBarState by rememberSaveable { (mutableStateOf(true)) }
 
@@ -166,6 +168,7 @@ fun ThaiToAnkiApp(
             ) {
                 // TODO: put HomeScreen and HistoryScreen into a single VerticalPager
 
+                // TODO: clear word on back navigation
                 SearchScreen(
                     searchValue = viewModel.searchValue,
                     onSearchValueChanged = {

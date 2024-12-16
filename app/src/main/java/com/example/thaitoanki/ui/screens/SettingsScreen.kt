@@ -37,9 +37,12 @@ import androidx.compose.ui.unit.sp
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
 
-// TODO: add animation for flipping card.
-// The flip attribute does not need to be in the view model
-// It should live entirely on this page
+//https://stackoverflow.com/questions/68718655/building-a-preference-screen-with-android-jetpack-compose
+//https://github.com/zhanghai/ComposePreference
+
+//https://tomas-repcik.medium.com/making-extensible-settings-screen-in-jetpack-compose-from-scratch-2558170dd24d
+// For permanent storage, you would pass the new value to the SharedPreferences or DataStore in ViewModel method.
+// will need to look into loading settings on app load. likely can check during the onCreate()
 
 @Composable
 fun SettingsScreen(
