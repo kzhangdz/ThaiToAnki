@@ -2,18 +2,30 @@ package com.example.thaitoanki.ui
 
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
@@ -22,11 +34,48 @@ import com.example.thaitoanki.ui.screens.HistoryScreen
 import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 
+import com.example.thaitoanki.ui.screens.SettingsScreen
+
 enum class ThaiToAnkiScreen(){
     Start,
     Flashcard,
     History,
-    Options
+    Settings
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ThaiToAnkiAppBar(
+    currentScreen: ThaiToAnkiScreen,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    actions: @Composable() (RowScope.() -> Unit),
+    modifier: Modifier = Modifier,
+    topBarState: Boolean
+) {
+    if(topBarState) {
+        CenterAlignedTopAppBar(
+            title = { Text("") }, //{Text(stringResource(R.string.app_name))},
+//        title = { Text(stringResource(currentScreen.title)) },
+//        colors = TopAppBarDefaults.mediumTopAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.primary
+//        ),
+
+            scrollBehavior = null, // TODO: may implement hiding bar on scroll
+            actions = actions,
+            modifier = modifier,
+//        navigationIcon = {
+//            if (canNavigateBack) {
+//                IconButton(onClick = navigateUp) {
+//                    Icon(
+//                        imageVector = Icons.Filled.ArrowBack,
+//                        contentDescription = stringResource(R.string.back_button)
+//                    )
+//                }
+//            }
+//        }
+        )
+    }
 }
 
 @Composable
@@ -34,20 +83,78 @@ fun ThaiToAnkiApp(
     viewModel: ThaiViewModel = viewModel(factory = ThaiViewModel.Factory),
     navController: NavHostController = rememberNavController()
 ) {
+    // State of topBar, set state to false, if current page route is "settings"
+    var topBarState by rememberSaveable { (mutableStateOf(true)) }
+
+    // Subscribe to navBackStackEntry, required to get current route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    // Control TopBar and BottomBar
+    when (navBackStackEntry?.destination?.route) {
+        ThaiToAnkiScreen.Start.name -> {
+            // Show TopBar
+            topBarState = true
+        }
+        ThaiToAnkiScreen.Flashcard.name -> {
+            // Show TopBar
+            topBarState = true
+        }
+        ThaiToAnkiScreen.History.name -> {
+            // Show opBar
+            topBarState = true
+        }
+        ThaiToAnkiScreen.Settings.name -> {
+            // Hide TopBar
+            topBarState = false
+        }
+    }
+
     Scaffold(
         topBar = {
-            // TODO: settings option in top bar
-//            LunchTrayAppBar(
-//                currentScreen = currentScreen,
-//                canNavigateBack = navController.previousBackStackEntry != null,
-//                navigateUp = {
-//                    navController.navigateUp()
-//                }
-//            )
+            ThaiToAnkiAppBar(
+                currentScreen = ThaiToAnkiScreen.Start, //currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = {
+                    navController.navigateUp()
+                },
+                topBarState = topBarState,
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(ThaiToAnkiScreen.Settings.name)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
 
         val uiState by viewModel.uiState.collectAsState()
+
+        // Start the foreground service.
+//        val launcher = rememberLauncherForActivityResult(
+//            contract = ActivityResultContracts.RequestPermission(),
+//            onResult = { isGranted ->
+//                //startFloatingService()
+//            }
+//        )
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+//        }
+
+//        val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+//            viewModel.inputs.onTurnOnNotificationsClicked(granted)
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            pushNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+//        }
+
+
 
         NavHost(
             navController = navController,
@@ -132,6 +239,18 @@ fun ThaiToAnkiApp(
                     onNavigationButtonClick = {
                         //TODO
                     },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.padding_medium)
+                        )
+                )
+            }
+
+            composable(
+                route = ThaiToAnkiScreen.Settings.name
+            ) {
+                SettingsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(

@@ -9,4 +9,9 @@
     <string name="save_locally_button">Save for later</string>
     <string name="cancel">Cancel</string>
     <string name="clear">Clear</string>
+
+    <!-- Notification Service Options -->
+    <string name="notification_channel_general">QuickNote</string>
+    <string name="notification_text">Tap to add quick note.</string>
+    <string name="notification_exit">Exit</string>
 </resources>
