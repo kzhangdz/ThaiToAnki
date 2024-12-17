@@ -1,5 +1,7 @@
 package com.example.thaitoanki.ui.screens
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -39,17 +41,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
-
-// TODO: add animation for flipping card.
-// The flip attribute does not need to be in the view model
-// It should live entirely on this page
+import com.example.thaitoanki.ui.ThaiToAnkiScreen
 
 @Composable
 fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     flashcardInfo: List<Definition>,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
 ){
+    // triggers when leaving the screen
+    BackHandler {
+        onBackPressed()
+        }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -238,7 +243,8 @@ fun FlashcardScreenPreview() {
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
-        loadingStatus = LoadingStatus.Success
+        loadingStatus = LoadingStatus.Success,
+        onBackPressed = {}
     )
 }
 
@@ -250,6 +256,7 @@ fun FlashcardScreenBackPreview() {
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState()),
-        loadingStatus = LoadingStatus.Success
+        loadingStatus = LoadingStatus.Success,
+        onBackPressed = { }
     )
 }

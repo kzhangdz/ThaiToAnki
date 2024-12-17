@@ -50,7 +50,7 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
         _uiState.value = ThaiLanguageUiState()
 
         updateLoadingStatus(LoadingStatus.Success)
-        updateSearchValue("")
+        //updateSearchValue("")
     }
 
 
@@ -80,6 +80,9 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     Functions for querying data
      */
     fun searchDictionary(){
+        // reset all previous results when searching
+        resetView()
+
         updateLoadingStatus(LoadingStatus.Loading)
 
         // TODO: the code might not be properly awaiting for a response to finish before continuing. need to properly await
