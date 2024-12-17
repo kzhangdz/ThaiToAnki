@@ -44,8 +44,9 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     /*
     Setting variables
      */
+    //var hasNotification
 
-    // TODO: function to reset view model, especially after a cancel
+
     fun resetView(){
         _uiState.value = ThaiLanguageUiState()
 

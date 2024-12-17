@@ -1,7 +1,5 @@
 package com.example.thaitoanki.ui.screens
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -13,12 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,19 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
-import com.example.thaitoanki.ui.ThaiToAnkiScreen
 
 @Composable
 fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     flashcardInfo: List<Definition>,
-    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
 ){
-    // triggers when leaving the screen
-    BackHandler {
-        onBackPressed()
-        }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -239,12 +228,11 @@ fun FlashcardScreenButtonGroup(
 @Composable
 fun FlashcardScreenPreview() {
     FlashcardScreen(
+        loadingStatus = LoadingStatus.Success,
         flashcardInfo = listOf(Definition("test", "")),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState()),
-        loadingStatus = LoadingStatus.Success,
-        onBackPressed = {}
+            .verticalScroll(rememberScrollState())
     )
 }
 
@@ -252,11 +240,10 @@ fun FlashcardScreenPreview() {
 @Composable
 fun FlashcardScreenBackPreview() {
     FlashcardScreen(
+        loadingStatus = LoadingStatus.Success,
         flashcardInfo = listOf(Definition("test", "")),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState()),
-        loadingStatus = LoadingStatus.Success,
-        onBackPressed = { }
+            .verticalScroll(rememberScrollState())
     )
 }

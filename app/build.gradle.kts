@@ -62,6 +62,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
 
+    implementation("com.github.alorma.compose-settings:ui-tiles:2.6.0")
+    implementation("com.github.alorma.compose-settings:ui-tiles-extended:2.6.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

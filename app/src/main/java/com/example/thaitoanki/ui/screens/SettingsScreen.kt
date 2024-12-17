@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alorma.compose.settings.ui.SettingsSwitch
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
 
@@ -44,6 +45,8 @@ import com.example.thaitoanki.network.Definition
 // For permanent storage, you would pass the new value to the SharedPreferences or DataStore in ViewModel method.
 // will need to look into loading settings on app load. likely can check during the onCreate()
 
+//https://github.com/alorma/Compose-Settings
+
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -53,7 +56,15 @@ fun SettingsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Text("Settings")
+        SettingsSwitch(
+            state = false, // true or false
+            title = { Text(text = stringResource(R.string.notification_settings)) },
+            subtitle = { Text(text = "Setting subtitle") },
+            modifier = Modifier,
+            enabled = true,
+            //icon = { Icon(...) },
+            onCheckedChange = { newState: Boolean -> },
+        )
     }
 }
 
