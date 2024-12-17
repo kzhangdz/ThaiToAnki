@@ -58,11 +58,18 @@ fun ThaiToAnkiAppBar(
     navigateUp: () -> Unit,
     actions: @Composable() (RowScope.() -> Unit),
     modifier: Modifier = Modifier,
-    topBarState: Boolean
+    //topBarState: Boolean
 ) {
-    if(topBarState) {
+    //if(topBarState) {
         CenterAlignedTopAppBar(
-            title = { Text("") }, //{Text(stringResource(R.string.app_name))},
+            title = {
+                if(currentScreen == ThaiToAnkiScreen.Settings){
+                    Text(currentScreen.name)
+                }
+                else {
+                    Text("")
+                }
+                    }, //{Text(stringResource(R.string.app_name))},
 //        title = { Text(stringResource(currentScreen.title)) },
 //        colors = TopAppBarDefaults.mediumTopAppBarColors(
 //            containerColor = MaterialTheme.colorScheme.primary
@@ -82,7 +89,7 @@ fun ThaiToAnkiAppBar(
 //            }
 //        }
         )
-    }
+    //}
 }
 
 @Composable
@@ -99,6 +106,10 @@ fun ThaiToAnkiApp(
 
     // Subscribe to navBackStackEntry, required to get current route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    val currentScreen = ThaiToAnkiScreen.valueOf(
+        navBackStackEntry?.destination?.route ?: ThaiToAnkiScreen.Start.name
+    )
 
     // Control TopBar and BottomBar
     when (navBackStackEntry?.destination?.route) {
@@ -148,22 +159,25 @@ fun ThaiToAnkiApp(
     Scaffold(
         topBar = {
             ThaiToAnkiAppBar(
-                currentScreen = ThaiToAnkiScreen.Start, //currentScreen,
+                currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = {
                     navController.navigateUp()
                 },
-                topBarState = topBarState,
+                //topBarState = topBarState,
                 actions = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(ThaiToAnkiScreen.Settings.name)
+                    if(currentScreen != ThaiToAnkiScreen.Settings) {
+
+                        IconButton(
+                            onClick = {
+                                navController.navigate(ThaiToAnkiScreen.Settings.name)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
                     }
                 }
             )
