@@ -1,5 +1,10 @@
 package com.example.thaitoanki.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
@@ -20,7 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -112,6 +119,31 @@ fun ThaiToAnkiApp(
             topBarState = false
         }
     }
+
+    /*
+    Setting variables
+     */
+    val context = LocalContext.current
+    var hasNotificationPermission by rememberSaveable() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            mutableStateOf(
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            )
+        } else {
+            mutableStateOf(true)
+        }
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            isGranted ->
+            hasNotificationPermission = isGranted
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -255,6 +287,12 @@ fun ThaiToAnkiApp(
                 route = ThaiToAnkiScreen.Settings.name
             ) {
                 SettingsScreen(
+                    hasNotificationPermission = hasNotificationPermission,
+                    onCheckedChange = {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(

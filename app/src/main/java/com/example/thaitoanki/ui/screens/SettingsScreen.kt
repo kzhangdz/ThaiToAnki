@@ -1,5 +1,6 @@
 package com.example.thaitoanki.ui.screens
 
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -47,23 +48,27 @@ import com.example.thaitoanki.network.Definition
 
 //https://github.com/alorma/Compose-Settings
 
+//https://www.youtube.com/watch?v=vUf0cIRtV8A
+
 @Composable
 fun SettingsScreen(
+    hasNotificationPermission: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
-        //verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
         SettingsSwitch(
-            state = false, // true or false
+            state = hasNotificationPermission, // true or false
             title = { Text(text = stringResource(R.string.notification_settings)) },
-            subtitle = { Text(text = "Setting subtitle") },
-            modifier = Modifier,
+            subtitle = { Text(text = stringResource(R.string.notification_subtitle)) },
+            modifier = Modifier
+                .clickable {  },
             enabled = true,
             //icon = { Icon(...) },
-            onCheckedChange = { newState: Boolean -> },
+            onCheckedChange = onCheckedChange //{ newState: Boolean -> },
         )
     }
 }
@@ -72,6 +77,8 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenPreview() {
     SettingsScreen(
+        hasNotificationPermission = false,
+        onCheckedChange = {},
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(R.dimen.padding_medium))

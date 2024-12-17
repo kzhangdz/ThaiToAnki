@@ -16,4 +16,5 @@
     <string name="notification_exit">Exit</string>
 
     <string name="notification_settings">Notification Permissions</string>
+    <string name="notification_subtitle">May need to restart app to access floating window</string>
 </resources>

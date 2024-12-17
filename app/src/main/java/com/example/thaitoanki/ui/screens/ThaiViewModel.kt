@@ -1,8 +1,12 @@
 package com.example.thaitoanki.ui.screens
 
+import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -44,7 +48,6 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     /*
     Setting variables
      */
-    //var hasNotification
 
 
     fun resetView(){
