@@ -10,6 +10,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -259,6 +261,8 @@ fun ThaiToAnkiApp(
                     },
                     modifier = Modifier
                         .fillMaxSize()
+                        // TODO: adding a scroll here seems to conflict with the drag options, potentially the pager as well
+                        .verticalScroll(rememberScrollState())
 //                        .fillMaxHeight()
 //                        .fillMaxWidth()
                         .padding(
@@ -275,6 +279,7 @@ fun ThaiToAnkiApp(
                     flashcardInfo = uiState.currentDefinitions,
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
 //                        .fillMaxHeight()
 //                        .fillMaxWidth()
                         .padding(
@@ -310,6 +315,7 @@ fun ThaiToAnkiApp(
                     },
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
@@ -335,6 +341,7 @@ fun ThaiToAnkiApp(
                     },
                     modifier = Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
