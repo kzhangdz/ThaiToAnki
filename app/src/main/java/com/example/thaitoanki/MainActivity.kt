@@ -24,8 +24,17 @@ https://medium.com/localazy/floating-windows-on-android-1-jetpack-compose-room-a
  */
 
 /*
+TODO:
 Left off on error message "Background activity launch blocked! "
 which occurs after trying to open the app from the notification bar, on startMainActivity()
+ */
+
+/*
+TODO:
+Next steps list:
+1. connect with Anki
+2. save searched entries in the Room db, display on the History screen
+3. Implement the floating window, which will communicate with the room db, grabbing the latest searched definitions
  */
 
 class MainActivity : ComponentActivity() {
