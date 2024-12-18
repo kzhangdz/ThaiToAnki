@@ -46,8 +46,6 @@ fun SearchScreen(
     onNavigationButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    //var offsetX by remember { mutableStateOf(0f) }
-    //var offsetY by remember { mutableStateOf(0f) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -58,34 +56,6 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1f, false)
-                //.offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        // TODO: dragging is too sensitive. creates multiple pages. switch to a verticalpager?
-                        change.consume()
-
-                        val (x, y) = dragAmount
-                        when {
-                            x > 0 -> { /* right */
-                            }
-
-                            x < 0 -> { /* left */
-                            }
-                        }
-                        when {
-                            y > 0 -> { /* down */
-                            }
-
-                            y < 0 -> {
-                                /* up */
-                                onDragUp()
-                            }
-                        }
-
-                        //offsetX += dragAmount.x
-                        //offsetY += dragAmount.y
-                    }
-                }
         )
         {
             SearchForm(
