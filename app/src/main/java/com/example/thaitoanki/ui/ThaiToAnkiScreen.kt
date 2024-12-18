@@ -148,11 +148,30 @@ fun ThaiToAnkiApp(
         }
     }
 
-    val launcher = rememberLauncherForActivityResult(
+    // TODO: change this to RequestMultiplePermissions and handle overlay permissions as well
+    // notes: rememberLauncherForActivityResult essentially replicates a an intent + onActivityResult
+    val notificationPermissionsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
             isGranted ->
             hasNotificationPermission = isGranted
+        }
+    )
+
+    var hasOverlayPermission by rememberSaveable() {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.SYSTEM_ALERT_WINDOW
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val overlayPermissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            isGranted ->
+            hasOverlayPermission = isGranted
         }
     )
 
@@ -187,14 +206,14 @@ fun ThaiToAnkiApp(
         val uiState by viewModel.uiState.collectAsState()
 
         // Start the foreground service.
-//        val launcher = rememberLauncherForActivityResult(
+//        val notificationPermissionsLauncher = rememberLauncherForActivityResult(
 //            contract = ActivityResultContracts.RequestPermission(),
 //            onResult = { isGranted ->
 //                //startFloatingService()
 //            }
 //        )
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+//            notificationPermissionsLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
 //        }
 
 //        val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -302,10 +321,17 @@ fun ThaiToAnkiApp(
             ) {
                 SettingsScreen(
                     hasNotificationPermission = hasNotificationPermission,
-                    onCheckedChange = {
+                    onNotificationCheckedChange = {
+                        // TODO: add ability to revoke permissions
+
+                        // if the check is switched to true, launch the permission granter
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-                            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            notificationPermissionsLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
+                    },
+                    hasOverlayPermission = hasOverlayPermission,
+                    onOverlayCheckedChange = {
+                        overlayPermissionsLauncher.launch(Manifest.permission.SYSTEM_ALERT_WINDOW)
                     },
                     modifier = Modifier
                         .fillMaxSize()

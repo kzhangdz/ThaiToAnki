@@ -99,8 +99,8 @@ class FloatingService: Service() {
             setAutoCancel(false)
             setOngoing(true)
             setWhen(System.currentTimeMillis())
-            // TODO: change icon
-            setSmallIcon(R.drawable.ic_connection_error)
+            // TODO: change icon to a drawable
+            setSmallIcon(R.mipmap.ic_launcher)
             priority = NotificationManager.IMPORTANCE_DEFAULT //Notification.PRIORITY_DEFAULT
             //setContentIntent(notePendingIntent)
             addAction(
@@ -141,12 +141,25 @@ class FloatingService: Service() {
 
         // Show the floating window for adding a new note.
         if (command == INTENT_COMMAND_NOTE) {
-            Toast.makeText(
-                this,
-                // TODO: add the floating window
-                "Floating window to be added in the next lessons.",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (!drawOverOtherAppsEnabled()) {
+                startMainActivity()
+
+                Toast.makeText(
+                    this,
+                    "Please enable overlay permissions from the Settings",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                //startPermissionActivity()
+            }
+            else {
+                Toast.makeText(
+                    this,
+                    // TODO: add the floating window
+                    "Floating window to be added in the next lessons.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         return START_STICKY
