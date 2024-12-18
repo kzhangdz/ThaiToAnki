@@ -23,6 +23,11 @@ TODO: implement floating window
 https://medium.com/localazy/floating-windows-on-android-1-jetpack-compose-room-a4f377c86dd5
  */
 
+/*
+Left off on error message "Background activity launch blocked! "
+which occurs after trying to open the app from the notification bar, on startMainActivity()
+ */
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
