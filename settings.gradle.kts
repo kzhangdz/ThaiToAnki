@@ -1,3 +1,5 @@
+import java.net.URI
+
 pluginManagement {
     repositories {
         google {
@@ -16,6 +18,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        //maven { setUrl ("https://www.jitpack.io") }
+    }
+}
+
+sourceControl {
+    gitRepository(URI("https://github.com/ankidroid/Anki-Android.git")) {
+        producesModule("com.github.ankidroid:Anki-Android")
     }
 }
 
