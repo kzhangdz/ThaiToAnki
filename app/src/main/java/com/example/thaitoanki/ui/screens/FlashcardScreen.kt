@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -258,16 +260,30 @@ fun FlashcardBack(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Text(
-            flashcardInfo[0].partOfSpeech
-        )
-        Text(
-            flashcardInfo[0].definition
-        )
-        //TODO: dropdown menu for sentences
-        Text(
-            flashcardInfo[0].sentences[0].baseWord
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                painter = painterResource(R.drawable.arrow_left_24px),
+                contentDescription = "Previous definition"
+            )
+            Column() {
+                Text(
+                    flashcardInfo[0].partOfSpeech
+                )
+                Text(
+                    flashcardInfo[0].definition
+                )
+                //TODO: dropdown menu for sentences
+                Text(
+                    flashcardInfo[0].sentences[0].baseWord
+                )
+            }
+            Icon(
+                painter = painterResource(R.drawable.arrow_right_24px),
+                contentDescription = "Next definition"
+            )
+        }
     }
 }
 
@@ -323,7 +339,10 @@ fun FlashcardScreenPreview() {
 fun FlashcardScreenBackPreview() {
     FlashcardScreen(
         loadingStatus = LoadingStatus.Success,
-        flashcardInfo = listOf(Definition("test", "")),
+        flashcardInfo = listOf(
+            Definition("back", "back"),
+            Definition("back2", "back2")
+        ),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
