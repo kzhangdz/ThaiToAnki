@@ -51,6 +51,10 @@ import com.example.thaitoanki.network.Definition
 fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     flashcardInfo: List<Definition>,
+    currentDefinitionIndex: Int,
+    onFlashcardClick: () -> Unit,
+    onLeftButtonClick: () -> Unit,
+    onRightButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ){
 
@@ -74,6 +78,10 @@ fun FlashcardScreen(
                 // TODO: Carousel of flashcards
                 Flashcard(
                     flashcardInfo = flashcardInfo,
+                    currentDefinitionIndex = currentDefinitionIndex,
+                    onFlashcardClick = onFlashcardClick,
+                    onLeftButtonClick = onLeftButtonClick,
+                    onRightButtonClick = onRightButtonClick,
                     modifier = Modifier
                         .height(300.dp)
                         .fillMaxWidth()
@@ -92,6 +100,10 @@ fun FlashcardScreen(
 @Composable
 fun Flashcard(
     flashcardInfo: List<Definition>,
+    currentDefinitionIndex: Int,
+    onFlashcardClick: () -> Unit,
+    onLeftButtonClick: () -> Unit,
+    onRightButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -124,15 +136,46 @@ fun Flashcard(
                 .height(300.dp)
 
         ) {
+            // push action row to bottom
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    isRotated = !isRotated
-                }
+            // TODO: refactor FlashcardActions into composable
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_flip),
-                    contentDescription = "Flip flashcard"
+                IconButton(
+                    onClick = {
+                        isRotated = !isRotated
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_flip),
+                        contentDescription = "Flip flashcard"
+                    )
+                }
+                IconButton(
+                    onClick = onLeftButtonClick
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_left_24px),
+                        contentDescription = "Previous definition"
+                    )
+                }
+                IconButton(
+                    onClick = onRightButtonClick
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_right_24px),
+                        contentDescription = "Next definition"
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                // TODO: tap to jump to page?
+                Text(
+                    "${currentDefinitionIndex + 1} of ${flashcardInfo.size}",
+                    modifier = Modifier
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.padding_small)
+                        )
                 )
             }
         }
@@ -142,9 +185,10 @@ fun Flashcard(
                     rotationY = rotation
                     cameraDistance = 8 * density
                 }
-//            .clickable {
-//                isRotated = !isRotated
-//            }
+                .clickable {
+                    //isRotated = !isRotated
+                    onFlashcardClick()
+                }
         ) {
             ElevatedCard(
 //                colors = CardDefaults.cardColors(
@@ -169,6 +213,7 @@ fun Flashcard(
                     if (isRotated) {
                         FlashcardBack(
                             flashcardInfo,
+                            currentDefinitionIndex,
                             modifier = Modifier
                                 .graphicsLayer {
                                     alpha = animateBack
@@ -178,6 +223,7 @@ fun Flashcard(
                     } else {
                         FlashcardFront(
                             flashcardInfo,
+                            currentDefinitionIndex,
                             modifier = Modifier
                                 .graphicsLayer {
                                     alpha = animateFront
@@ -235,15 +281,18 @@ fun Flashcard(
 @Composable
 fun FlashcardFront(
     flashcardInfo: List<Definition>,
+    currentDefinitionIndex: Int,
     modifier: Modifier = Modifier
 ){
+    val currentFlashcard = flashcardInfo[currentDefinitionIndex]
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
         ) {
         Text(
-            flashcardInfo[0].baseWord,
+            currentFlashcard.baseWord,
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp
         )
@@ -253,8 +302,11 @@ fun FlashcardFront(
 @Composable
 fun FlashcardBack(
     flashcardInfo: List<Definition>,
+    currentDefinitionIndex: Int,
     modifier: Modifier = Modifier
 ){
+    val currentFlashcard = flashcardInfo[currentDefinitionIndex]
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -263,26 +315,20 @@ fun FlashcardBack(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ){
-            Icon(
-                painter = painterResource(R.drawable.arrow_left_24px),
-                contentDescription = "Previous definition"
-            )
             Column() {
                 Text(
-                    flashcardInfo[0].partOfSpeech
+                    currentFlashcard.partOfSpeech
                 )
                 Text(
-                    flashcardInfo[0].definition
+                    currentFlashcard.definition
                 )
                 //TODO: dropdown menu for sentences
-                Text(
-                    flashcardInfo[0].sentences[0].baseWord
-                )
+                if(currentFlashcard.sentences.isNotEmpty()) {
+                    Text(
+                        currentFlashcard.sentences[0].baseWord
+                    )
+                }
             }
-            Icon(
-                painter = painterResource(R.drawable.arrow_right_24px),
-                contentDescription = "Next definition"
-            )
         }
     }
 }
@@ -330,7 +376,11 @@ fun FlashcardScreenPreview() {
         flashcardInfo = listOf(Definition("test", "")),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        currentDefinitionIndex = 0,
+        onFlashcardClick = {},
+        onLeftButtonClick = {},
+        onRightButtonClick = {}
     )
 }
 
@@ -345,6 +395,10 @@ fun FlashcardScreenBackPreview() {
         ),
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        currentDefinitionIndex = 0,
+        onFlashcardClick = {},
+        onLeftButtonClick = {},
+        onRightButtonClick = {}
     )
 }

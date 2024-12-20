@@ -80,6 +80,30 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
         }
     }
 
+    fun increaseCurrentDefinitionIndex(){
+        val maxIndex = _uiState.value.currentDefinitions.size - 1
+        var updatedIndex = _uiState.value.currentDefinitionIndex + 1
+        if(updatedIndex > maxIndex){
+            updatedIndex = 0
+        }
+        _uiState.update {
+            currentState ->
+            currentState.copy(currentDefinitionIndex = updatedIndex)
+        }
+    }
+
+    fun decreaseCurrentDefinitionIndex(){
+        var updatedIndex = _uiState.value.currentDefinitionIndex - 1
+        if(updatedIndex < 0){
+            val maxIndex = _uiState.value.currentDefinitions.size - 1
+            updatedIndex = maxIndex
+        }
+        _uiState.update {
+            currentState ->
+            currentState.copy(currentDefinitionIndex = updatedIndex)
+        }
+    }
+
     /*
     Functions for querying data
      */
