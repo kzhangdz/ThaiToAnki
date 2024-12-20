@@ -277,6 +277,19 @@ fun ThaiToAnkiApp(
                 FlashcardScreen(
                     loadingStatus = viewModel.loadingStatus,
                     flashcardInfo = uiState.currentDefinitions,
+                    currentDefinitionIndex = uiState.currentDefinitionIndex,
+                    onFlashcardClick = {
+                        // go to the next definition
+                        viewModel.increaseCurrentDefinitionIndex()
+                    },
+                    onLeftButtonClick = {
+                        // go to the previous definition
+                        viewModel.decreaseCurrentDefinitionIndex()
+                    },
+                    onRightButtonClick = {
+                        // go to the next definition
+                        viewModel.increaseCurrentDefinitionIndex()
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
