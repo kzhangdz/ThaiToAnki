@@ -290,6 +290,9 @@ fun ThaiToAnkiApp(
                         // go to the next definition
                         viewModel.increaseCurrentDefinitionIndex()
                     },
+                    errorRetryAction = {
+                        viewModel.searchDictionary()
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
