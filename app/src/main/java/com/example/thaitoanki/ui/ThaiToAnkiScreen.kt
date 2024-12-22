@@ -37,6 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.thaitoanki.R
+import com.example.thaitoanki.data.AnkiDroidHelper
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
@@ -134,9 +135,14 @@ fun ThaiToAnkiApp(
     }
 
     /*
-    Setting variables
+    AnkiDroid Access
      */
     val context = LocalContext.current
+    val ankiDroidHelper = AnkiDroidHelper(context)
+
+    /*
+    Setting variables
+     */
     var hasNotificationPermission by rememberSaveable() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
             mutableStateOf(
@@ -177,6 +183,18 @@ fun ThaiToAnkiApp(
         }
     )
 
+    var hasReadWritePermission by rememberSaveable() {
+        mutableStateOf(!ankiDroidHelper.shouldRequestPermission())
+    }
+
+    val readWritePermissionsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            isGranted ->
+            hasReadWritePermission = isGranted
+        }
+    )
+
     Scaffold(
         topBar = {
             ThaiToAnkiAppBar(
@@ -206,26 +224,6 @@ fun ThaiToAnkiApp(
     ) { innerPadding ->
 
         val uiState by viewModel.uiState.collectAsState()
-
-        // Start the foreground service.
-//        val notificationPermissionsLauncher = rememberLauncherForActivityResult(
-//            contract = ActivityResultContracts.RequestPermission(),
-//            onResult = { isGranted ->
-//                //startFloatingService()
-//            }
-//        )
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            notificationPermissionsLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-//        }
-
-//        val pushNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-//            viewModel.inputs.onTurnOnNotificationsClicked(granted)
-//        }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            pushNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-//        }
-
-
 
         NavHost(
             navController = navController,
@@ -289,6 +287,13 @@ fun ThaiToAnkiApp(
                     onRightButtonClick = {
                         // go to the next definition
                         viewModel.increaseCurrentDefinitionIndex()
+                    },
+                    onSaveFlashcardButtonClick = {
+                        if(!hasReadWritePermission){
+                            // TODO: request read/write permission
+                            // am I supposed to do that with a launcher, like above? Is there a way to put that inside the Helper?
+                            readWritePermissionsLauncher.launch()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxSize()

@@ -18,15 +18,15 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        //maven { setUrl ("https://www.jitpack.io") }
+        maven { setUrl ("https://www.jitpack.io") }
     }
 }
 
-sourceControl {
-    gitRepository(URI("https://github.com/ankidroid/Anki-Android.git")) {
-        producesModule("com.github.ankidroid:Anki-Android")
-    }
-}
+//sourceControl {
+//    gitRepository(URI("https://github.com/ankidroid/Anki-Android.git")) {
+//        producesModule("com.github.ankidroid:Anki-Android")
+//    }
+//}
 
 rootProject.name = "ThaiToAnki"
 include(":app")

@@ -66,8 +66,8 @@ dependencies {
     implementation("com.github.alorma.compose-settings:ui-tiles-extended:2.6.0")
 
     // Anki
-    //implementation("com.github.ankidroid:Anki-Android:v2.18alpha6")
-    implementation("com.github.ankidroid:Anki-Android")
+    implementation("com.github.ankidroid:Anki-Android:v2.18alpha6")
+    //implementation("com.github.ankidroid:Anki-Android")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

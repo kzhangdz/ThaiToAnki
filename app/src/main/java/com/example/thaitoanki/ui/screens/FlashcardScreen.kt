@@ -55,6 +55,7 @@ fun FlashcardScreen(
     onFlashcardClick: () -> Unit,
     onLeftButtonClick: () -> Unit,
     onRightButtonClick: () -> Unit,
+    onSaveFlashcardButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ){
 
@@ -91,7 +92,7 @@ fun FlashcardScreen(
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
             )
             FlashcardScreenButtonGroup(
-
+                onSaveFlashcardButtonClick = onSaveFlashcardButtonClick
             )
         }
     }
@@ -336,13 +337,14 @@ fun FlashcardBack(
 // TODO: button to merge flashcards into one
 @Composable
 fun FlashcardScreenButtonGroup(
+    onSaveFlashcardButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
         modifier = modifier
     ){
         Button(
-            onClick = { },
+            onClick = onSaveFlashcardButtonClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary
             ),
@@ -380,7 +382,8 @@ fun FlashcardScreenPreview() {
         currentDefinitionIndex = 0,
         onFlashcardClick = {},
         onLeftButtonClick = {},
-        onRightButtonClick = {}
+        onRightButtonClick = {},
+        onSaveFlashcardButtonClick = {}
     )
 }
 
@@ -399,6 +402,7 @@ fun FlashcardScreenBackPreview() {
         currentDefinitionIndex = 0,
         onFlashcardClick = {},
         onLeftButtonClick = {},
-        onRightButtonClick = {}
+        onRightButtonClick = {},
+        onSaveFlashcardButtonClick = {}
     )
 }
