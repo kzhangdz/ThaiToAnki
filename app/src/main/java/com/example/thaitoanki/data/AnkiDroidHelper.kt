@@ -4,12 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.thaitoanki.network.Definition
 import com.ichi2.anki.api.AddContentApi
 import com.ichi2.anki.api.NoteInfo
 import java.util.LinkedList
+
 
 //interface ThaiLanguageRepository {
 //    suspend fun searchDictionary(word: String): Document
@@ -29,6 +32,7 @@ class AnkiDroidHelper(context: Context) {
     val api: AddContentApi
     private val mContext: Context = context.applicationContext
     val READ_WRITE_PERMISSION = AddContentApi.READ_WRITE_PERMISSION
+    val LOG_TAG = "AnkiDroidHelper"
 
     init {
         api = AddContentApi(mContext)
@@ -91,7 +95,7 @@ class AnkiDroidHelper(context: Context) {
         // Build a list of the duplicate keys (first fields) and find all notes that have a match with each key
         val keys: MutableList<String> = ArrayList(fields.size)
         for (f in fields) {
-            keys.add(f[0])
+            f[0]?.let { keys.add(it) }
         }
         val duplicateNotes: SparseArray<MutableList<NoteInfo?>>? = api.findDuplicateNotes(modelId, keys)
         // Do some sanity checks
@@ -166,7 +170,7 @@ class AnkiDroidHelper(context: Context) {
         // Look for deckName in the deck list
         var did = getDeckId(deckName)
         if (did != null) {
-            // If the deck was found then return it's id
+            // If the deck was found then return its id
             return did
         } else {
             // Otherwise try to check if we have a reference to a deck that was renamed and return that
@@ -195,6 +199,109 @@ class AnkiDroidHelper(context: Context) {
             }
         }
         return null
+    }
+
+//    fun addCardsToAnkiDroid(deckName: String, modelName: String, modelFields: Array<String>, data: List<Map<String, String>>){
+//        var deckId = findDeckIdByName(deckName)
+//        if(deckId == null) {
+//            deckId = api.addNewDeck(deckName)
+//            deckId?.let { storeDeckReference(deckName, it) }
+//        }
+//
+//        var modelId = findModelIdByName(
+//            modelName,
+//            numFields = modelFields.size
+//        )
+//        if (modelId == null){
+//            modelId = api.addNewCustomModel(
+//                modelName,
+//                fields = modelFields,
+//                cards = TODO(),
+//                qfmt = TODO(),
+//                afmt = TODO(),
+//                css = TODO(),
+//                did = TODO(),
+//                sortf = TODO()
+//            )
+//        }
+//
+//        if (deckId == null || modelId == null){
+//            return
+//        }
+//
+//    }
+
+    fun createDeck(deckName: String): Long?{
+        val deckId = api.addNewDeck(deckName)
+        deckId?.let { storeDeckReference(deckName, it) }
+        return deckId
+    }
+
+    fun createModel(modelName: String, deckId: Long): Long?{
+        val modelId = api.addNewCustomModel(modelName, AnkiDroidConfig.FIELDS,
+            AnkiDroidConfig.CARD_NAMES, AnkiDroidConfig.QFMT, AnkiDroidConfig.AFMT, AnkiDroidConfig.CSS, deckId, null);
+        modelId?.let {storeModelReference(modelName, it)}
+        return modelId
+    }
+
+    fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>){
+        val fieldNames = api.getFieldList(modelId)
+        if(fieldNames == null){
+            // api error
+            Log.d(LOG_TAG, "Field names null")
+            return
+        }
+
+        // Build list of fields and tags
+        val fields = LinkedList<Array<String>>()
+        val tags = LinkedList<Set<String?>?>()
+        val finalTags: MutableList<Set<String>?> = mutableListOf()
+        for (fieldMap in data) {
+            // Build a field map accounting for the fact that the user could have changed the fields in the model
+            val flds = Array<String>(fieldNames.size){""} //arrayOfNulls<String>(fieldNames.size)
+            for (i in flds.indices) {
+                // Fill up the fields one-by-one until either all fields are filled or we run out of fields to send
+                if (i < AnkiDroidConfig.FIELDS.size) {
+                    flds[i] = fieldMap[AnkiDroidConfig.FIELDS.get(i)].toString()
+                }
+            }
+            tags.add(AnkiDroidConfig.TAGS)
+            fields.add(flds)
+
+            finalTags.add(AnkiDroidConfig.TAGS)
+        }
+
+        val finalFields = fields.toList()
+        //val finalTags = fields.toList()
+
+        // Remove any duplicates from the LinkedLists and then add over the API
+        removeDuplicates(fields, tags, modelId)
+        val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
+        if (added != 0) {
+            // successful
+            Log.d(LOG_TAG, "successful insertion")
+        } else {
+            // API indicates that a 0 return value is an error
+            Log.d(LOG_TAG, "failed insertion")
+        }
+    }
+
+    fun definitionToMap(definition: Definition): Map<String, String>{
+        val map: Map<String, String> = mapOf(
+            AnkiDroidConfig.FIELDS[0] to definition.baseWord,
+            AnkiDroidConfig.FIELDS[1] to definition.definition
+        )
+
+        return map
+    }
+
+    fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>>{
+        val mapList: MutableList<Map<String, String>> = mutableListOf()
+        for (definition in definitions){
+            val map = definitionToMap(definition)
+            mapList.add(map)
+        }
+        return mapList
     }
 
     companion object {

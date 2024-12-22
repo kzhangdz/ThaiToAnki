@@ -24,4 +24,7 @@ class DefaultAppContainer : AppContainer {
     override val thaiLanguageRepository: ThaiLanguageRepository by lazy {
         NetworkThaiLanguageRepository(retrofitService)
     }
+
+    // TODO: add the ankiDroidHelper here?
+    // a new data source for thai language data would probably be another Container
 }
