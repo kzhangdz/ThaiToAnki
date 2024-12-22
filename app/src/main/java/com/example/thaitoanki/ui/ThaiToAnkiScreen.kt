@@ -43,7 +43,6 @@ import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
 import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
-
 import com.example.thaitoanki.ui.screens.SettingsScreen
 
 enum class ThaiToAnkiScreen(){
@@ -289,11 +288,14 @@ fun ThaiToAnkiApp(
                         viewModel.increaseCurrentDefinitionIndex()
                     },
                     onSaveFlashcardButtonClick = {
-                        if(!hasReadWritePermission){
+                        if (!hasReadWritePermission) {
                             // TODO: request read/write permission
                             // am I supposed to do that with a launcher, like above? Is there a way to put that inside the Helper?
-                            readWritePermissionsLauncher.launch()
+                            readWritePermissionsLauncher.launch(ankiDroidHelper.READ_WRITE_PERMISSION)
                         }
+                    },
+                    errorRetryAction = {
+                        viewModel.searchDictionary()
                     },
                     modifier = Modifier
                         .fillMaxSize()

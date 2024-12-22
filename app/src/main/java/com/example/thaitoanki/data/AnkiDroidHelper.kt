@@ -28,6 +28,7 @@ import java.util.LinkedList
 class AnkiDroidHelper(context: Context) {
     val api: AddContentApi
     private val mContext: Context = context.applicationContext
+    val READ_WRITE_PERMISSION = AddContentApi.READ_WRITE_PERMISSION
 
     init {
         api = AddContentApi(mContext)

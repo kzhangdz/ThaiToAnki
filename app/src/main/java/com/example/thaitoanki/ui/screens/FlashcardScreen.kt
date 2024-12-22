@@ -56,6 +56,7 @@ fun FlashcardScreen(
     onLeftButtonClick: () -> Unit,
     onRightButtonClick: () -> Unit,
     onSaveFlashcardButtonClick: () -> Unit,
+    errorRetryAction: () -> Unit,
     modifier: Modifier = Modifier,
 ){
 
@@ -68,8 +69,9 @@ fun FlashcardScreen(
             LoadingScreen()
         }
         else if(loadingStatus == LoadingStatus.Error){
-            // TODO: change to error screen
-            Text("Temp")
+            ErrorScreen(
+                retryAction = errorRetryAction
+            )
         }
         else{
             if(flashcardInfo.isEmpty()){
@@ -383,7 +385,8 @@ fun FlashcardScreenPreview() {
         onFlashcardClick = {},
         onLeftButtonClick = {},
         onRightButtonClick = {},
-        onSaveFlashcardButtonClick = {}
+        onSaveFlashcardButtonClick = {},
+        errorRetryAction = {}
     )
 }
 
@@ -403,6 +406,7 @@ fun FlashcardScreenBackPreview() {
         onFlashcardClick = {},
         onLeftButtonClick = {},
         onRightButtonClick = {},
-        onSaveFlashcardButtonClick = {}
+        onSaveFlashcardButtonClick = {},
+        errorRetryAction = {}
     )
 }
