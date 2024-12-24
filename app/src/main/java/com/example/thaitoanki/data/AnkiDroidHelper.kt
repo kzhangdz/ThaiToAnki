@@ -245,6 +245,9 @@ class AnkiDroidHelper(context: Context) {
     }
 
     fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>){
+        // TODO: add a code output
+        // TODO: look into YomiChan's data output format
+
         val fieldNames = api.getFieldList(modelId)
         if(fieldNames == null){
             // api error
@@ -302,6 +305,34 @@ class AnkiDroidHelper(context: Context) {
             mapList.add(map)
         }
         return mapList
+    }
+
+    /*
+    TODO: function to convert definitions to HTML string in this format:
+    <div style="text-align: left;">
+       <ol>
+          <li>ごう‐かい【豪快】ガウクヮイ〘名・形動〙<br>規模が大きく、気持ちがよいほど力強いこと。「─な上手投げが決まる」「─に笑う」  ‐さ<br></li>
+          <li>ごう かい （がうくわい） [0]【豪快】<br>（形動）〔文〕ナリ<br>堂々として力にあふれ，気持ちのよいさま。「―な投げわざ」「―に笑う」<br>〔派生〕― さ（名）</li>
+          <li>ごうかい【豪快】ガウクワイ[0]<br>―な／―に スケールが大きくて、ほかに比べるものが無いという印象を与える様子。<br>――さ[0]<br></li>
+          <li>ごう‐かい【豪快】ガウクワイ<br>堂々としていて、見て気持よいこと。「―な上手投げ」「―に飲む」<br></li>
+          <li>ごうかい【豪快】<br>〘adj-na・n〙<br>hearty; exciting; stirring; lively; heroic; largehearted; splendid.</li>
+          <li>ごうかい２【豪快】 [ローマ字](gōkai)<br>〜な stirring; splendid; glorious; thrilling; tremendous; magnificent; heroic 《endeavors》; big-hearted; animating; hearty 《laughter》.<br>►豪快な人物　a big-hearted person<br>・豪快なホームランを飛ばす　hit an enthralling [a glorious, a thrilling] home run<br>・豪快な取り口で相手を土俵にたたきつける　bring one's opponent down on to the ring with a ┏magnificent [heroic] attack.<br>豪快に　in a ┏stirring [thrilling] way; in an enthralling way; splendidly; gloriously; tremendously; magnificently; heroically; 《laugh》 heartily.<br>►豪快に笑い飛ばす　dismiss 《sb's fears》 with a hearty roar of laughter<br>・豪快に大杯を飲み干す　drink off a big glass heroically [without turning a hair].<br></li>
+       </ol>
+    </div>
+     */
+    fun mergeDefinitions(definitions: List<Definition>): List<Definition>{
+        // TODO
+        val definitionsHTMLString = convertDefinitionsToHTMLString(definitions)
+
+        return definitions
+    }
+
+    fun convertDefinitionsToHTMLString(definitions: List<Definition>): String{
+        for (definition in definitions){
+
+        }
+
+        return ""
     }
 
     companion object {

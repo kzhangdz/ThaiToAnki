@@ -55,6 +55,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.material:material:1.8.0-alpha04")
 
+    implementation("org.lucee:commons-io:2.4.0")
+
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("org.jsoup:jsoup:1.10.3")

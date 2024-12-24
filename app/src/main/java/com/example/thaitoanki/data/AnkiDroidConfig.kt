@@ -41,16 +41,105 @@ internal object AnkiDroidConfig {
 //            ".small { font-size: 18px;}\n"
 
     // Template for the question of each card
-    const val QFMT1: String = "<div class=big>{{Word}}</div>" //"<div class=big>{{Expression}}</div><br>{{Grammar}}"
+    const val QFMT1: String = """
+        <div class="note front {{Tags}}">
+          <div class="body center">
+            <div class="flex flex-col symbol">{{Word}}
+                <a class="replay-button soundLink" href="#" title="Ankiweb replay button">
+                <svg class="playImage" viewBox="0 0 64 64" version="1.1">
+                <circle cx="32" cy="32" r="29"></circle>
+                    <path d="M56.502,32.301l-37.502,20.101l0.329,-40.804l37.173,20.703Z"></path>
+              </svg>
+            </a>
+        </div>
+                <a class="hint" href="#">{{hint:Pronunciation}}</a>
+                <a class="hint" href="#">{{hint:Romanization}}</a>
+          </div>
+        </div>
+    """
+
+
+        //"<div class=big>{{Word}}</div>" //"<div class=big>{{Expression}}</div><br>{{Grammar}}"
     //const val QFMT2: String = "{{Meaning}}" //"{{Meaning}}<br><br><div class=small>{{Grammar}}<br><br>({{SentenceMeaning}})</div>"
     val QFMT: Array<String> = arrayOf(QFMT1) //arrayOf(QFMT1, QFMT2)
 
     // Template for the answer (use identical for both sides)
     const val AFMT1: String = """
+        <div class="note back {{Tags}}">
+            {{FrontSide}}
+        
+            <hr id="answer">
+        
+            <!-- Anything in the content section is what you will send from ThaiToAnki -->
+            <div class="body">
+                <div id="definition-section" class="text-block">
+                    <div class="content flex">{{PartOfSpeech}} {{Definition}}</div>
+                </div>
+                <div id="synonym-section" class="text-block">
+                    <div class="subtitle">Synonyms</div>
+                    <!-- send the data over as pills -->
+                    <div class="content">
+                    {{Synonyms}}
+                    </div>
+                </div>
+                <div id="related-words-section" class="text-block">
+                    <div class="subtitle">Related Words</div>
+                    <div class="content">
+                    {{RelatedWords}}
+                    </div>
+                </div>
+                <div id="example-section" class="text-block">
+                    <div class="subtitle">Example</div>
+                    <div class="content">
+                    {{Examples}}
+                    </div>
+                </div>
+                <div id="sentence-section" class="text-block">
+                    <div class="subtitle">Sentence</div>
+                    <div class="content">
+                    {{Sentences}}
+                    </div>
+                </div>
+                    <div class="text-block">
+                        <div class="subtitle">Reference</div>
+                        <a href="http://thai-language.com/id/{{WordId}}" target="_blank">thai-language.com</a>
+                        <br>
+                        <a href="https://en.wiktionary.org/wiki/{{Word}}" target="_blank">Wiktionary</a>
+                    </div>
+                </div>
+        </div>
+
+        <script>
+        // generate the list of section ids
+        var section_elements = document.querySelectorAll('[id*=-section]');
+        var sections = [];
+        for (const element of section_elements){
+            sections.push(element.id)
+        }
+        
+        //clear sections that have no data
+        for (const section of sections){
+            var element = document.getElementById(section)
+            var content = element.querySelector(".content")
+        
+            if(content.innerHTML.trim() == ""){
+                element.remove()
+            }
+        }
+        
+        </script>
+
+    """
+
+
+
+    /*
+        """
         <div class=big>{{Word}}</div>
         <br>
         {{Meaning}}
     """
+     */
 
 //        "<div class=big>{{furigana:Furigana}}</div><br>{{Meaning}}\n" +
 //            "<br><br>\n" +
