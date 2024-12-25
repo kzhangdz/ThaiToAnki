@@ -9,6 +9,7 @@ import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.services.indexesOf
 import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
 import com.ichi2.anki.api.AddContentApi
@@ -305,12 +306,21 @@ class AnkiDroidHelper(context: Context) {
     }
 
     fun definitionToMap(definition: Definition): Map<String, String>{
+        // TODO: format synonym, relatedwords, etc.
+        val synonyms = formatSynonymsToHTML(definition.synonyms)
+        val examples = formatExamplesToHTML(definition.examples, definition.baseWord)
+
+        Log.i(LOG_TAG, "Examples: $examples")
+
         val map: Map<String, String> = mapOf(
             AnkiDroidConfig.FIELDS[0] to definition.baseWord,
             AnkiDroidConfig.FIELDS[1] to definition.pronunciation,
             AnkiDroidConfig.FIELDS[2] to definition.romanization,
             AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
-            AnkiDroidConfig.FIELDS[4] to definition.definition
+            AnkiDroidConfig.FIELDS[4] to definition.definition,
+            AnkiDroidConfig.FIELDS[5] to synonyms,
+
+            AnkiDroidConfig.FIELDS[7] to examples
         )
 
         return map
@@ -323,6 +333,55 @@ class AnkiDroidHelper(context: Context) {
             mapList.add(map)
         }
         return mapList
+    }
+
+    fun formatSynonymsToHTML(synonyms: List<Definition>): String{
+        var HTMLString = ""
+        for (synonym in synonyms){
+            val currentHTMLString = """<span class="pill">${synonym.baseWord} (${synonym.definition})</span>"""
+            HTMLString += currentHTMLString
+        }
+        return HTMLString
+    }
+
+    // TODO: potential error where every string that matches the word gets highlighted.
+    // could happen easily with งง, i.e. วงงง
+    //
+    fun formatExamplesToHTML(examples: List<Definition>, word: String): String{
+        var HTMLString = ""
+        for(example in examples){
+            //val currentHTMLString = """<span class="pill">${synonym.baseWord} (${synonym.definition})</span>"""
+            var currentHTMLString = "" //example.baseWord
+
+            //val indexes = example.baseWord.indexesOf(word)
+
+            //var j = 0
+            for(i in 0.. example.baseWord.length - word.length){
+
+                val windowEndIndex = i + word.length - 1
+                val currentWindow: String = example.baseWord.substring(i, windowEndIndex)
+
+                if (currentWindow == word){
+                    currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
+                }
+                else{
+                    // otherwise, add the current character
+                    currentHTMLString += currentWindow[i]
+                }
+            }
+
+//            for(indexPair in indexes){
+//                example.baseWord.substring(indexPair.first, indexPair.second)
+//            }
+
+            currentHTMLString += "- ${example.definition}"
+
+            HTMLString += currentHTMLString
+
+            // TODO: for now, only use the first example
+            break
+        }
+        return HTMLString
     }
 
     /*

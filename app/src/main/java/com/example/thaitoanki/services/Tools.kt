@@ -102,3 +102,14 @@ fun Context.readArrayFromAsset(fileName : String) : Array<String>{
 
     return values.toTypedArray()
 }
+
+// TODO: check if this does not result in overlaps
+// write a unit test for it
+public fun String?.indexesOf(substr: String, ignoreCase: Boolean = true): List<Pair<Int,Int>> {
+    return this?.let {
+        val regex = if (ignoreCase) Regex(substr, RegexOption.IGNORE_CASE) else Regex(substr)
+        regex.findAll(this).map {
+            Pair(it.range.start, it.range.last)
+        }.toList()
+    } ?: emptyList()
+}
