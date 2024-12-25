@@ -163,16 +163,17 @@ class ThaiLanguageData(
 
         // iterate through the sections to build the Definition object
         var definition = ""
+        var synonyms: List<Definition> = listOf()
         var sentences: List<Definition> = listOf()
+        // get the specific dictionary information from each list of <tr>
         sections.forEach{ section ->
             when (section.key){
                 // TODO: more flexible keys, like synonym vs. synonyms
                 "definition" -> {
-                    // TODO: get the values back
                     definition = parseDefinitionFromSection(section.value)
                 }
                 "synonym", "synonyms" -> {
-                    parseSynonymsFromSection(section.value)
+                    synonyms = parseSynonymsFromSection(section.value)
                 }
                 "example", "examples" -> {
 
@@ -188,6 +189,7 @@ class ThaiLanguageData(
             baseWord = alternateWord,
             definition = definition,
             partOfSpeech = partOfSpeech,
+            synonyms = synonyms,
             sentences = sentences
         )
 
@@ -260,15 +262,39 @@ class ThaiLanguageData(
 
     private fun parseSynonymsFromSection(definitionSection: List<Element>): List<Definition>{
         try{
+            val synonyms: MutableList<Definition> = mutableListOf()
+
             for (element in definitionSection){
-
                 //TODO: parsing
+                val td = element.select("td")
 
+                // last td is definition
+                val defTd = td[td.lastIndex]
+                val def = defTd.text()
+
+                // second to last td is romanization
+                val romTd = td[td.lastIndex-1]
+                val rom = romTd.html()
+
+                // 3rd to last td is the synonym
+                val synTd = td[td.lastIndex-2]
+                val syn = synTd.text()
+
+                val synonym = Definition(
+                    baseWord = syn,
+                    definition = def,
+                    romanization = rom
+                    )
+
+                Log.d(LOG_TAG, synonym.toString())
+
+                synonyms.add(synonym)
             }
 
-            return emptyList()
+            return synonyms
         }
         catch(e: Exception){
+            Log.e(LOG_TAG, e.toString())
             return emptyList()
         }
 
