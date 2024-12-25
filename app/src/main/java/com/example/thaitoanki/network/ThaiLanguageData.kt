@@ -164,6 +164,7 @@ class ThaiLanguageData(
         // iterate through the sections to build the Definition object
         var definition = ""
         var synonyms: List<Definition> = listOf()
+        var examples: List<Definition> = listOf()
         var sentences: List<Definition> = listOf()
         // get the specific dictionary information from each list of <tr>
         sections.forEach{ section ->
@@ -176,7 +177,7 @@ class ThaiLanguageData(
                     synonyms = parseSynonymsFromSection(section.value)
                 }
                 "example", "examples" -> {
-
+                    examples = parseSynonymsFromSection(section.value)
                 }
                 "sample sentence", "sample sentences" -> {
                     sentences = parseSentencesFromSection(section.value)
@@ -190,6 +191,7 @@ class ThaiLanguageData(
             definition = definition,
             partOfSpeech = partOfSpeech,
             synonyms = synonyms,
+            examples = examples,
             sentences = sentences
         )
 
@@ -260,6 +262,7 @@ class ThaiLanguageData(
         }
     }
 
+    // can be used for examples as well
     private fun parseSynonymsFromSection(definitionSection: List<Element>): List<Definition>{
         try{
             val synonyms: MutableList<Definition> = mutableListOf()
