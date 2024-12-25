@@ -22,9 +22,11 @@ enum class DefinitionCategory(){
     Sample
 }
 
+// TODO: pass in the word id
 class ThaiLanguageData(
     val word: String,
-    val htmlResults: Document
+    val htmlResults: Document,
+    val wordId: Int? = null,
 ) {
     val LOG_TAG = "ThaiLanguageData"
 
@@ -192,7 +194,8 @@ class ThaiLanguageData(
             partOfSpeech = partOfSpeech,
             synonyms = synonyms,
             examples = examples,
-            sentences = sentences
+            sentences = sentences,
+            wordId = wordId
         )
 
         return wordDefinition

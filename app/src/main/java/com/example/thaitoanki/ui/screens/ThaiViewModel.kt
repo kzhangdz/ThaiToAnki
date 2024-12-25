@@ -128,12 +128,12 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
                     val definitionResult = id?.let { thaiLanguageRepository.getWord(it) }
 
                     if (definitionResult != null) {
-                        wordData = ThaiLanguageData(searchValue, definitionResult)
+                        wordData = ThaiLanguageData(searchValue, definitionResult, wordId = id)
                     }
                 }
                 // branch for if the thaiLanguageSearchResults contain the data
                 else{
-                    wordData = ThaiLanguageData(searchValue, searchResult)
+                    wordData = ThaiLanguageData(searchValue, searchResult, wordId = id)
                 }
 
                 if (wordData != null) {

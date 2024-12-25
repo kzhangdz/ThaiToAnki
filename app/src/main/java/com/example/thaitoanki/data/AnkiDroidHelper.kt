@@ -49,7 +49,9 @@ class AnkiDroidHelper(context: Context) {
 
     init {
         api = AddContentApi(mContext)
-        Log.i(LOG_TAG, "FIELDS: $FIELDS")
+        for (field in FIELDS){
+            Log.i(LOG_TAG, "FIELDS: $field")
+        }
     }
 
     /**

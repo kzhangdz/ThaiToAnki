@@ -9,5 +9,6 @@ data class Definition(
     val etymology: String = "",
     val synonyms: List<Definition> = emptyList(),
     val examples: List<Definition> = emptyList(),
-    val sentences: List<Definition> = emptyList()
+    val sentences: List<Definition> = emptyList(),
+    val wordId: Int? = null
 )
