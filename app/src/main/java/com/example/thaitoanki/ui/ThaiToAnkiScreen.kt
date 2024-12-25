@@ -320,12 +320,18 @@ fun ThaiToAnkiApp(
                             }
                             else{
                                 val flashcardInfo = ankiDroidHelper.definitionListToMapList(definitions = uiState.currentDefinitions)
-                                // TODO:// function for Definition to List<Map<String, String>>
-//
-//                                ankiDroidHelper.addCardsToAnkiDroid(
-//                                    deckId, modelId,
-//                                    data = flashcardInfo,
-//                                )
+
+                                val responseCode= ankiDroidHelper.addCardsToAnkiDroid(
+                                    deckId, modelId,
+                                    data = flashcardInfo,
+                                )
+
+                                if (responseCode != 0) {
+
+                                }
+                                else{
+
+                                }
                             }
                         }
                     },

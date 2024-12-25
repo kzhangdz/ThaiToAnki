@@ -262,7 +262,7 @@ class AnkiDroidHelper(context: Context) {
         return modelId
     }
 
-    fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>){
+    fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>): Int{
         // TODO: add a code output
         // TODO: look into YomiChan's data output format
 
@@ -270,7 +270,7 @@ class AnkiDroidHelper(context: Context) {
         if(fieldNames == null){
             // api error
             Log.d(LOG_TAG, "Field names null")
-            return
+            return 0
         }
 
         // Build list of fields and tags
@@ -305,12 +305,14 @@ class AnkiDroidHelper(context: Context) {
             // API indicates that a 0 return value is an error
             Log.d(LOG_TAG, "failed insertion")
         }
+        return added
     }
 
     fun definitionToMap(definition: Definition): Map<String, String>{
         // TODO: format synonym, relatedwords, etc.
         val synonyms = formatSynonymsToHTML(definition.synonyms)
         val examples = formatExamplesToHTML(definition.examples, definition.baseWord)
+        val sentences = formatSentencesToHTML(definition.sentences, definition.baseWord)
 
         Log.i(LOG_TAG, "Examples: $examples")
 
@@ -321,8 +323,10 @@ class AnkiDroidHelper(context: Context) {
             AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
             AnkiDroidConfig.FIELDS[4] to definition.definition,
             AnkiDroidConfig.FIELDS[5] to synonyms,
-
-            AnkiDroidConfig.FIELDS[7] to examples
+            // TODO: relatedwords
+            AnkiDroidConfig.FIELDS[7] to examples,
+            AnkiDroidConfig.FIELDS[8] to sentences,
+            AnkiDroidConfig.FIELDS[9] to definition.wordId?.toString().orEmpty() // convert to "" if null
         )
 
         return map
@@ -333,10 +337,18 @@ class AnkiDroidHelper(context: Context) {
         for (definition in definitions){
             val map = definitionToMap(definition)
             mapList.add(map)
+
+            // TODO: for now, only add the first definition
+            break
         }
         return mapList
     }
 
+    /*
+    Desired Output
+    <span class="pill">คุย (to chat)</span>
+	<span class="pill">เม้าท์ (to talk)</span>
+     */
     fun formatSynonymsToHTML(synonyms: List<Definition>): String{
         var HTMLString = ""
         for (synonym in synonyms){
@@ -348,37 +360,14 @@ class AnkiDroidHelper(context: Context) {
 
     // TODO: potential error where every string that matches the word gets highlighted.
     // could happen easily with งง, i.e. วงงง
-    //
+    /*
+    Desired Output
+    <span class="highlight">พูด</span>เล่น - to joke; make a joke; speak jokingly; to kid
+     */
     fun formatExamplesToHTML(examples: List<Definition>, word: String): String{
         var HTMLString = ""
         for(example in examples){
-            var currentHTMLString = ""
-
-            var i = 0
-            while(i < example.baseWord.length){ //- word.length
-                val windowEndIndex = i + word.length
-
-                // at the end, if there isn't enough room left for the window
-                if(windowEndIndex >= example.baseWord.length){
-                    // add the current character
-                    currentHTMLString += example.baseWord[i]
-                    i++
-                }
-                else {
-                    val currentWindow: String = example.baseWord.substring(i, windowEndIndex)
-
-                    if (currentWindow == word) {
-                        currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
-
-                        // skip to the end of the window word
-                        i = windowEndIndex
-                    } else {
-                        // otherwise, add the current character
-                        currentHTMLString += currentWindow[0]
-                        i++
-                    }
-                }
-            }
+            var currentHTMLString = addHighlightHTML(example, word)
 
             currentHTMLString += " - ${example.definition}"
 
@@ -388,6 +377,69 @@ class AnkiDroidHelper(context: Context) {
             break
         }
         return HTMLString
+    }
+
+    /*
+    Desired Output
+    <div><span class="highlight">พูด</span>ภาษาไทยได้ไหมครับ</div>
+	<div class="description">Can you speak Thai?</div>
+     */
+    fun formatSentencesToHTML(sentences: List<Definition>, word: String): String{
+        var HTMLString = ""
+        for(sentence in sentences){
+            // get output like <span class="highlight">พูด</span>ภาษาไทยได้ไหมครับ
+            var currentHTMLString = addHighlightHTML(sentence, word)
+
+            // add div around the output
+            currentHTMLString = "<div>${currentHTMLString}</div>"
+
+            // add the romanization <div class="description">innerHTML</div>
+            currentHTMLString += """<div class="description">${sentence.romanization}</div>"""
+
+            // add the translation <div class="description">Can you speak Thai?</div>
+            currentHTMLString += """<div class="description">${sentence.definition}</div>"""
+
+            HTMLString += currentHTMLString
+
+            // TODO: for now, only use the first sentence
+            break
+        }
+        return HTMLString
+    }
+
+    /*
+    Given a word, add a <span class="highlight"></span> around the word, using the sliding window method
+     */
+    fun addHighlightHTML(definition: Definition, word: String): String{
+        var currentHTMLString = ""
+
+        var i = 0
+        while(i < definition.baseWord.length){ //- word.length
+            val windowEndIndex = i + word.length
+
+            // at the end, if there isn't enough room left for the window
+            if(windowEndIndex >= definition.baseWord.length){
+                // add the current character
+                currentHTMLString += definition.baseWord[i]
+                i++
+            }
+            else {
+                val currentWindow: String = definition.baseWord.substring(i, windowEndIndex)
+
+                if (currentWindow == word) {
+                    currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
+
+                    // skip to the end of the window word
+                    i = windowEndIndex
+                } else {
+                    // otherwise, add the current character
+                    currentHTMLString += currentWindow[0]
+                    i++
+                }
+            }
+        }
+
+        return currentHTMLString
     }
 
     /*
