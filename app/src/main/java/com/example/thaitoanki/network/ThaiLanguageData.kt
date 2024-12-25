@@ -30,20 +30,28 @@ class ThaiLanguageData(
 ) {
     val LOG_TAG = "ThaiLanguageData"
 
+    val romanization: String
+    val pronunciation: String
+
     // list of Definition
     val definitions: List<Definition>
 
     // parse the definition page
     init {
+        romanization = parseRomanization()
+        pronunciation = parsePronunciation()
         definitions = parseDefinitions()
     }
 
     // separate out the page into blocks for each definition
     private fun parseDefinitions(): List<Definition>{
         try {
-            // select the last table in the old-content div, which has all blocks
             val contentDiv = htmlResults.select("div[id=old-content]")[0]
 
+            /*
+            Grab the main section information
+             */
+            // select the last table in the old-content div, which has all blocks
             val table = contentDiv.select("div[id=old-content]>table").last()
             val tableBody = table.child(0)
             val tableRows = tableBody.children()
@@ -191,12 +199,16 @@ class ThaiLanguageData(
         val wordDefinition = Definition(
             baseWord = alternateWord,
             definition = definition,
+            romanization = romanization,
+            pronunciation = pronunciation,
             partOfSpeech = partOfSpeech,
             synonyms = synonyms,
             examples = examples,
             sentences = sentences,
             wordId = wordId
         )
+
+        Log.d(LOG_TAG, "Definition: ${wordDefinition.toString()}")
 
         return wordDefinition
     }
@@ -223,6 +235,51 @@ class ThaiLanguageData(
         }
 
         return false
+    }
+
+    private fun parseRomanization(): String{
+        try {
+            val contentDiv = htmlResults.select("div[id=old-content]")[0]
+
+            /*
+            Grab the header information, which will contain the romanization
+             */
+            val headerTable = contentDiv.select("div[id=old-content]>table").first()
+
+            // first td has the word and the romanization
+            val td = headerTable.select("td").first()
+            val innerHTML = td.html()
+
+            // the span after the &nbsp;&nbsp; is the romanization
+            val romanization = innerHTML.substringAfterLast("&nbsp;&nbsp;")
+
+            return romanization
+        }
+        catch (e: Exception){
+            return ""
+        }
+    }
+
+    private fun parsePronunciation(): String{
+        try {
+            val contentDiv = htmlResults.select("div[id=old-content]")[0]
+
+            /*
+            Pronunciation table is the second to last one
+             */
+            val tables = contentDiv.select("div[id=old-content]>table")
+            val lastIndex = tables.size - 1
+            val pronunciationTable = tables[lastIndex - 1]
+
+            // get <span lang="th">
+            val span = pronunciationTable.select("span[lang='th']").first()
+            val pronunciation = span.text()
+
+            return pronunciation
+        }
+        catch (e: Exception){
+            return ""
+        }
     }
 
     private fun parseAlternateWordFromSection(definitionSection: Element, baseWord: String): String{
