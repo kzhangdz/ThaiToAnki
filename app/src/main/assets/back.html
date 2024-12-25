@@ -1,0 +1,63 @@
+<div class="note back {{Tags}}">
+    {{FrontSide}}
+
+    <hr id="answer">
+
+	<!-- Anything in the content section is what you will send from ThaiToAnki -->
+    <div class="body">
+        <div id="definition-section" class="text-block">
+            <div class="content flex">{{PartOfSpeech}} {{Definition}}</div>
+        </div>
+		<div id="synonym-section" class="text-block">
+            <div class="subtitle">Synonyms</div>
+			<!-- send the data over as pills -->
+			<div class="content">
+			{{Synonyms}}
+			</div>
+        </div>
+		<div id="related-words-section" class="text-block">
+            <div class="subtitle">Related Words</div>
+			<div class="content">
+			{{RelatedWords}}
+			</div>
+        </div>
+		<div id="example-section" class="text-block">
+            <div class="subtitle">Example</div>
+			<div class="content">
+			{{Examples}}
+			</div>
+        </div>
+		<div id="sentence-section" class="text-block">
+            <div class="subtitle">Sentence</div>
+			<div class="content">
+			{{Sentences}}
+			</div>
+        </div>
+			<div class="text-block">
+				<div class="subtitle">Reference</div>
+				<a href="http://thai-language.com/id/{{WordId}}" target="_blank">thai-language.com</a>
+				<br>
+				<a href="https://en.wiktionary.org/wiki/{{Word}}" target="_blank">Wiktionary</a>
+			</div>
+		</div>
+</div>
+
+<script>
+// generate the list of section ids
+var section_elements = document.querySelectorAll('[id*=-section]');
+var sections = [];
+for (const element of section_elements){
+	sections.push(element.id)
+}
+
+//clear sections that have no data
+for (const section of sections){
+	var element = document.getElementById(section)
+	var content = element.querySelector(".content")
+
+	if(content.innerHTML.trim() == ""){
+		element.remove()
+	}
+}
+
+</script>

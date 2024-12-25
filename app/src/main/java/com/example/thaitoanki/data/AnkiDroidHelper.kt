@@ -9,6 +9,8 @@ import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.services.readArrayFromAsset
+import com.example.thaitoanki.services.readTextFromAsset
 import com.ichi2.anki.api.AddContentApi
 import com.ichi2.anki.api.NoteInfo
 import java.util.LinkedList
@@ -34,8 +36,19 @@ class AnkiDroidHelper(context: Context) {
     val READ_WRITE_PERMISSION = AddContentApi.READ_WRITE_PERMISSION
     val LOG_TAG = "AnkiDroidHelper"
 
+    // Anki Intent variables
+    val FIELDS: Array<String> = context.readArrayFromAsset(AnkiDroidConfig.FIELDS_FILE_LOCATION)
+    val CSS = context.readTextFromAsset(AnkiDroidConfig.CSS_FILE_LOCATION)
+    val QFMT = arrayOf(
+        context.readTextFromAsset(AnkiDroidConfig.QFMT_FILE_LOCATION)
+    )
+    val AFMT = arrayOf(
+        context.readTextFromAsset(AnkiDroidConfig.AFMT_FILE_LOCATION)
+    )
+
     init {
         api = AddContentApi(mContext)
+        Log.i(LOG_TAG, "FIELDS: $FIELDS")
     }
 
     /**
@@ -238,8 +251,10 @@ class AnkiDroidHelper(context: Context) {
     }
 
     fun createModel(modelName: String, deckId: Long): Long?{
-        val modelId = api.addNewCustomModel(modelName, AnkiDroidConfig.FIELDS,
-            AnkiDroidConfig.CARD_NAMES, AnkiDroidConfig.QFMT, AnkiDroidConfig.AFMT, AnkiDroidConfig.CSS, deckId, null);
+//        val modelId = api.addNewCustomModel(modelName, AnkiDroidConfig.FIELDS,
+//            AnkiDroidConfig.CARD_NAMES, AnkiDroidConfig.QFMT, AnkiDroidConfig.AFMT, AnkiDroidConfig.CSS, deckId, null);
+        val modelId = api.addNewCustomModel(modelName, FIELDS,
+            AnkiDroidConfig.CARD_NAMES, QFMT, AFMT, CSS, deckId, null);
         modelId?.let {storeModelReference(modelName, it)}
         return modelId
     }
@@ -292,7 +307,10 @@ class AnkiDroidHelper(context: Context) {
     fun definitionToMap(definition: Definition): Map<String, String>{
         val map: Map<String, String> = mapOf(
             AnkiDroidConfig.FIELDS[0] to definition.baseWord,
-            AnkiDroidConfig.FIELDS[1] to definition.definition
+            AnkiDroidConfig.FIELDS[1] to definition.pronunciation,
+            AnkiDroidConfig.FIELDS[2] to definition.romanization,
+            AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
+            AnkiDroidConfig.FIELDS[4] to definition.definition
         )
 
         return map

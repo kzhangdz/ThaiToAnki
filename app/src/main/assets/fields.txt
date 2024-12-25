@@ -1,0 +1,10 @@
+Word
+Pronunciation
+Romanization
+PartOfSpeech
+Definition
+Synonyms
+RelatedWords
+Examples
+Sentences
+WordId

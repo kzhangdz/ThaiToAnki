@@ -14,33 +14,36 @@ internal object AnkiDroidConfig {
 
     // TODO: add a full list of fields when ready
     // List of field names that will be used in AnkiDroid model
+    val FIELDS_FILE_LOCATION = "fields.txt"
     val FIELDS: Array<String> = arrayOf(
-        "Word", "Meaning"
+        "Word",
+        "Pronunciation",
+        "Romanization",
+        "PartOfSpeech",
+        "Definition",
+        "Synonyms",
+        "RelatedWords",
+        "Examples",
+        "Sentences",
+        "WordId"
     )
 
     // List of card names that will be used in AnkiDroid (one for each direction of learning)
     //val CARD_NAMES: Array<String> = arrayOf("Japanese>English", "English>Japanese")
     val CARD_NAMES: Array<String> = arrayOf("Thai>English")
 
-    // CSS to share between all the cards (optional). User will need to install the NotoSans font by themselves
+    // CSS to share between all the cards
+    const val CSS_FILE_LOCATION = "style.css"
     const val CSS: String = """
-        color: black;
+        
     """
-//        ".card {\n" +
-//            " font-family: NotoSansJP;\n" +
-//            " font-size: 24px;\n" +
-//            " text-align: center;\n" +
-//            " color: black;\n" +
-//            " background-color: white;\n" +
-//            " word-wrap: break-word;\n" +
-//            "}\n" +
-//            "@font-face { font-family: \"NotoSansJP\"; src: url('_NotoSansJP-Regular.otf'); }\n" +
-//            "@font-face { font-family: \"NotoSansJP\"; src: url('_NotoSansJP-Bold.otf'); font-weight: bold; }\n" +
-//            "\n" +
-//            ".big { font-size: 48px; }\n" +
-//            ".small { font-size: 18px;}\n"
+
+//        """
+//        color: black;
+//    """
 
     // Template for the question of each card
+    const val QFMT_FILE_LOCATION = "front.html"
     const val QFMT1: String = """
         <div class="note front {{Tags}}">
           <div class="body center">
@@ -64,6 +67,7 @@ internal object AnkiDroidConfig {
     val QFMT: Array<String> = arrayOf(QFMT1) //arrayOf(QFMT1, QFMT2)
 
     // Template for the answer (use identical for both sides)
+    const val AFMT_FILE_LOCATION = "back.html"
     const val AFMT1: String = """
         <div class="note back {{Tags}}">
             {{FrontSide}}
@@ -141,13 +145,7 @@ internal object AnkiDroidConfig {
     """
      */
 
-//        "<div class=big>{{furigana:Furigana}}</div><br>{{Meaning}}\n" +
-//            "<br><br>\n" +
-//            "{{furigana:SentenceFurigana}}<br>\n" +
-//            "<a href=\"#\" onclick=\"document.getElementById('hint').style.display='block';return false;\">Sentence Translation</a>\n" +
-//            "<div id=\"hint\" style=\"display: none\">{{SentenceMeaning}}</div>\n" +
-//            "<br><br>\n" +
-//            "{{Grammar}}<br><div class=small>{{Tags}}</div>"
+
     val AFMT: Array<String> = arrayOf(AFMT1) //arrayOf(AFMT1, AFMT1)
 
     // Define two keys which will be used when using legacy ACTION_SEND intent

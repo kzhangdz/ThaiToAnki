@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.thaitoanki.MainActivity
 
@@ -75,3 +74,31 @@ fun Context.startMainActivity() {
 //        }
 //    )
 //}
+
+/*
+
+Reads asset files as strings. Primarily used for the html and css for Anki, located in the assets folder for
+
+https://stackoverflow.com/questions/9544737/read-file-from-assets
+Adding Context. allows us to call it as an extension function of context
+i.e. context.readTextFromAsset("my file name")
+assets is usually the function getAssets()
+*/
+fun Context.readTextFromAsset(fileName : String) : String{
+    return assets.open(fileName).bufferedReader().use {
+        it.readText()}
+}
+
+fun Context.readArrayFromAsset(fileName : String) : Array<String>{
+    val values: MutableList<String> = mutableListOf()
+    val bReader = assets.open(fileName).bufferedReader()
+
+    var line: String = bReader.readLine()
+    while (line != null) {
+        values.add(line)
+        line = bReader.readLine()
+    }
+    bReader.close()
+
+    return values.toTypedArray()
+}
