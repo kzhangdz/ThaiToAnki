@@ -350,31 +350,35 @@ class AnkiDroidHelper(context: Context) {
     fun formatExamplesToHTML(examples: List<Definition>, word: String): String{
         var HTMLString = ""
         for(example in examples){
-            //val currentHTMLString = """<span class="pill">${synonym.baseWord} (${synonym.definition})</span>"""
-            var currentHTMLString = "" //example.baseWord
+            var currentHTMLString = ""
 
-            //val indexes = example.baseWord.indexesOf(word)
+            var i = 0
+            while(i < example.baseWord.length){ //- word.length
+                val windowEndIndex = i + word.length
 
-            //var j = 0
-            for(i in 0.. example.baseWord.length - word.length){
-
-                val windowEndIndex = i + word.length - 1
-                val currentWindow: String = example.baseWord.substring(i, windowEndIndex)
-
-                if (currentWindow == word){
-                    currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
+                // at the end, if there isn't enough room left for the window
+                if(windowEndIndex >= example.baseWord.length){
+                    // add the current character
+                    currentHTMLString += example.baseWord[i]
+                    i++
                 }
-                else{
-                    // otherwise, add the current character
-                    currentHTMLString += currentWindow[i]
+                else {
+                    val currentWindow: String = example.baseWord.substring(i, windowEndIndex)
+
+                    if (currentWindow == word) {
+                        currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
+
+                        // skip to the end of the window word
+                        i = windowEndIndex
+                    } else {
+                        // otherwise, add the current character
+                        currentHTMLString += currentWindow[0]
+                        i++
+                    }
                 }
             }
 
-//            for(indexPair in indexes){
-//                example.baseWord.substring(indexPair.first, indexPair.second)
-//            }
-
-            currentHTMLString += "- ${example.definition}"
+            currentHTMLString += " - ${example.definition}"
 
             HTMLString += currentHTMLString
 
