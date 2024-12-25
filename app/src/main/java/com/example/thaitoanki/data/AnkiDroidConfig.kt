@@ -10,7 +10,7 @@ internal object AnkiDroidConfig {
 //    const val MODEL_NAME: String = "com.ichi2.apisample"
 //
 //    // Optional space separated list of tags to add to every note
-    val TAGS: Set<String> = HashSet(listOf("ThaiToAnki"))
+    val TAGS: Set<String> = HashSet(listOf("ThaiToAnki", "note-maroon"))
 
     // TODO: add a full list of fields when ready
     // List of field names that will be used in AnkiDroid model
