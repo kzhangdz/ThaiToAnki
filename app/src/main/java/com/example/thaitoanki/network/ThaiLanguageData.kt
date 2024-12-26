@@ -1,6 +1,7 @@
 package com.example.thaitoanki.network
 
 import android.util.Log
+import okhttp3.internal.format
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -111,7 +112,11 @@ class ThaiLanguageData(
 
         val sectionNames = sectionStartTds.map {
             td ->
-            td.text()
+            val text = td.text()
+
+            // replace non-breaking space () with normal space
+            val formattedText = text.replace("&nbsp;", " ")
+            formattedText
         }
 
         // TODO: need a function to modify sectionNames a little bit.
@@ -174,6 +179,7 @@ class ThaiLanguageData(
         // iterate through the sections to build the Definition object
         var definition = ""
         var synonyms: List<Definition> = listOf()
+        var relatedWords: List<Definition> = listOf()
         var examples: List<Definition> = listOf()
         var sentences: List<Definition> = listOf()
         // get the specific dictionary information from each list of <tr>
@@ -185,6 +191,9 @@ class ThaiLanguageData(
                 }
                 "synonym", "synonyms" -> {
                     synonyms = parseSynonymsFromSection(section.value)
+                }
+                "related word", "related words" -> {
+                    relatedWords = parseSynonymsFromSection(section.value)
                 }
                 "example", "examples" -> {
                     examples = parseSynonymsFromSection(section.value)
@@ -203,6 +212,7 @@ class ThaiLanguageData(
             pronunciation = pronunciation,
             partOfSpeech = partOfSpeech,
             synonyms = synonyms,
+            relatedWords = relatedWords,
             examples = examples,
             sentences = sentences,
             wordId = wordId

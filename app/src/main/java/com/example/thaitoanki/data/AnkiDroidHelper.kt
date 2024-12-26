@@ -311,6 +311,7 @@ class AnkiDroidHelper(context: Context) {
     fun definitionToMap(definition: Definition): Map<String, String>{
         // TODO: format synonym, relatedwords, etc.
         val synonyms = formatSynonymsToHTML(definition.synonyms)
+        val relatedWords = formatSynonymsToHTML(definition.relatedWords)
         val examples = formatExamplesToHTML(definition.examples, definition.baseWord)
         val sentences = formatSentencesToHTML(definition.sentences, definition.baseWord)
 
@@ -323,7 +324,7 @@ class AnkiDroidHelper(context: Context) {
             AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
             AnkiDroidConfig.FIELDS[4] to definition.definition,
             AnkiDroidConfig.FIELDS[5] to synonyms,
-            AnkiDroidConfig.FIELDS[6] to "", // TODO: relatedwords
+            AnkiDroidConfig.FIELDS[6] to relatedWords,
             AnkiDroidConfig.FIELDS[7] to examples,
             AnkiDroidConfig.FIELDS[8] to sentences,
             AnkiDroidConfig.FIELDS[9] to definition.wordId?.toString().orEmpty() // convert to "" if null
