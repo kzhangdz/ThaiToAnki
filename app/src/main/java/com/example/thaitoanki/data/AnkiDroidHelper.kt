@@ -419,7 +419,7 @@ class AnkiDroidHelper(context: Context) {
             val windowEndIndex = i + word.length
 
             // at the end, if there isn't enough room left for the window
-            if(windowEndIndex >= definition.baseWord.length){
+            if(windowEndIndex > definition.baseWord.length){
                 // add the current character
                 currentHTMLString += definition.baseWord[i]
                 i++
