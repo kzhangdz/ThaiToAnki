@@ -323,7 +323,7 @@ class AnkiDroidHelper(context: Context) {
             AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
             AnkiDroidConfig.FIELDS[4] to definition.definition,
             AnkiDroidConfig.FIELDS[5] to synonyms,
-            // TODO: relatedwords
+            AnkiDroidConfig.FIELDS[6] to "", // TODO: relatedwords
             AnkiDroidConfig.FIELDS[7] to examples,
             AnkiDroidConfig.FIELDS[8] to sentences,
             AnkiDroidConfig.FIELDS[9] to definition.wordId?.toString().orEmpty() // convert to "" if null

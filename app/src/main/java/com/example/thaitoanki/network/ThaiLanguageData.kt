@@ -253,7 +253,11 @@ class ThaiLanguageData(
             // the span after the &nbsp;&nbsp; is the romanization
             val romanization = innerHTML.substringAfterLast("&nbsp;&nbsp;")
 
-            return romanization
+            // remove styling in <span style="font-size:1.4em;">cheeuy<span class="tt">R</span></span>
+            // detects the regex style=".*?"
+            val formattedRomanization = romanization.replace(Regex(""" style=".*?""""), "")
+
+            return formattedRomanization
         }
         catch (e: Exception){
             return ""
