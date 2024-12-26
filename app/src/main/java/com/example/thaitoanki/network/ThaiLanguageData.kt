@@ -114,8 +114,9 @@ class ThaiLanguageData(
             td ->
             val text = td.text()
 
-            // replace non-breaking space () with normal space
-            val formattedText = text.replace("&nbsp;", " ")
+            // replace non-breaking space (&nbsp;) with normal space
+            // the unicode is \u00a0
+            val formattedText = text.replace("\u00a0"," ")
             formattedText
         }
 
