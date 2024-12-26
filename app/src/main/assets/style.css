@@ -584,6 +584,12 @@
 	color: var(--accent-color);
 }
 
+/*alternative to superscript tag <sup></sup>*/
+.tt {
+	vertical-align: super;
+	font-size: 0.75rem;
+}
+
 /*** UTILITY CLASSES ***/
 
 .flex {
