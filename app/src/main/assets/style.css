@@ -657,7 +657,8 @@
   color: #000;
   background: #dddddd99;
   padding: 0.4rem 0.7rem;
-  margin-bottom: 0.1rem;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
   border-radius: 1rem;
   display: inline-block;
 }

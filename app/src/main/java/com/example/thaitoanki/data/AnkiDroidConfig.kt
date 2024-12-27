@@ -15,18 +15,18 @@ internal object AnkiDroidConfig {
     // TODO: add a full list of fields when ready
     // List of field names that will be used in AnkiDroid model
     val FIELDS_FILE_LOCATION = "fields.txt"
-    val FIELDS: Array<String> = arrayOf(
-        "Word",
-        "Pronunciation",
-        "Romanization",
-        "PartOfSpeech",
-        "Definition",
-        "Synonyms",
-        "RelatedWords",
-        "Examples",
-        "Sentences",
-        "WordId"
-    )
+//    val FIELDS: Array<String> = arrayOf(
+//        "Word",
+//        "Pronunciation",
+//        "Romanization",
+//        "PartOfSpeech",
+//        "Definition",
+//        "Synonyms",
+//        "RelatedWords",
+//        "Examples",
+//        "Sentences",
+//        "WordId"
+//    )
 
     // List of card names that will be used in AnkiDroid (one for each direction of learning)
     //val CARD_NAMES: Array<String> = arrayOf("Japanese>English", "English>Japanese")
@@ -152,27 +152,27 @@ internal object AnkiDroidConfig {
     //val FRONT_SIDE_KEY: String = FIELDS[0]
     //val BACK_SIDE_KEY: String = FIELDS[2]
 
-    val exampleData: List<Map<String, String>>
-        /**
-         * Generate the ArrayList<HashMap> example data which will be sent to AnkiDroid
-        </HashMap> */
-        get() {
-            val EXAMPLE_WORDS = arrayOf("例", "データ", "送る")
-            val EXAMPLE_TRANSLATIONS = arrayOf("Example", "Data", "To send")
-            val EXAMPLE_SENTENCE =
-                arrayOf("そんな先例はない。", "きゃ～データが消えた！", "放蕩生活を送る。")
-            val EXAMPLE_SENTENCE_MEANING = arrayOf(
-                "We have no such example", "Oh, I lost the data！",
-                "I lead a fast way of living."
-            )
-
-            val data: MutableList<Map<String, String>> = ArrayList()
-            for (idx in EXAMPLE_WORDS.indices) {
-                val hm: MutableMap<String, String> = HashMap()
-                hm[FIELDS[0]] = EXAMPLE_WORDS[idx]
-                hm[FIELDS[1]] = EXAMPLE_TRANSLATIONS[idx]
-                data.add(hm)
-            }
-            return data
-        }
+//    val exampleData: List<Map<String, String>>
+//        /**
+//         * Generate the ArrayList<HashMap> example data which will be sent to AnkiDroid
+//        </HashMap> */
+//        get() {
+//            val EXAMPLE_WORDS = arrayOf("例", "データ", "送る")
+//            val EXAMPLE_TRANSLATIONS = arrayOf("Example", "Data", "To send")
+//            val EXAMPLE_SENTENCE =
+//                arrayOf("そんな先例はない。", "きゃ～データが消えた！", "放蕩生活を送る。")
+//            val EXAMPLE_SENTENCE_MEANING = arrayOf(
+//                "We have no such example", "Oh, I lost the data！",
+//                "I lead a fast way of living."
+//            )
+//
+//            val data: MutableList<Map<String, String>> = ArrayList()
+//            for (idx in EXAMPLE_WORDS.indices) {
+//                val hm: MutableMap<String, String> = HashMap()
+//                hm[FIELDS[0]] = EXAMPLE_WORDS[idx]
+//                hm[FIELDS[1]] = EXAMPLE_TRANSLATIONS[idx]
+//                data.add(hm)
+//            }
+//            return data
+//        }
 }

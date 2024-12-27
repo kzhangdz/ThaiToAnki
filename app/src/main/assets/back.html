@@ -73,7 +73,7 @@ for (const section of sections){
 }
 
 //function to toggle visibility of elements, primarily pill definitions
-function toggleElement(id, displayType = "inline"){
+function toggleElement(id, displayType = "block"){
 	var element = document.getElementById(id)
 	if (element.style.display == "none"){
 		element.style.display = displayType

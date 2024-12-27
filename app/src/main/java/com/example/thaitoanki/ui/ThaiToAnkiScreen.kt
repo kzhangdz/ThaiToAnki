@@ -305,7 +305,7 @@ fun ThaiToAnkiApp(
                             val tempModelName = "testModelName"
 
                             var deckId: Long? = ankiDroidHelper.findDeckIdByName(tempDeckName)
-                            var modelId: Long? = ankiDroidHelper.findModelIdByName(tempModelName, numFields = AnkiDroidConfig.FIELDS.size)
+                            var modelId: Long? = ankiDroidHelper.findModelIdByName(tempModelName, numFields = ankiDroidHelper.FIELDS.size)
 
                             if (deckId == null){
                                 deckId = ankiDroidHelper.createDeck(tempDeckName)

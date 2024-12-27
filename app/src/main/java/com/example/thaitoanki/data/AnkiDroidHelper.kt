@@ -281,8 +281,8 @@ class AnkiDroidHelper(context: Context) {
             val flds = Array<String>(fieldNames.size){""} //arrayOfNulls<String>(fieldNames.size)
             for (i in flds.indices) {
                 // Fill up the fields one-by-one until either all fields are filled or we run out of fields to send
-                if (i < AnkiDroidConfig.FIELDS.size) {
-                    flds[i] = fieldMap[AnkiDroidConfig.FIELDS.get(i)].toString()
+                if (i < FIELDS.size) {
+                    flds[i] = fieldMap[FIELDS.get(i)].toString()
                 }
             }
             tags.add(AnkiDroidConfig.TAGS)
@@ -319,18 +319,18 @@ class AnkiDroidHelper(context: Context) {
         Log.i(LOG_TAG, "Examples: $examples")
 
         val map: Map<String, String> = mapOf(
-            AnkiDroidConfig.FIELDS[0] to definition.baseWord,
-            AnkiDroidConfig.FIELDS[1] to definition.pronunciation,
-            AnkiDroidConfig.FIELDS[2] to definition.romanization,
-            AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
-            AnkiDroidConfig.FIELDS[4] to definition.definition,
-            AnkiDroidConfig.FIELDS[5] to classifiers,
-            AnkiDroidConfig.FIELDS[6] to components,
-            AnkiDroidConfig.FIELDS[7] to synonyms,
-            AnkiDroidConfig.FIELDS[8] to relatedWords,
-            AnkiDroidConfig.FIELDS[9] to examples,
-            AnkiDroidConfig.FIELDS[10] to sentences,
-            AnkiDroidConfig.FIELDS[11] to definition.wordId?.toString().orEmpty() // convert to "" if null
+            FIELDS[0] to definition.baseWord,
+            FIELDS[1] to definition.pronunciation,
+            FIELDS[2] to definition.romanization,
+            FIELDS[3] to definition.partOfSpeech,
+            FIELDS[4] to definition.definition,
+            FIELDS[5] to classifiers,
+            FIELDS[6] to components,
+            FIELDS[7] to synonyms,
+            FIELDS[8] to relatedWords,
+            FIELDS[9] to examples,
+            FIELDS[10] to sentences,
+            FIELDS[11] to definition.wordId?.toString().orEmpty() // convert to "" if null
         )
 
         return map
@@ -360,7 +360,7 @@ class AnkiDroidHelper(context: Context) {
             // id format: synonym-0
             val id = "$type-$i"
             val internalContentId = "$id-description"
-            val currentHTMLString = """<span id="$id" class="pill" onclick="toggleElement('$internalContentId')">${item.baseWord}<span id="$internalContentId" style="display: none"> (${item.definition})</span></span>"""
+            val currentHTMLString = """<span id="$id" class="pill" onclick="toggleElement('$internalContentId')">${item.baseWord}<span id="$internalContentId" style="display: none"> ${item.definition}</span></span>"""
             HTMLString += currentHTMLString
         }
         return HTMLString
