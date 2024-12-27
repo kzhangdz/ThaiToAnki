@@ -69,6 +69,8 @@ class ThaiLanguageData(
                 if (currentElement.attr("style").contains("background-color")){
                     blockIndices.add(i)
                 }
+
+                // TODO: entries like ฉลาม http://www.thai-language.com/id/133320 or เฉพาะ http://www.thai-language.com/id/134246 have a "special note" at the end
             }
 
             Log.d(LOG_TAG, blockIndices.toString())
@@ -87,9 +89,13 @@ class ThaiLanguageData(
 
             // parse the definition blocks
             val returnedDefinitions: MutableList<Definition> = mutableListOf()
-            for (definitionBlock in definitionBlocks){
+            for (definitionBlock in definitionBlocks) {
                 val definition = parseDefinitionBlock(definitionBlock)
-                returnedDefinitions.add(definition)
+
+                // handle special cases, like the "special note" section that doesn't have a definition
+                if (!definition.definition.isBlank()) {
+                    returnedDefinitions.add(definition)
+                }
             }
 
             Log.d(LOG_TAG, definitionBlocks.toString())
@@ -399,8 +405,9 @@ class ThaiLanguageData(
                 // TODO: adjust romanization so that it returns HTML, with class "tt"
                 val text = div.text()
                 val sentence = children[0].text()
-                val romanization = children[2].text()
-                val meaning = text.replace(sentence, "").replace(romanization, "").trim()
+                val romanization = children[2].html()
+                val romanizationText = children[2].text()
+                val meaning = text.replace(sentence, "").replace(romanizationText, "").trim()
 
                 val definition = Definition(
                     sentence,
