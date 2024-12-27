@@ -31,6 +31,7 @@ class ThaiLanguageData(
 ) {
     val LOG_TAG = "ThaiLanguageData"
 
+    val headerWord: String
     val romanization: String
     val pronunciation: String
 
@@ -39,6 +40,7 @@ class ThaiLanguageData(
 
     // parse the definition page
     init {
+        headerWord = parseHeaderWord()
         romanization = parseRomanization()
         pronunciation = parsePronunciation()
         definitions = parseDefinitions()
@@ -158,11 +160,11 @@ class ThaiLanguageData(
 
         Log.d(LOG_TAG, sectionStartIndices.toString())
 
-        // TODO: get the part of speech and alternate word
         val partOfSpeechIndex: Int = sectionStartIndices[0] - 1
         val partOfSpeechSection: Element = definitionBlock[partOfSpeechIndex]
         val partOfSpeech: String = parsePartOfSpeechFromSection(partOfSpeechSection)
-        val alternateWord: String = parseAlternateWordFromSection(partOfSpeechSection, word)
+        // todo: pass in the header word as the baseWord
+        val alternateWord: String = parseAlternateWordFromSection(partOfSpeechSection, headerWord)
 
 
 
@@ -262,6 +264,27 @@ class ThaiLanguageData(
         }
 
         return false
+    }
+
+    private fun parseHeaderWord(): String{
+        try {
+            val contentDiv = htmlResults.select("div[id=old-content]")[0]
+
+            /*
+            Grab the header information, which will contain the romanization
+             */
+            val headerTable = contentDiv.select("div[id=old-content]>table").first()
+
+            // first td has the word
+            val td = headerTable.select("td").first()
+            val span = td.child(0)
+            val headerWord = span.text()
+
+            return headerWord
+        }
+        catch (e: Exception){
+            return ""
+        }
     }
 
     private fun parseRomanization(): String{

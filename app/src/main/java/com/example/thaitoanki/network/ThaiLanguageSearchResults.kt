@@ -34,7 +34,7 @@ class ThaiLanguageSearchResults(
             val htmlTitle = htmlResults.getElementsByTag("title")
             val title = htmlTitle.text()
 
-            // TODO: still doesn't work. only compounds have arrows. i.e. search เฉย
+            // only compounds have arrows. i.e. search เฉย
             // maybe search for the number 1?
             // if we directly went to a definition page
             if (title.contains(searchWord)) {
@@ -90,7 +90,9 @@ class ThaiLanguageSearchResults(
 
     private fun extractId(href: String): Int?{
         val idString = href.split("/").last()
-        val id = idString.toIntOrNull()
+        // handle links like /id/134246#def2
+        val cleanedIdString = idString.substringBefore("#")
+        val id = cleanedIdString.toIntOrNull()
         return id
     }
 }
