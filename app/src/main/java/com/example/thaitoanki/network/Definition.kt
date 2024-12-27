@@ -7,6 +7,8 @@ data class Definition(
     val pronunciation: String = "",
     val partOfSpeech: String = "",
     val etymology: String = "",
+    val classifiers: List<Definition> = emptyList(),
+    val components: List<Definition> = emptyList(),
     val synonyms: List<Definition> = emptyList(),
     val relatedWords: List<Definition> = emptyList(),
     val examples: List<Definition> = emptyList(),

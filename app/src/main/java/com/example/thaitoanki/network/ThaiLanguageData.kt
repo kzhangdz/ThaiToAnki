@@ -179,6 +179,8 @@ class ThaiLanguageData(
 
         // iterate through the sections to build the Definition object
         var definition = ""
+        var classifiers: List<Definition> = listOf()
+        var components: List<Definition> = listOf()
         var synonyms: List<Definition> = listOf()
         var relatedWords: List<Definition> = listOf()
         var examples: List<Definition> = listOf()
@@ -189,6 +191,12 @@ class ThaiLanguageData(
                 // TODO: more flexible keys, like synonym vs. synonyms
                 "definition" -> {
                     definition = parseDefinitionFromSection(section.value)
+                }
+                "classifier", "classifiers" -> {
+                    classifiers = parseSynonymsFromSection(section.value)
+                }
+                "component", "components" -> {
+                    components = parseSynonymsFromSection(section.value)
                 }
                 "synonym", "synonyms" -> {
                     synonyms = parseSynonymsFromSection(section.value)
@@ -212,6 +220,8 @@ class ThaiLanguageData(
             romanization = romanization,
             pronunciation = pronunciation,
             partOfSpeech = partOfSpeech,
+            classifiers = classifiers,
+            components = components,
             synonyms = synonyms,
             relatedWords = relatedWords,
             examples = examples,

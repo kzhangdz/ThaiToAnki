@@ -3,6 +3,8 @@ Pronunciation
 Romanization
 PartOfSpeech
 Definition
+Classifier
+Components
 Synonyms
 RelatedWords
 Examples

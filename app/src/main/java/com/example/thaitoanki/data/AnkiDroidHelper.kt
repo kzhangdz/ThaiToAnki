@@ -9,7 +9,6 @@ import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.thaitoanki.network.Definition
-import com.example.thaitoanki.services.indexesOf
 import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
 import com.ichi2.anki.api.AddContentApi
@@ -310,8 +309,10 @@ class AnkiDroidHelper(context: Context) {
 
     fun definitionToMap(definition: Definition): Map<String, String>{
         // TODO: format synonym, relatedwords, etc.
-        val synonyms = formatSynonymsToHTML(definition.synonyms)
-        val relatedWords = formatSynonymsToHTML(definition.relatedWords)
+        val classifiers = formatToPillHTML(definition.classifiers, type = "classifier")
+        val components = formatToPillHTML(definition.components, type = "component")
+        val synonyms = formatToPillHTML(definition.synonyms, type = "synonym")
+        val relatedWords = formatToPillHTML(definition.relatedWords, type = "related-word")
         val examples = formatExamplesToHTML(definition.examples, definition.baseWord)
         val sentences = formatSentencesToHTML(definition.sentences, definition.baseWord)
 
@@ -323,11 +324,13 @@ class AnkiDroidHelper(context: Context) {
             AnkiDroidConfig.FIELDS[2] to definition.romanization,
             AnkiDroidConfig.FIELDS[3] to definition.partOfSpeech,
             AnkiDroidConfig.FIELDS[4] to definition.definition,
-            AnkiDroidConfig.FIELDS[5] to synonyms,
-            AnkiDroidConfig.FIELDS[6] to relatedWords,
-            AnkiDroidConfig.FIELDS[7] to examples,
-            AnkiDroidConfig.FIELDS[8] to sentences,
-            AnkiDroidConfig.FIELDS[9] to definition.wordId?.toString().orEmpty() // convert to "" if null
+            AnkiDroidConfig.FIELDS[5] to classifiers,
+            AnkiDroidConfig.FIELDS[6] to components,
+            AnkiDroidConfig.FIELDS[7] to synonyms,
+            AnkiDroidConfig.FIELDS[8] to relatedWords,
+            AnkiDroidConfig.FIELDS[9] to examples,
+            AnkiDroidConfig.FIELDS[10] to sentences,
+            AnkiDroidConfig.FIELDS[11] to definition.wordId?.toString().orEmpty() // convert to "" if null
         )
 
         return map
@@ -347,13 +350,17 @@ class AnkiDroidHelper(context: Context) {
 
     /*
     Desired Output
-    <span class="pill">คุย (to chat)</span>
-	<span class="pill">เม้าท์ (to talk)</span>
+    <span id="component-1" onclick="toggleElement('component-1-description')" class="pill">เฉย<span id="component-1-description" style="display: none"> (to ignore; to pay no attention to; to disregard)</span></span>
+	<span id="component-2" onclick="toggleElement('component-2-description')" class="pill">ชา<span id="component-2-description" style="display: none"> ([is] numb)</span></span>
      */
-    fun formatSynonymsToHTML(synonyms: List<Definition>): String{
+    fun formatToPillHTML(items: List<Definition>, type: String): String{
         var HTMLString = ""
-        for (synonym in synonyms){
-            val currentHTMLString = """<span class="pill">${synonym.baseWord} (${synonym.definition})</span>"""
+        for (i in 0..<items.size){
+            val item = items[i]
+            // id format: synonym-0
+            val id = "$type-$i"
+            val internalContentId = "$id-description"
+            val currentHTMLString = """<span id="$id" class="pill" onclick="toggleElement('$internalContentId')">${item.baseWord}<span id="$internalContentId" style="display: none"> (${item.definition})</span></span>"""
             HTMLString += currentHTMLString
         }
         return HTMLString

@@ -8,6 +8,18 @@
         <div id="definition-section" class="text-block">
             <div class="content flex">{{PartOfSpeech}} {{Definition}}</div>
         </div>
+		<div id="classifier-section" class="text-block">
+			<div class="subtitle">Classifier</div>
+            <div class="content">
+			{{Classifier}}
+			</div>
+        </div>
+		<div id="components-section" class="text-block">
+			<div class="subtitle">Components</div>
+            <div class="content">
+			{{Components}}	
+			</div>
+        </div>
 		<div id="synonym-section" class="text-block">
             <div class="subtitle">Synonyms</div>
 			<!-- send the data over as pills -->
@@ -57,6 +69,17 @@ for (const section of sections){
 
 	if(content.innerHTML.trim() == ""){
 		element.remove()
+	}
+}
+
+//function to toggle visibility of elements, primarily pill definitions
+function toggleElement(id, displayType = "inline"){
+	var element = document.getElementById(id)
+	if (element.style.display == "none"){
+		element.style.display = displayType
+	}
+	else{
+		element.style.display = "none"
 	}
 }
 
