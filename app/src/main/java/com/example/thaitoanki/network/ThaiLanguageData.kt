@@ -396,6 +396,7 @@ class ThaiLanguageData(
                 val div = element.select("div[class=igt]")
                 val children = div[0].children()
 
+                // TODO: adjust romanization so that it returns HTML, with class "tt"
                 val text = div.text()
                 val sentence = children[0].text()
                 val romanization = children[2].text()
