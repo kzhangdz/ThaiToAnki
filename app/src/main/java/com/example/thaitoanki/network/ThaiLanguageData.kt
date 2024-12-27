@@ -275,10 +275,14 @@ class ThaiLanguageData(
 
             // first td has the word and the romanization
             val td = headerTable.select("td").first()
-            val innerHTML = td.html()
+
+            // get the span with class "tt", and then grab the parent span
+            val ttSpan = td.select("span[class=tt]").first()
+            val span = ttSpan.parent()
+            val romanization = span.html()
 
             // the span after the &nbsp;&nbsp; is the romanization
-            val romanization = innerHTML.substringAfterLast("&nbsp;&nbsp;")
+            //val romanization = innerHTML.substringAfterLast("&nbsp;&nbsp;")
 
             // remove styling in <span style="font-size:1.4em;">cheeuy<span class="tt">R</span></span>
             // detects the regex style=".*?"
