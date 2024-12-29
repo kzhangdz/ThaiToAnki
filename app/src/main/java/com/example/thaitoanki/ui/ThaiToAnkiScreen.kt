@@ -334,7 +334,9 @@ fun ThaiToAnkiApp(
                                 Log.d(LOG_TAG, "deckId or modelId is null")
                             }
                             else{
-                                val flashcardInfo = ankiDroidHelper.definitionListToMapList(definitions = uiState.currentDefinitions)
+                                // only upload the highlighted flashcard
+                                val currentFlashcard: List<Definition> = listOf(uiState.currentDefinitions[uiState.currentDefinitionIndex])
+                                val flashcardInfo = ankiDroidHelper.definitionListToMapList(definitions = currentFlashcard) //uiState.currentDefinitions)
 
                                 val responseCode = ankiDroidHelper.addCardsToAnkiDroid(
                                     deckId, modelId,
