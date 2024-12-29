@@ -39,5 +39,5 @@ data class WordWithDetails(
         parentColumn = "word_id",
         entityColumn = "word_id"
     )
-    val synonym: List<Synonym>
+    val synonyms: List<Synonym>
 )

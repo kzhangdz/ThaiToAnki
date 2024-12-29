@@ -26,14 +26,16 @@ import com.example.thaitoanki.ThaiLanguageApplication
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 
 /**
- * Provides Factory to create instance of ViewModel for the entire Inventory app
+ * Provides Factory to create instance of ViewModel for the entire app
+ * can't directly pass in params to a view model, so we use this factory
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for ThaiViewModel
         initializer {
             val thaiLanguageRepository = thaiLanguageApplication().container.thaiLanguageRepository
-            ThaiViewModel(thaiLanguageRepository)
+            val wordsRepository = thaiLanguageApplication().container.wordsRepository
+            ThaiViewModel(thaiLanguageRepository, wordsRepository)
         }
     }
 }

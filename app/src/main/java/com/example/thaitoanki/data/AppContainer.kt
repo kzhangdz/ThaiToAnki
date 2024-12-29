@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.thaitoanki.data.HtmlConverterFactory.HtmlConverterFactory
 import com.example.thaitoanki.data.database.WordsDatabase
 import com.example.thaitoanki.data.database.WordsRepository
-import com.example.thaitoanki.data.database.entities.OfflineWordsRepository
+import com.example.thaitoanki.data.database.OfflineWordsRepository
 import com.example.thaitoanki.network.ThaiLanguageApiService
 import retrofit2.Retrofit
 

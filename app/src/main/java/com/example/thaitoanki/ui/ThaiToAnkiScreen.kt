@@ -105,7 +105,7 @@ fun ThaiToAnkiAppBar(
 
 @Composable
 fun ThaiToAnkiApp(
-    viewModel: ThaiViewModel = viewModel(factory = ThaiViewModel.Factory),
+    viewModel: ThaiViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavHostController = rememberNavController()
 ) {
     val LOG_TAG = "ThaiToAnkiApp"

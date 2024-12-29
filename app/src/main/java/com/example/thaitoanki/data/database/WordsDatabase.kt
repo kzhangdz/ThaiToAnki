@@ -4,9 +4,24 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.thaitoanki.data.database.entities.Classifier
+import com.example.thaitoanki.data.database.entities.Component
+import com.example.thaitoanki.data.database.entities.Example
+import com.example.thaitoanki.data.database.entities.RelatedWord
+import com.example.thaitoanki.data.database.entities.Sentence
+import com.example.thaitoanki.data.database.entities.Synonym
+import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
 
-@Database(entities = [WordWithDetails::class], version = 1, exportSchema = false)
+@Database(entities = [
+    Word::class,
+    Classifier::class,
+    Component::class,
+    Example::class,
+    RelatedWord::class,
+    Sentence::class,
+    Synonym::class
+                     ], version = 1, exportSchema = false)
 abstract class WordsDatabase: RoomDatabase() {
     abstract fun wordDao(): WordDao
 

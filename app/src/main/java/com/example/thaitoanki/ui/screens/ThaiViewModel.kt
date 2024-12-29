@@ -1,20 +1,12 @@
 package com.example.thaitoanki.ui.screens
 
-import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.thaitoanki.ThaiLanguageApplication
 import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.network.ThaiLanguageData
 import com.example.thaitoanki.network.ThaiLanguageSearchResults
@@ -31,7 +23,10 @@ enum class LoadingStatus(){
     Loading
 }
 
-class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository): ViewModel() {
+class ThaiViewModel(
+    private val thaiLanguageRepository: ThaiLanguageRepository,
+    private val wordsRepository: WordsRepository
+): ViewModel() {
 
     // only allow the state to be modified in this class by making it private
     private val _uiState = MutableStateFlow(ThaiLanguageUiState())
@@ -150,13 +145,13 @@ class ThaiViewModel(private val thaiLanguageRepository: ThaiLanguageRepository):
     }
 
     // can't directly pass in params to a view model, so we use this factory
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as ThaiLanguageApplication)
-                val thaiLanguageRepository = application.container.thaiLanguageRepository
-                ThaiViewModel(thaiLanguageRepository = thaiLanguageRepository)
-            }
-        }
-    }
+//    companion object {
+//        val Factory: ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                val application = (this[APPLICATION_KEY] as ThaiLanguageApplication)
+//                val thaiLanguageRepository = application.container.thaiLanguageRepository
+//                ThaiViewModel(thaiLanguageRepository = thaiLanguageRepository)
+//            }
+//        }
+//    }
 }

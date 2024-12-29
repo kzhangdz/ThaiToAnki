@@ -1,7 +1,7 @@
-package com.example.thaitoanki.data.database.entities
+package com.example.thaitoanki.data.database
 
-import com.example.thaitoanki.data.database.WordDao
-import com.example.thaitoanki.data.database.WordsRepository
+import com.example.thaitoanki.data.database.entities.Word
+import com.example.thaitoanki.data.database.entities.WordWithDetails
 import kotlinx.coroutines.flow.Flow
 
 class OfflineWordsRepository(
