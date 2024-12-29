@@ -1,5 +1,7 @@
 package com.example.thaitoanki.network
 
+import com.example.thaitoanki.data.database.entities.Word
+
 data class Definition(
     val baseWord: String,
     val definition: String,
@@ -14,4 +16,24 @@ data class Definition(
     val examples: List<Definition> = emptyList(),
     val sentences: List<Definition> = emptyList(),
     val wordId: Int? = null
+)
+
+// TODO: add extension function to convert Definition to db Word entity
+//fun ItemDetails.toItem(): Item = Item(
+//    id = id,
+//    name = name,
+//    price = price.toDoubleOrNull() ?: 0.0,
+//    quantity = quantity.toIntOrNull() ?: 0
+//)
+fun Definition.toWord(): Word = Word(
+    //wordId = autoincrement,
+    //createdAt = "CURRENT_TIMESTAMP"
+    word = baseWord,
+    definition = definition,
+    romanization = romanization,
+    pronunciation = pronunciation,
+    partOfSpeech = partOfSpeech,
+    etymology = etymology,
+    referenceId = wordId?.toLong(),
+    createdAt = System.currentTimeMillis() //current timestamp in ms
 )

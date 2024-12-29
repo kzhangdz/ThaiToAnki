@@ -31,8 +31,8 @@ data class Word(
     val etymology: String,
 
     @ColumnInfo(name = "reference_id")
-    val referenceId: Long, // id in thai-language.com
+    val referenceId: Long?, // id in thai-language.com
 
-    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    @ColumnInfo(name = "created_at", defaultValue = "CURRENT_TIMESTAMP")
     val createdAt: Long
 )

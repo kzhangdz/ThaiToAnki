@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
+import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.network.ThaiLanguageData
 import com.example.thaitoanki.network.ThaiLanguageSearchResults
+import com.example.thaitoanki.network.toWord
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -100,7 +102,7 @@ class ThaiViewModel(
     }
 
     /*
-    Functions for querying data
+    Functions for querying data from the api
      */
     fun searchDictionary(){
         // reset all previous results when searching
@@ -133,6 +135,11 @@ class ThaiViewModel(
 
                 if (wordData != null) {
                     updateDefinitions(wordData.definitions)
+
+                    // Save the successful search to the database
+                    viewModelScope.launch {
+                        saveWord()
+                    }
                 }
                 LoadingStatus.Success
 
@@ -142,6 +149,15 @@ class ThaiViewModel(
                 LoadingStatus.Error
             }
         }
+    }
+
+    /*
+    Database functions
+     */
+    suspend fun saveWord(){
+        val definition: Definition = uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex]
+        val word: Word = definition.toWord()
+        wordsRepository.insertWord(word)
     }
 
     // can't directly pass in params to a view model, so we use this factory

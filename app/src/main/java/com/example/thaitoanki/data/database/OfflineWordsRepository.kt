@@ -1,5 +1,6 @@
 package com.example.thaitoanki.data.database
 
+import android.util.Log
 import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +16,10 @@ class OfflineWordsRepository(
         return wordDao.getByWordId(id.toLong())
     }
 
+    // TODO modify this to take in examples, sentences, etc.
     override suspend fun insertWord(word: Word) {
-        //TODO
+        val id = wordDao.insert(word)
+        Log.d("WordsRepository db", "Inserted $id: ${word.word}")
     }
 
     override suspend fun deleteWord(word: Word) {
