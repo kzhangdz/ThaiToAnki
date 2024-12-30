@@ -162,7 +162,7 @@ class ThaiViewModel(
             wordsRepository.insertDefinitionAsWord(definition)
 
             // todo: only save the first definition for now
-            break
+            //break
         }
 
 //        val definition: Definition = uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex]

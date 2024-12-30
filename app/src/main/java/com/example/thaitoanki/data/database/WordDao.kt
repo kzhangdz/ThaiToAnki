@@ -79,8 +79,12 @@ interface WordDao {
     This allows you to observe the data and update your UI accordingly.
     */
     @Transaction
-    @Query("SELECT * FROM words order by word_id desc")
+    @Query("SELECT * FROM words order by searched_at desc")
     fun getAll(): Flow<List<WordWithDetails>>
+
+    @Transaction
+    @Query("SELECT * FROM words group by word order by searched_at desc")
+    fun getAllUniqueWords(): Flow<List<WordWithDetails>>
 
     @Transaction
     @Query("SELECT * FROM words WHERE word_id = :id")
