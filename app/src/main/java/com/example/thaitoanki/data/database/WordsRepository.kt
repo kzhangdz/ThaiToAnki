@@ -1,7 +1,14 @@
 package com.example.thaitoanki.data.database
 
+import com.example.thaitoanki.data.database.entities.Classifier
+import com.example.thaitoanki.data.database.entities.Component
+import com.example.thaitoanki.data.database.entities.Example
+import com.example.thaitoanki.data.database.entities.RelatedWord
+import com.example.thaitoanki.data.database.entities.Sentence
+import com.example.thaitoanki.data.database.entities.Synonym
 import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
+import com.example.thaitoanki.network.Definition
 import kotlinx.coroutines.flow.Flow
 
 interface WordsRepository {
@@ -18,8 +25,22 @@ interface WordsRepository {
     /**
      * Insert word in the data source
      */
-    suspend fun insertWord(word: Word) //todo: may need more parameters for examples, sentences, etc.
+    suspend fun insertDefinitionAsWord(definition: Definition): Long
 
+    suspend fun insertWord(word: Word): Long //todo: may need more parameters for examples, sentences, etc.
+
+    suspend fun insertClassifiers(classifiers: List<Classifier>): List<Long>
+
+    suspend fun insertComponents(components: List<Component>): List<Long>
+
+    suspend fun insertExamples(examples: List<Example>): List<Long>
+
+    suspend fun insertRelatedWords(relatedWords: List<RelatedWord>): List<Long>
+
+    suspend fun insertSentences(sentences: List<Sentence>): List<Long>
+
+    suspend fun insertSynonyms(synonyms: List<Synonym>): List<Long>
+    
     /**
      * Delete word from the data source
      */

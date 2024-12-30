@@ -42,22 +42,22 @@ interface WordDao {
 //    suspend fun insert(vararg classifier: Classifier)
 
     @Insert
-    suspend fun insertClassifiers(classifiers: List<Classifier>)
+    suspend fun insertClassifiers(classifiers: List<Classifier>): List<Long>
 
     @Insert
-    suspend fun insertComponents(components: List<Component>)
+    suspend fun insertComponents(components: List<Component>): List<Long>
 
     @Insert
-    suspend fun insertExamples(examples: List<Example>)
+    suspend fun insertExamples(examples: List<Example>): List<Long>
 
     @Insert
-    suspend fun insertRelatedWords(relatedWords: List<RelatedWord>)
+    suspend fun insertRelatedWords(relatedWords: List<RelatedWord>): List<Long>
 
     @Insert
-    suspend fun insertSentences(sentences: List<Sentence>)
+    suspend fun insertSentences(sentences: List<Sentence>): List<Long>
 
     @Insert
-    suspend fun insertSynonyms(synonyms: List<Synonym>)
+    suspend fun insertSynonyms(synonyms: List<Synonym>): List<Long>
 
     @Update
     suspend fun update(word: Word)
