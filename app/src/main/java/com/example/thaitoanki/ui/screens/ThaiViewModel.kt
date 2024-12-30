@@ -156,9 +156,17 @@ class ThaiViewModel(
      */
     suspend fun saveWord(){
         //TODO; save the list of definitions
+        val definitions = uiState.value.currentDefinitions
 
-        val definition: Definition = uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex]
-        wordsRepository.insertDefinitionAsWord(definition)
+        for (definition in definitions){
+            wordsRepository.insertDefinitionAsWord(definition)
+
+            // todo: only save the first definition for now
+            break
+        }
+
+//        val definition: Definition = uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex]
+//        wordsRepository.insertDefinitionAsWord(definition)
     }
 
     // can't directly pass in params to a view model, so we use this factory

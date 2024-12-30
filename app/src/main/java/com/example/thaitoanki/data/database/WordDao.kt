@@ -15,6 +15,7 @@ import com.example.thaitoanki.data.database.entities.Sentence
 import com.example.thaitoanki.data.database.entities.Synonym
 import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
+import com.example.thaitoanki.network.Definition
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -84,6 +85,10 @@ interface WordDao {
     @Transaction
     @Query("SELECT * FROM words WHERE word_id = :id")
     fun getByWordId(id: Long): Flow<WordWithDetails>
+
+    @Transaction
+    @Query("SELECT * FROM words WHERE word = :word AND definition = :definition")
+    fun getByWordAndDefinition(word: String, definition: String): Flow<WordWithDetails>
 
 //    @Transaction
 //    @Query("SELECT * FROM artist WHERE id = :id")

@@ -22,10 +22,12 @@ interface WordsRepository {
      */
     fun getWordStream(id: Int): Flow<WordWithDetails?>
 
+    fun getWordAndDefinitionStream(word: String, definition: String): Flow<WordWithDetails>
+
     /**
      * Insert word in the data source
      */
-    suspend fun insertDefinitionAsWord(definition: Definition): Long
+    suspend fun insertDefinitionAsWord(definition: Definition): Long?
 
     suspend fun insertWord(word: Word): Long //todo: may need more parameters for examples, sentences, etc.
 

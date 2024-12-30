@@ -19,10 +19,15 @@ import com.example.thaitoanki.network.toSentences
 import com.example.thaitoanki.network.toSynonyms
 import com.example.thaitoanki.network.toWord
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+
+const val LOG_TAG = "OfflineWordsRepository"
 
 class OfflineWordsRepository(
     private val wordDao: WordDao
 ): WordsRepository {
+
     override fun getAllWordsStream(): Flow<List<WordWithDetails>> {
         return wordDao.getAll()
     }
@@ -31,31 +36,46 @@ class OfflineWordsRepository(
         return wordDao.getByWordId(id.toLong())
     }
 
+    override fun getWordAndDefinitionStream(
+        word: String,
+        definition: String
+    ): Flow<WordWithDetails> {
+        return wordDao.getByWordAndDefinition(word, definition)
+    }
+
     @Transaction
-    override suspend fun insertDefinitionAsWord(definition: Definition): Long{
+    override suspend fun insertDefinitionAsWord(definition: Definition): Long?{
         //TODO: only insert if the word and definition don't already exist in the database
+        val wordStream = getWordAndDefinitionStream(definition.baseWord, definition.definition)
+        val existingWord = wordStream.firstOrNull()
 
-        // get the definition parts
-        val word: Word = definition.toWord()
+        if(existingWord == null) {
+            // get the definition parts
+            val word: Word = definition.toWord()
 
-        // insert the parts into the db
-        val wordId = insertWord(word)
+            // insert the parts into the db
+            val wordId = insertWord(word)
 
-        val classifiers = definition.toClassifiers(wordId)
-        val components = definition.toComponents(wordId)
-        val examples = definition.toExamples(wordId)
-        val relatedWords = definition.toRelatedWords(wordId)
-        val sentences = definition.toSentences(wordId)
-        val synonyms = definition.toSynonyms(wordId)
+            val classifiers = definition.toClassifiers(wordId)
+            val components = definition.toComponents(wordId)
+            val examples = definition.toExamples(wordId)
+            val relatedWords = definition.toRelatedWords(wordId)
+            val sentences = definition.toSentences(wordId)
+            val synonyms = definition.toSynonyms(wordId)
 
-        insertClassifiers(classifiers)
-        insertComponents(components)
-        insertExamples(examples)
-        insertRelatedWords(relatedWords)
-        insertSentences(sentences)
-        insertSynonyms(synonyms)
+            insertClassifiers(classifiers)
+            insertComponents(components)
+            insertExamples(examples)
+            insertRelatedWords(relatedWords)
+            insertSentences(sentences)
+            insertSynonyms(synonyms)
 
-        return wordId
+            return wordId
+        }
+        else{
+            Log.d(LOG_TAG, "Word ${definition.baseWord} already exists in the database")
+            return null
+        }
     }
 
     // TODO modify this to take in examples, sentences, etc.
