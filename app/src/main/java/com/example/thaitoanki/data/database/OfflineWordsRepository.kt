@@ -43,18 +43,19 @@ class OfflineWordsRepository(
         return wordDao.getByWordAndDefinition(word, definition)
     }
 
+    // TODO: could change this to use functions w/ an @Upsert tag
     @Transaction
     override suspend fun insertDefinitionAsWord(definition: Definition): Long?{
         //TODO: only insert if the word and definition don't already exist in the database
         val wordStream = getWordAndDefinitionStream(definition.baseWord, definition.definition)
         val existingWord = wordStream.firstOrNull()
 
-        if(existingWord == null) {
-            // get the definition parts
-            val word: Word = definition.toWord()
+        // get the definition parts
+        val wordToInsert: Word = definition.toWord()
 
+        if(existingWord == null) {
             // insert the parts into the db
-            val wordId = insertWord(word)
+            val wordId = insertWord(wordToInsert)
 
             val classifiers = definition.toClassifiers(wordId)
             val components = definition.toComponents(wordId)
@@ -73,7 +74,17 @@ class OfflineWordsRepository(
             return wordId
         }
         else{
-            Log.d(LOG_TAG, "Word ${definition.baseWord} already exists in the database")
+            Log.d(LOG_TAG, "Word ${definition.baseWord} already exists in the database. Updating instead")
+
+            // get the primary key of the existing word
+            val existingId = existingWord.word.wordId
+
+            // mark our word with that id
+            val wordToUpdate = wordToInsert.copy(wordId = existingId)
+
+            //update the word, which will include an updated searchedAt field
+            wordDao.update(wordToUpdate)
+
             return null
         }
     }

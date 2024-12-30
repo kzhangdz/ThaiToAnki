@@ -41,7 +41,7 @@ fun Definition.toWord(): Word = Word(
     partOfSpeech = partOfSpeech,
     etymology = etymology,
     referenceId = wordId?.toLong(),
-    createdAt = System.currentTimeMillis() //current timestamp in ms
+    searchedAt = System.currentTimeMillis() //current timestamp in ms
 )
 
 fun Definition.toClassifiers(wordId: Long): List<Classifier> = classifiers

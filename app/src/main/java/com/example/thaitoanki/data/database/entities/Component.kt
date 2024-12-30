@@ -4,10 +4,12 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "components",
+    indices = [Index(value = ["word_id"])],
     foreignKeys = [
         ForeignKey(
             entity = Word::class,
