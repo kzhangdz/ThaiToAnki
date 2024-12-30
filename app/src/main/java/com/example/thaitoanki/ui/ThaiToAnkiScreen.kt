@@ -271,7 +271,7 @@ fun ThaiToAnkiApp(
                         navController.navigate(ThaiToAnkiScreen.History.name)
                     },
                     onNavigationButtonClick = {
-                        //TODO
+                        navController.navigate(ThaiToAnkiScreen.History.name)
                     },
                     modifier = Modifier
                         .fillMaxSize()
