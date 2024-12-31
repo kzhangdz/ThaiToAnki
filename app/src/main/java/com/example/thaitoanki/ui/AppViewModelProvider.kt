@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.thaitoanki.ThaiLanguageApplication
+import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 
 /**
@@ -36,6 +37,11 @@ object AppViewModelProvider {
             val thaiLanguageRepository = thaiLanguageApplication().container.thaiLanguageRepository
             val wordsRepository = thaiLanguageApplication().container.wordsRepository
             ThaiViewModel(thaiLanguageRepository, wordsRepository)
+        }
+        // Initializer for HistoryViewModel
+        initializer {
+            val wordsRepository = thaiLanguageApplication().container.wordsRepository
+            HistoryViewModel(wordsRepository)
         }
     }
 }

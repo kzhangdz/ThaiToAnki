@@ -32,6 +32,10 @@ class OfflineWordsRepository(
         return wordDao.getAll()
     }
 
+    override fun getUniqueWordsStream(): Flow<List<WordWithDetails>> {
+        return wordDao.getAllUniqueWords()
+    }
+
     override fun getWordStream(id: Int): Flow<WordWithDetails?> {
         return wordDao.getByWordId(id.toLong())
     }

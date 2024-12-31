@@ -79,8 +79,7 @@ fun HistoryScreenPreview() {
         ),
         modifier = Modifier
             .fillMaxSize()
-            .padding(dimensionResource(R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState()),
+            .padding(dimensionResource(R.dimen.padding_medium)),
         onNavigationButtonClick = {}
     )
 }

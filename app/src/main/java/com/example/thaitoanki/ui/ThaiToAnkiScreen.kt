@@ -49,6 +49,7 @@ import com.example.thaitoanki.data.AnkiDroidHelper
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
+import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import com.example.thaitoanki.ui.screens.SettingsScreen
@@ -106,6 +107,7 @@ fun ThaiToAnkiAppBar(
 @Composable
 fun ThaiToAnkiApp(
     viewModel: ThaiViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    historyViewModel: HistoryViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavHostController = rememberNavController()
 ) {
     val LOG_TAG = "ThaiToAnkiApp"
@@ -240,6 +242,8 @@ fun ThaiToAnkiApp(
     ) { innerPadding ->
 
         val uiState by viewModel.uiState.collectAsState()
+
+        val historyUiState by historyViewModel.historyUiState.collectAsState()
 
         NavHost(
             navController = navController,
@@ -404,16 +408,13 @@ fun ThaiToAnkiApp(
                 }
             ){
                 HistoryScreen(
-                    definitions = listOf(
-                        Definition("test", "test"),
-                        Definition("test2", "test2")
-                    ),
+                    definitions = historyUiState.wordList,
                     onNavigationButtonClick = {
                         //TODO
                     },
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        //.verticalScroll(rememberScrollState()) //can't add this because of the LazyColumn already supporting scrolling
                         .padding(
                             horizontal = dimensionResource(R.dimen.padding_medium)
                         )
