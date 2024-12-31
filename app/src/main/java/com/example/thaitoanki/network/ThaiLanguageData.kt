@@ -242,30 +242,6 @@ class ThaiLanguageData(
         return wordDefinition
     }
 
-    // the next section has been reached if the passed-in <tr> element
-    // has a style attr w/ background-color
-    private fun hasReachedNextSection(row: Element, category: String, categories: List<String>): Boolean{
-        val td = row.select("td[style*=background-color]")
-        val returnedCategory = td[0].text()
-
-        // no results
-        if(td.size <= 0){
-            return false
-        }
-
-//        // if the current cell isn't a category we're counting, skip it
-//        if (returnedCategory !in categories){
-//            return false
-//        }
-
-        // if we've reached the next category
-        if (!returnedCategory.contains(category)){
-            return true
-        }
-
-        return false
-    }
-
     private fun parseHeaderWord(): String{
         try {
             val contentDiv = htmlResults.select("div[id=old-content]")[0]
@@ -309,13 +285,24 @@ class ThaiLanguageData(
 
             // remove styling in <span style="font-size:1.4em;">cheeuy<span class="tt">R</span></span>
             // detects the regex style=".*?"
-            val formattedRomanization = romanization.replace(Regex(""" style=".*?""""), "")
-
+            val formattedRomanization = formatRomanization(romanization)
             return formattedRomanization
         }
         catch (e: Exception){
             return ""
         }
+    }
+
+    private fun formatRomanization(romanization: String): String{
+        // remove styling in <span style="font-size:1.4em;">cheeuy<span class="tt">R</span></span>
+        // detects the regex style=".*?"
+        var formattedRomanization = romanization.replace(Regex(""" style=".*?""""), "")
+
+        // format romanization so that <span class="tt">R</span> is replaced with <sup>R</sup>
+        // $1 represents the first capturing group, which will be R, M, L, other tones, etc.
+        formattedRomanization = Regex("""<span class="tt">(.+?)</span>""").replace(formattedRomanization, "<sup>$1</sup>")
+
+        return formattedRomanization
     }
 
     private fun parsePronunciation(): String{
@@ -396,6 +383,7 @@ class ThaiLanguageData(
                 // second to last td is romanization
                 val romTd = td[td.lastIndex-1]
                 val rom = romTd.html()
+                val formattedRom = formatRomanization(rom)
 
                 // 3rd to last td is the synonym
                 val synTd = td[td.lastIndex-2]
@@ -404,7 +392,7 @@ class ThaiLanguageData(
                 val synonym = Definition(
                     baseWord = syn,
                     definition = def,
-                    romanization = rom
+                    romanization = formattedRom
                     )
 
                 Log.d(LOG_TAG, synonym.toString())
@@ -433,13 +421,14 @@ class ThaiLanguageData(
                 val text = div.text()
                 val sentence = children[0].text()
                 val romanization = children[2].html()
+                val formattedRomanization = formatRomanization(romanization)
                 val romanizationText = children[2].text()
                 val meaning = text.replace(sentence, "").replace(romanizationText, "").trim()
 
                 val definition = Definition(
                     sentence,
                     definition = meaning,
-                    romanization = romanization
+                    romanization = formattedRomanization
                 )
 
                 Log.d(LOG_TAG, sentence)

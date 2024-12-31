@@ -2,27 +2,34 @@ package com.example.thaitoanki.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.thaitoanki.R
@@ -36,11 +43,29 @@ fun HistoryScreen(
 ) {
     // TODO: switch to LazyVerticalGrid if horizontal
     //https://stackoverflow.com/questions/72546737/lazycolumn-inside-vertically-scrollable-column
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(definitions) { definition ->
-            DefinitionRow(definition)
+    if(definitions.isEmpty()){
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+        ) {
+            Text(stringResource(R.string.no_history))
+        }
+    }
+    else {
+        LazyColumn(
+            //contentPadding = PaddingValues(dimensionResource(R.dimen.padding_small)),
+            modifier = modifier
+        ) {
+            items(definitions) { definition ->
+                DefinitionRow(
+                    definition,
+                    modifier = Modifier
+                        .padding(
+                            bottom = dimensionResource(R.dimen.padding_small) / 2
+                        )
+                )
+            }
         }
     }
 }
@@ -50,21 +75,55 @@ fun DefinitionRow(
     definition: Definition,
     modifier: Modifier = Modifier
 ){
-    Column(
+    Card(
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.padding_small))
-                .fillMaxWidth()
+        Column(
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(definition.baseWord)
-            Spacer(modifier = Modifier.weight(1.0f))
-            // TODO: limit on text size, ellipses, clickable for alert
-            Text(definition.definition)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
+                    .fillMaxWidth()
+            ) {
+                DefinitionInfo(
+                    word = definition.baseWord,
+                    romanization = definition.romanization
+                )
+                Spacer(modifier = Modifier.weight(1.0f))
+                // TODO: limit on text size, ellipses, clickable for alert
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    stringResource(R.string.view_definition_button)
+                )
+            }
         }
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.secondary
+    }
+}
+
+@Composable
+fun DefinitionInfo(
+    word: String,
+    romanization: String,
+    modifier: Modifier = Modifier
+){
+    Row(
+        //verticalAlignment = Alignment.Bottom,
+        modifier = modifier
+    ) {
+        Text(
+            word,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.alignByBaseline()
+        )
+        Spacer(
+            modifier = Modifier.width(4.dp)
+        )
+        Text(
+            romanization,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.alignByBaseline()
         )
     }
 }
@@ -74,8 +133,8 @@ fun DefinitionRow(
 fun HistoryScreenPreview() {
     HistoryScreen(
         definitions = listOf(
-            Definition("test", "test"),
-            Definition("test2", "test2")
+            Definition("เฉย", "test", "rom1"),
+            Definition("ฟหกด่าส.ว", "test2", "rom2")
         ),
         modifier = Modifier
             .fillMaxSize()
