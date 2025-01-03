@@ -1,5 +1,8 @@
 package com.example.thaitoanki.ui.screens
 
+import android.util.Log
+import android.widget.TextView
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,14 +33,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
+import androidx.core.text.parseAsHtml
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
+
+const val LOG_TAG = "HistoryScreen"
 
 @Composable
 fun HistoryScreen(
     definitions: List<Definition>,
+    onWordClick: (String) -> Unit, 
     onNavigationButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -64,6 +74,10 @@ fun HistoryScreen(
                         .padding(
                             bottom = dimensionResource(R.dimen.padding_small) / 2
                         )
+                        .clickable {
+                            onWordClick(definition.baseWord)
+                            Log.d(LOG_TAG, "${definition.baseWord} clicked")
+                        }
                 )
             }
         }
@@ -121,11 +135,21 @@ fun DefinitionInfo(
             modifier = Modifier.width(4.dp)
         )
         Text(
-            romanization,
+            // TODO: convert string to AnnotatedString, need to replace <sup> tags with a SpanStyle that will denote superscript
+            AnnotatedString(romanization),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.alignByBaseline()
         )
     }
+}
+
+@Composable
+fun HtmlText(html: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier,
+        factory = { context -> TextView(context) },
+        update = { it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT) }
+    )
 }
 
 @Preview(showBackground = true)
@@ -133,12 +157,13 @@ fun DefinitionInfo(
 fun HistoryScreenPreview() {
     HistoryScreen(
         definitions = listOf(
-            Definition("เฉย", "test", "rom1"),
+            Definition("เฉย", "test", "cheeuy<sup>R</sup> chaa<sup>M</sup>"),
             Definition("ฟหกด่าส.ว", "test2", "rom2")
         ),
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(R.dimen.padding_medium)),
-        onNavigationButtonClick = {}
+        onNavigationButtonClick = {},
+        onWordClick = {}
     )
 }

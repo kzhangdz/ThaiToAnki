@@ -1,5 +1,6 @@
 package com.example.thaitoanki.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,13 +9,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.entities.Word
+import com.example.thaitoanki.data.database.entities.WordWithDetails
+import com.example.thaitoanki.data.database.entities.toDefinition
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.network.ThaiLanguageData
 import com.example.thaitoanki.network.ThaiLanguageSearchResults
 import com.example.thaitoanki.network.toWord
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -30,13 +37,17 @@ class ThaiViewModel(
     private val wordsRepository: WordsRepository
 ): ViewModel() {
 
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
+
     // only allow the state to be modified in this class by making it private
     private val _uiState = MutableStateFlow(ThaiLanguageUiState())
 
     // public variable that acts as our getter method for the state. read-only state flow
     val uiState: StateFlow<ThaiLanguageUiState> = _uiState.asStateFlow()
 
-    var loadingStatus: LoadingStatus = LoadingStatus.Success //LoadingStatus.Loading
+    var loadingStatus: LoadingStatus by mutableStateOf(LoadingStatus.Success) //LoadingStatus.Loading
         private set
 
     var searchValue by mutableStateOf("")
@@ -137,9 +148,7 @@ class ThaiViewModel(
                     updateDefinitions(wordData.definitions)
 
                     // Save the successful search to the database
-                    viewModelScope.launch {
                         saveWord()
-                    }
                 }
                 LoadingStatus.Success
 
@@ -169,14 +178,77 @@ class ThaiViewModel(
 //        wordsRepository.insertDefinitionAsWord(definition)
     }
 
-    // can't directly pass in params to a view model, so we use this factory
-//    companion object {
-//        val Factory: ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val application = (this[APPLICATION_KEY] as ThaiLanguageApplication)
-//                val thaiLanguageRepository = application.container.thaiLanguageRepository
-//                ThaiViewModel(thaiLanguageRepository = thaiLanguageRepository)
-//            }
+//    fun findMatchingWords(word: String){
+//        resetView()
+//
+//        viewModelScope.launch {
+//            val matchingDefinitions = getMatchingWords(word)
+//
+//            updateDefinitions(matchingDefinitions)
 //        }
 //    }
+
+//    suspend fun getMatchingWords(word: String): List<Definition> {
+//        val matchingWords: List<WordWithDetails> = wordsRepository.getMatchingWords(word)
+//
+//        val matchingDefinitions: List<Definition> = matchingWords.map { word ->
+//            word.toDefinition()
+//        }
+//
+//        return matchingDefinitions
+//    }
+
+
+
+//
+//    fun getMatchingWordsStream(word: String): Flow<List<WordWithDetails>> {
+//        var matchingWords: List<WordWithDetails> = mutableListOf()
+//        // TODO: don't collect inside the viewModel. emit inside the view model and collect in the activity
+//        var matchingWordsFlow = wordsRepository.getMatchingWordsStream(word)
+//
+//        return matchingWordsFlow
+//    }
+//
+//    suspend fun getMatchingWords(word: String): List<Definition>{
+//        var matchingWords: List<WordWithDetails> = mutableListOf()
+//        // TODO: don't collect inside the viewModel. emit inside the view model and collect in the activity
+//        wordsRepository.getMatchingWordsStream(word)
+//            .collect(){ words ->
+//                matchingWords = words
+//                Log.d("ThaiViewModel", "Outputting Matching Words: ${words.toString()}")
+//            }
+//
+//        val matchingDefinitions: List<Definition> = matchingWords.map { word ->
+//            word.toDefinition()
+//        }
+//
+//        return matchingDefinitions
+//    }
+//
+//    private val queriedWord: MutableStateFlow<String> = MutableStateFlow("")
+//
+//    fun updateQueriedWord(word: String) {
+//        queriedWord.value = word
+//    }
+//
+//    // TODO: this doesn't seem to be triggering when queriedWord is changed
+//    val matchingWords: StateFlow<List<WordWithDetails>> =
+//        wordsRepository.getMatchingWordsStream(queriedWord.value)
+//            .stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+//                initialValue = listOf()
+//            )
+
+//    val matchingWords: StateFlow<> =
+//        wordsRepository.getMatchingWordsStream()
+//            .filterNotNull()
+//            .map {
+//                ItemDetailsUiState(outOfStock = it.quantity <= 0, itemDetails = it.toItemDetails())
+//            }.stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+//                initialValue = ItemDetailsUiState()
+//            )
+
 }

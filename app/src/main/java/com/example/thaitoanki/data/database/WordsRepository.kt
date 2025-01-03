@@ -19,6 +19,8 @@ interface WordsRepository {
 
     fun getUniqueWordsStream(): Flow<List<WordWithDetails>>
 
+    fun getMatchingWordsStream(word: String): Flow<List<WordWithDetails>>
+
     /**
      * Retrieve a word from the given data source that matches with the [id].
      */

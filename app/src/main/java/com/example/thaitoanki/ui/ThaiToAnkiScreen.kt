@@ -6,6 +6,8 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
@@ -39,15 +41,20 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.AnkiDroidConfig
 import com.example.thaitoanki.data.AnkiDroidHelper
+import com.example.thaitoanki.data.database.entities.WordWithDetails
+import com.example.thaitoanki.data.database.entities.toDefinition
 import com.example.thaitoanki.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
+import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.HistoryScreen
 import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.SearchScreen
@@ -65,7 +72,7 @@ enum class ThaiToAnkiScreen(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThaiToAnkiAppBar(
-    currentScreen: ThaiToAnkiScreen,
+    currentScreen: String,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     actions: @Composable() (RowScope.() -> Unit),
@@ -75,8 +82,8 @@ fun ThaiToAnkiAppBar(
     //if(topBarState) {
         CenterAlignedTopAppBar(
             title = {
-                if(currentScreen == ThaiToAnkiScreen.Settings){
-                    Text(currentScreen.name)
+                if(currentScreen == "Settings"){
+                    Text(currentScreen)
                 }
                 else {
                     Text("")
@@ -120,9 +127,11 @@ fun ThaiToAnkiApp(
     // Subscribe to navBackStackEntry, required to get current route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = ThaiToAnkiScreen.valueOf(
-        navBackStackEntry?.destination?.route ?: ThaiToAnkiScreen.Start.name
-    )
+    val currentScreen = navBackStackEntry?.destination?.route ?: ThaiToAnkiScreen.Start.name
+
+//    val currentScreen = ThaiToAnkiScreen.valueOf(
+//        navBackStackEntry?.destination?.route ?: ThaiToAnkiScreen.Start.name
+//    )
 
     // Control TopBar and BottomBar
     when (navBackStackEntry?.destination?.route) {
@@ -223,7 +232,7 @@ fun ThaiToAnkiApp(
                 },
                 //topBarState = topBarState,
                 actions = {
-                    if(currentScreen != ThaiToAnkiScreen.Settings) {
+                    if(currentScreen != ThaiToAnkiScreen.Settings.name) {
 
                         IconButton(
                             onClick = {
@@ -245,6 +254,8 @@ fun ThaiToAnkiApp(
 
         val historyUiState by historyViewModel.historyUiState.collectAsState()
 
+        //val matchingWords by viewModel.matchingWords.collectAsState()
+
         NavHost(
             navController = navController,
             startDestination = ThaiToAnkiScreen.Start.name,
@@ -262,11 +273,11 @@ fun ThaiToAnkiApp(
                     },
                     onSearchButtonClicked = {
                         viewModel.searchDictionary()
-                        navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+                        navController.navigate("${ThaiToAnkiScreen.Flashcard.name}/${viewModel.searchValue}")
                     },
                     onKeyboardSearch = {
                         viewModel.searchDictionary()
-                        navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+                        navController.navigate("${ThaiToAnkiScreen.Flashcard.name}/${viewModel.searchValue}")
                     },
                     onClearButtonClicked = {
                         viewModel.updateSearchValue("")
@@ -290,24 +301,13 @@ fun ThaiToAnkiApp(
             }
 
             composable(
-                route = ThaiToAnkiScreen.Flashcard.name
+                route = "${ThaiToAnkiScreen.Flashcard.name}/{word}", // "FlashcardScreen/{word}"
+                arguments = listOf(navArgument("word") { type = NavType.StringType })
             ) {
                 FlashcardScreen(
                     loadingStatus = viewModel.loadingStatus,
-                    flashcardInfo = uiState.currentDefinitions,
-                    currentDefinitionIndex = uiState.currentDefinitionIndex,
-                    onFlashcardClick = {
-                        // go to the next definition
-                        viewModel.increaseCurrentDefinitionIndex()
-                    },
-                    onLeftButtonClick = {
-                        // go to the previous definition
-                        viewModel.decreaseCurrentDefinitionIndex()
-                    },
-                    onRightButtonClick = {
-                        // go to the next definition
-                        viewModel.increaseCurrentDefinitionIndex()
-                    },
+                    //flashcardInfo = flashcardUiState.currentDefinitions, //uiState.currentDefinitions,
+                    //currentDefinitionIndex = flashcardUiState.currentDefinitionIndex, //uiState.currentDefinitionIndex,
                     onSaveFlashcardButtonClick = {
                         if (!hasReadWritePermission) {
                             // TODO: request read/write permission
@@ -405,12 +405,83 @@ fun ThaiToAnkiApp(
                             it / 2
                         },
                     )
+                    fadeOut(animationSpec = tween(1000))
                 }
             ){
                 HistoryScreen(
                     definitions = historyUiState.wordList,
                     onNavigationButtonClick = {
                         //TODO
+                    },
+                    onWordClick = { word ->
+                        // TODO: use the word to query for all definitions matching the word
+                        //  modify the viewModel w/ the retrieved definitions
+                        // then navigate to the FlashCard page
+
+                        //viewModel.findMatchingWords(word)
+
+                        navController.navigate("${ThaiToAnkiScreen.Flashcard.name}/${word}")
+
+//                        viewModel.resetView()
+//
+//                        // change coroutinescope w/ lifecyclescope
+//                        coroutineScope.launch {
+//                            val matchingDefinitions = viewModel.getMatchingWords(word)
+//
+//                            viewModel.updateDefinitions(matchingDefinitions)
+//
+//                            navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+//                        }
+
+//                        viewModel.resetView()
+//
+//                        val flow = viewModel.getMatchingWordsStream(word)
+//
+//                        coroutineScope.launch {
+//                            var matchingWords: List<WordWithDetails> = mutableListOf()
+//                            flow.collect{ words ->
+//                                matchingWords = words
+//                                Log.d("ThaiToAnkiApp", "Outputting Matching Words: ${words.toString()}")
+//                            }
+//                            val matchingDefinitions: List<Definition> = matchingWords.map { word ->
+//                                word.toDefinition()
+//                            }
+//                            Log.d("ThaiToAnkiApp", "Outputting Matching Definitions: ${matchingDefinitions.toString()}")
+//
+//                            viewModel.updateDefinitions(matchingDefinitions)
+//
+//                            navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+//                        }
+
+//                        viewModel.resetView()
+//
+//                        // this will update matchingWords as well
+//                        //viewModel.updateSearchValue(word)
+//
+//                        viewModel.updateQueriedWord(word)
+//
+//                        val matchingDefinitions = matchingWords.map {
+//                            it.toDefinition()
+//                        }
+//                        viewModel.updateDefinitions(matchingDefinitions)
+//
+//                        navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+
+
+
+
+
+//                        coroutineScope.launch {
+//                            val matchingDefinitions = viewModel.getMatchingWords(word)
+//
+//                            viewModel.resetView()
+//
+//                            viewModel.updateDefinitions(matchingDefinitions)
+//
+//
+//
+//                            navController.navigate(ThaiToAnkiScreen.Flashcard.name)
+//                        }
                     },
                     modifier = Modifier
                         .fillMaxSize()

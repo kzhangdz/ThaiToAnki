@@ -91,6 +91,10 @@ interface WordDao {
     fun getByWordId(id: Long): Flow<WordWithDetails>
 
     @Transaction
+    @Query("SELECT * FROM words WHERE word = :word ORDER BY word_id LIMIT 100")
+    fun getMatchingWords(word: String): Flow<List<WordWithDetails>>
+
+    @Transaction
     @Query("SELECT * FROM words WHERE word = :word AND definition = :definition")
     fun getByWordAndDefinition(word: String, definition: String): Flow<WordWithDetails>
 
