@@ -145,10 +145,13 @@ class ThaiViewModel(
                 }
 
                 if (wordData != null) {
+                    // TODO: may want to considering adding a condition to check if the search matches the returned value before saving
+                    // Or, we could add a search results page
+                    //if (wordData.definitions[0] == searchValue)
                     updateDefinitions(wordData.definitions)
 
                     // Save the successful search to the database
-                        saveWord()
+                    saveWord()
                 }
                 LoadingStatus.Success
 
