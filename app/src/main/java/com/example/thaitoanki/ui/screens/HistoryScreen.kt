@@ -41,6 +41,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.text.parseAsHtml
 import com.example.thaitoanki.R
 import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.services.toAnnotatedString
 
 const val LOG_TAG = "HistoryScreen"
 
@@ -122,6 +123,9 @@ fun DefinitionInfo(
     romanization: String,
     modifier: Modifier = Modifier
 ){
+    val html = HtmlCompat.fromHtml(romanization, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    val annotatedRomanization = html.toAnnotatedString()
+
     Row(
         //verticalAlignment = Alignment.Bottom,
         modifier = modifier
@@ -136,7 +140,7 @@ fun DefinitionInfo(
         )
         Text(
             // TODO: convert string to AnnotatedString, need to replace <sup> tags with a SpanStyle that will denote superscript
-            AnnotatedString(romanization),
+            annotatedRomanization,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.alignByBaseline()
         )
