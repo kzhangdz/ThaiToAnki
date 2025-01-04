@@ -55,6 +55,8 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.material:material:1.8.0-alpha04")
+    // For xml Material Design
+    implementation("com.google.android.material:material:1.12.0")
 
     implementation("org.lucee:commons-io:2.4.0")
 
@@ -70,6 +72,8 @@ dependencies {
 
     // Anki
     implementation("com.github.ankidroid:Anki-Android:v2.18alpha6")
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.constraintlayout)
     //implementation("com.github.ankidroid:Anki-Android")
 
     //Room

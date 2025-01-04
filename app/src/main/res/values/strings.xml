@@ -12,6 +12,17 @@
     <string name="view_definition_button">View Definition</string>
     <string name="no_history">No Search History</string>
 
+    <!-- Flashcard -->
+    <string name="pronunciation_label">Pronunciation</string>
+    <string name="romanization_label">Romanization</string>
+    <string name="classifier_label">Classifier</string>
+    <string name="components_label">Components</string>
+    <string name="synonyms_label">Synonyms</string>
+    <string name="related_words_label">Related Words</string>
+    <string name="examples_label">Example</string>
+    <string name="sentences_label">Sentence</string>
+    <string name="references_label">Reference</string>
+
     <!-- Notification Service Options -->
     <string name="notification_channel_general">ThaiToAnki</string>
     <string name="notification_text">Tap to open dictionary</string>

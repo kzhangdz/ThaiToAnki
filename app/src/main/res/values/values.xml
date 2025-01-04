@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="Theme.ThaiToAnki.Pill">
+        <item name="android:textSize">@dimen/text_pill</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:minHeight">@dimen/height_pill</item>
+        <item name="android:backgroundTint">#999999</item>
+    </style>
+
+    <!-- text formatting styles -->
+    <style name="Theme.ThaiToAnki.TextAppearance.AppCompat" parent="android:TextAppearance">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textColorHint">?android:textColorHint</item>
+        <item name="android:textColorHighlight">?android:textColorHighlight</item>
+        <item name="android:textColorLink">?android:textColorLink</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Theme.ThaiToAnki.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="Theme.ThaiToAnki.TextAppearance.AppCompat.Body">
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+</resources>
