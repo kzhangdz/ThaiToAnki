@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Seems like if I use variables, the sections will be invisible in the preview.
+ Will abandon this for now
+
+             <include
+                android:id="@+id/classifier_section"
+                layout="@layout/fragment_info_block"
+                app:sectionName="@{@string/classifier_label}"
+            />
+ -->
+
+<layout>
+
+    <data>
+        <variable
+            name="sectionName"
+            type="String"/>
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_small">
+                <TextView
+                    android:id="@+id/section_label"
+                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{sectionName}"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/fragment_pill"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/classifiers"
+                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BodyText"/>
+            </LinearLayout>
+            <View style="@style/Divider"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</layout>

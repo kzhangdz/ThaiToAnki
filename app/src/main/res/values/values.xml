@@ -9,6 +9,7 @@
     <style name="Theme.ThaiToAnki.Pill">
         <item name="android:textSize">@dimen/text_pill</item>
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:minWidth">@dimen/height_pill</item>
         <item name="android:minHeight">@dimen/height_pill</item>
         <item name="android:backgroundTint">#999999</item>
     </style>

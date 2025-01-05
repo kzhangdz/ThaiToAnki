@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+
+    id("kotlin-kapt")
+    //kotlin("kapt") version "2.1.0"
 }
 
 android {
@@ -37,6 +40,10 @@ android {
     }
     buildFeatures {
         compose = true
+
+        // allow passing parameters to layouts
+        //https://stackoverflow.com/questions/61845458/pass-data-to-include-layout-using-databinding
+        dataBinding = true
     }
 }
 
@@ -91,4 +98,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    //kapt("groupId:artifactId:version")
 }
