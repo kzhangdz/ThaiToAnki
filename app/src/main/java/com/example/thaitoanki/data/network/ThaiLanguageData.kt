@@ -1,12 +1,10 @@
-package com.example.thaitoanki.network
+package com.example.thaitoanki.data.network
 
 import android.util.Log
-import okhttp3.internal.format
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.jsoup.select.Selector
-import kotlin.math.truncate
 
 /*
 class to hold data retrieved from thai-language.com
@@ -111,7 +109,7 @@ class ThaiLanguageData(
     }
 
     // get the data within a definition block
-    private fun parseDefinitionBlock(definitionBlock: List<Element>): Definition{
+    private fun parseDefinitionBlock(definitionBlock: List<Element>): Definition {
 
         // first row should contain the alternate word and part of speech
         val definitionBlockElements = Elements(definitionBlock)

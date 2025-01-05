@@ -17,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,13 +47,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.AnkiDroidConfig
 import com.example.thaitoanki.data.AnkiDroidHelper
-import com.example.thaitoanki.data.database.entities.WordWithDetails
-import com.example.thaitoanki.data.database.entities.toDefinition
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
-import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.HistoryScreen
 import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.SearchScreen

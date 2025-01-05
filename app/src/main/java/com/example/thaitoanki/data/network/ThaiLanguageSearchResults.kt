@@ -1,4 +1,4 @@
-package com.example.thaitoanki.network
+package com.example.thaitoanki.data.network
 
 import android.util.Log
 import org.jsoup.nodes.Document

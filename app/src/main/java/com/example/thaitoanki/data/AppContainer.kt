@@ -5,7 +5,7 @@ import com.example.thaitoanki.data.HtmlConverterFactory.HtmlConverterFactory
 import com.example.thaitoanki.data.database.WordsDatabase
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.OfflineWordsRepository
-import com.example.thaitoanki.network.ThaiLanguageApiService
+import com.example.thaitoanki.data.network.ThaiLanguageApiService
 import retrofit2.Retrofit
 
 interface AppContainer {

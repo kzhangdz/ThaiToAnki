@@ -8,7 +8,7 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
 import com.ichi2.anki.api.AddContentApi

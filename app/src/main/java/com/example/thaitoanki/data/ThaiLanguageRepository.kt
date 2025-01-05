@@ -1,6 +1,6 @@
 package com.example.thaitoanki.data
 
-import com.example.thaitoanki.network.ThaiLanguageApiService
+import com.example.thaitoanki.data.network.ThaiLanguageApiService
 import org.jsoup.nodes.Document
 
 interface ThaiLanguageRepository {
