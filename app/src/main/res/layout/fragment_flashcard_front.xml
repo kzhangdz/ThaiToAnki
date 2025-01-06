@@ -85,6 +85,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/definition_section"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -174,6 +175,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/components_section"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -186,6 +188,12 @@
                             android:text="@string/components_label"/>
 
                         <!-- Populate this section with pills and text -->
+                        <LinearLayout
+                            android:id="@+id/components_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                        </LinearLayout>
                     </LinearLayout>
                     <View style="@style/Divider"/>
                 </LinearLayout>
@@ -261,6 +269,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/examples_section"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
