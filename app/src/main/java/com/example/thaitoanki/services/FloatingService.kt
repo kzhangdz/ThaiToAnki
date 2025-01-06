@@ -7,14 +7,31 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.thaitoanki.R
 
 
@@ -27,7 +44,66 @@ private const val CODE_FOREGROUND_SERVICE = 1
 private const val CODE_EXIT_INTENT = 2
 private const val CODE_NOTE_INTENT = 3
 
-class FloatingService: Service() {
+class FloatingService: Service(),
+    // two dependencies added to allow Jetpack Compose in a service
+    LifecycleOwner,
+    SavedStateRegistryOwner
+{
+    // variables for showing an overlay with Jetpack Compose
+    lateinit var windowManager: WindowManager
+    private val _lifecycleRegistry = LifecycleRegistry(this)
+    private val _savedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
+    override val savedStateRegistry: SavedStateRegistry = _savedStateRegistryController.savedStateRegistry
+    override val lifecycle: Lifecycle = _lifecycleRegistry
+    private var overlayView: View? = null
+
+    lateinit var layoutInflater: LayoutInflater
+    var testView: View? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        _savedStateRegistryController.performAttach()
+        _savedStateRegistryController.performRestore(null)
+        //_lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+
+        layoutInflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        testView = layoutInflater.inflate(R.layout.fragment_flashcard_front, null)
+
+        // temporarily set this up here just to get it working
+        overlayView = ComposeView(this).apply {
+            setViewTreeLifecycleOwner(this@FloatingService) // pass in a LifecycleOwner
+            setViewTreeSavedStateRegistryOwner(this@FloatingService) // pass in a SavedStateRegistryOwner
+            setContent {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Text("""
+                        Large test text to help make sure everything is visible
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                    """.trimIndent())
+                }
+            }
+        }
+        //ViewTreeLifecycleOwner.set(contentView, this)
+    }
+
+
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
@@ -130,7 +206,11 @@ class FloatingService: Service() {
         // START_NOT_STICKY is important here, we don't want
         // the service to be relaunched.
         if (command == INTENT_COMMAND_EXIT) {
+            // TODO: don't remove if it doesn't exist
+            windowManager.removeView(testView)
+
             stopService()
+
             return START_NOT_STICKY
         }
 
@@ -164,16 +244,30 @@ class FloatingService: Service() {
                 //startPermissionActivity()
             }
             else {
-                Toast.makeText(
-                    this,
-                    // TODO: add the floating window
-                    "Floating window to be added in the next lessons.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                //windowManager.addView(overlayView, getLayoutParams())
+                windowManager.addView(testView, getLayoutParams())
+
+//                Toast.makeText(
+//                    this,
+//                    // TODO: add the floating window
+//                    "Floating window to be added in the next lessons.",
+//                    Toast.LENGTH_SHORT
+//                ).show()
             }
         }
 
         return START_STICKY
+    }
+
+    private fun getLayoutParams(): WindowManager.LayoutParams {
+        return WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,//WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,//WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            PixelFormat.OPAQUE
+            //PixelFormat.TRANSLUCENT
+        )
     }
 
 }
