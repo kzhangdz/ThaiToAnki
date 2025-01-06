@@ -1,6 +1,5 @@
 package com.example.thaitoanki.services
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,14 +7,14 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.app.NotificationCompat
-import androidx.core.content.PermissionChecker
 import com.example.thaitoanki.R
 
 
@@ -142,7 +141,19 @@ class FloatingService: Service() {
         // Show the floating window for adding a new note.
         if (command == INTENT_COMMAND_NOTE) {
             if (!drawOverOtherAppsEnabled()) {
-                startMainActivity()
+                //startMainActivity()
+
+                // navigate to the overlay permission settings
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse(
+                        "package:$packageName"
+                    )
+                )
+                // needed to call startActivity outside of an activity
+                // https://stackoverflow.com/questions/3918517/calling-startactivity-from-outside-of-an-activity-context
+                // TODO: maybe switch this to using activity context?
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent)
 
                 Toast.makeText(
                     this,
