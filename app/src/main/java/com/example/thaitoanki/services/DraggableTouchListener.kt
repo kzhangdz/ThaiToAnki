@@ -1,4 +1,4 @@
-package com.example.thaitoanki.services.windows
+package com.example.thaitoanki.services
 
 import android.content.Context
 import android.graphics.Point

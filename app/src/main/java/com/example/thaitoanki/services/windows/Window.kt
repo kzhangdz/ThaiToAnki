@@ -6,23 +6,15 @@ import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.*
-import android.widget.EditText
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.thaitoanki.R
-import com.example.thaitoanki.services.FloatingService
+import com.example.thaitoanki.services.registerDraggableTouchListener
 
 
 class Window(context: Context) {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    private val rootView = layoutInflater.inflate(R.layout.fragment_search_bar, null) //as WindowContentLayout
+    private val rootView = layoutInflater.inflate(R.layout.window_search, null) as WindowContentLayout // allows us to access setListener()
     //private val rootView = layoutInflater.inflate(R.layout.window, null) as WindowContentLayout
 
 //    private val overlayView = ComposeView(context).apply {
@@ -88,7 +80,7 @@ class Window(context: Context) {
 
 
 
-//        rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
+        rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
 //
 //        rootView.findViewById<View>(R.id.content_button).setOnClickListener {
 //            with(rootView.findViewById<EditText>(R.id.content_text)) {
@@ -102,13 +94,13 @@ class Window(context: Context) {
             positionListener = { x, y -> setPosition(x, y) }
         )
 
-//        rootView.setListener {
-//            if (it) {
-//                enableKeyboard()
-//            } else {
-//                disableKeyboard()
-//            }
-//        }
+        rootView.setListener {
+            if (it) {
+                enableKeyboard()
+            } else {
+                disableKeyboard()
+            }
+        }
     }
 
 

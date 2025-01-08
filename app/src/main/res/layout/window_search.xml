@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.thaitoanki.services.windows.WindowContentLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/padding_small">
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="32dp"
+            android:text="@string/app_name"
+            android:padding="@dimen/padding_small"
+            android:layout_weight="1"/>
+        <ImageButton
+            android:id="@+id/window_minimize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="32dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/minimize_24px"
+            android:contentDescription="minimize" />
+        <ImageButton
+            android:id="@+id/window_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="32dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/close_24px"
+            android:contentDescription="close_window" />
+
+
+    </LinearLayout>
+
+    <include layout="@layout/fragment_search_bar"/>
+</com.example.thaitoanki.services.windows.WindowContentLayout>
