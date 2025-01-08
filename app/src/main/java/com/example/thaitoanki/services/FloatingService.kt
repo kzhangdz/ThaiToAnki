@@ -33,6 +33,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.thaitoanki.R
+import com.example.thaitoanki.services.windows.Window
 
 
 const val INTENT_COMMAND = "com.example.thaitoanki.COMMAND" //"com.localazy.quicknote.COMMAND"
@@ -68,7 +69,7 @@ class FloatingService: Service(),
         //_lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         layoutInflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        testView = layoutInflater.inflate(R.layout.fragment_flashcard_front, null)
+        testView = layoutInflater.inflate(R.layout.fragment_search_bar, null)
 
         // temporarily set this up here just to get it working
         overlayView = ComposeView(this).apply {
@@ -249,7 +250,11 @@ class FloatingService: Service(),
                 //windowManager.addView(overlayView, getLayoutParams())
 
                 // working
-                windowManager.addView(testView, getLayoutParams())
+                //windowManager.addView(testView, getLayoutParams())
+
+                val window = Window(this)
+                window.open()
+
 
 //                Toast.makeText(
 //                    this,

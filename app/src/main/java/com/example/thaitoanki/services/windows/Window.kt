@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
+import com.example.thaitoanki.R
 import com.example.thaitoanki.services.FloatingService
 
 
@@ -21,6 +22,7 @@ class Window(context: Context) {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val rootView = layoutInflater.inflate(R.layout.fragment_search_bar, null) //as WindowContentLayout
     //private val rootView = layoutInflater.inflate(R.layout.window, null) as WindowContentLayout
 
 //    private val overlayView = ComposeView(context).apply {
@@ -95,11 +97,11 @@ class Window(context: Context) {
 //            }
 //        }
 //
-//        rootView.findViewById<View>(R.id.window_header).registerDraggableTouchListener(
-//            initialPosition = { Point(windowParams.x, windowParams.y) },
-//            positionListener = { x, y -> setPosition(x, y) }
-//        )
-//
+        rootView.findViewById<View>(R.id.header).registerDraggableTouchListener(
+            initialPosition = { Point(windowParams.x, windowParams.y) },
+            positionListener = { x, y -> setPosition(x, y) }
+        )
+
 //        rootView.setListener {
 //            if (it) {
 //                enableKeyboard()
@@ -142,7 +144,7 @@ class Window(context: Context) {
 
     private fun update() {
         try {
-            //windowManager.updateViewLayout(rootView, windowParams)
+            windowManager.updateViewLayout(rootView, windowParams)
         } catch (e: Exception) {
             // Ignore exception for now, but in production, you should have some
             // warning for the user here.
@@ -154,7 +156,7 @@ class Window(context: Context) {
         try {
             //windowManager.addView(overlayView, getLayoutParams())
 
-            //windowManager.addView(rootView, windowParams)
+            windowManager.addView(rootView, windowParams)
         } catch (e: Exception) {
             // Ignore exception for now, but in production, you should have some
             // warning for the user here.
@@ -164,7 +166,7 @@ class Window(context: Context) {
 
     fun close() {
         try {
-            //windowManager.removeView(rootView)
+            windowManager.removeView(rootView)
         } catch (e: Exception) {
             // Ignore exception for now, but in production, you should have some
             // warning for the user here.

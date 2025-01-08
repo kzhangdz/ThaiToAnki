@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:style="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:padding="@dimen/padding_small"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/md_theme_background"
+        app:cardCornerRadius="50dp">
+
+        <!--YOUR CONTENT-->
+    <EditText
+        android:id="@+id/search_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="Theme.ThaiToAnki"
+        android:padding="@dimen/padding_small"
+        android:minHeight="32dp"
+        android:minWidth="450dp"
+        android:drawableEnd="@drawable/arrow_right_24px"
+        android:hint="@string/search_bar_label"
+        android:textColor="@color/md_theme_onPrimary_highContrast"
+        android:background="@drawable/custom_input"
+        />
+
+    </androidx.cardview.widget.CardView>
+
+    <!--
+    <com.google.android.material.search.SearchBar
+        android:id="@+id/search_bar"
+        style="@style/Widget.Material3.SearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_bar_label"
+        app:forceDefaultNavigationOnClickListener="false"
+        app:hideNavigationIcon="true"
+        />
+        -->
+
+    <!--
+    <com.google.android.material.search.SearchView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:hint="@string/search_bar_label"
+    app:layout_anchor="@id/search_bar"/>
+
+
+    <LinearLayout android:id="@+id/window_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/md_theme_background"
+        android:orientation="horizontal">
+
+        <EditText  android:id="@+id/content_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/content_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:layout_gravity="end"
+            android:layout_margin="4dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/arrow_right_24px"
+            android:tintMode="src_in"
+            app:tint="@color/md_theme_primary" />
+
+    </LinearLayout>
+
+    -->
+</LinearLayout>
