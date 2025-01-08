@@ -6,6 +6,7 @@
     xmlns:style="http://schemas.android.com/tools"
     android:orientation="vertical">
 
+    <!-- Used for rounded corners on the background -->
     <androidx.cardview.widget.CardView
         android:id="@+id/search_card"
         android:layout_width="wrap_content"
@@ -26,6 +27,10 @@
         android:hint="@string/search_bar_label"
         android:textColor="@color/md_theme_onPrimaryContainer"
         android:background="@drawable/custom_input"
+        android:maxLength="50"
+        android:lines="1"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
         />
 
     </androidx.cardview.widget.CardView>
