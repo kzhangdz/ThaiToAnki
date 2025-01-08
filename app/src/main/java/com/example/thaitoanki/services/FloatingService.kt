@@ -101,6 +101,7 @@ class FloatingService: Service(),
             }
         }
         //ViewTreeLifecycleOwner.set(contentView, this)
+        (overlayView as ComposeView).setViewTreeLifecycleOwner(this@FloatingService)
     }
 
 
@@ -244,7 +245,10 @@ class FloatingService: Service(),
                 //startPermissionActivity()
             }
             else {
+                // not working
                 //windowManager.addView(overlayView, getLayoutParams())
+
+                // working
                 windowManager.addView(testView, getLayoutParams())
 
 //                Toast.makeText(
