@@ -27,13 +27,20 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.example.thaitoanki.R
+import com.example.thaitoanki.ThaiLanguageApplication
+import com.example.thaitoanki.data.DefaultAppContainer
+import com.example.thaitoanki.data.database.OfflineWordsRepository
+import com.example.thaitoanki.data.database.WordsDatabase
 import com.example.thaitoanki.services.windows.Window
+import com.example.thaitoanki.ui.ThaiToAnkiAppBar
 
 
 const val INTENT_COMMAND = "com.example.thaitoanki.COMMAND" //"com.localazy.quicknote.COMMAND"
@@ -45,7 +52,9 @@ private const val CODE_FOREGROUND_SERVICE = 1
 private const val CODE_EXIT_INTENT = 2
 private const val CODE_NOTE_INTENT = 3
 
-class FloatingService: Service(),
+// https://stackoverflow.com/questions/63405673/how-to-call-suspend-function-from-service-android
+// Lifecycle service to allow use of lifecyclescope for coroutines
+class FloatingService: LifecycleService(),
     // two dependencies added to allow Jetpack Compose in a service
     LifecycleOwner,
     SavedStateRegistryOwner
@@ -63,12 +72,12 @@ class FloatingService: Service(),
 
     override fun onCreate() {
         super.onCreate()
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         _savedStateRegistryController.performAttach()
         _savedStateRegistryController.performRestore(null)
         //_lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
-        layoutInflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        layoutInflater = this.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         testView = layoutInflater.inflate(R.layout.fragment_search_bar, null)
 
         // temporarily set this up here just to get it working
@@ -106,7 +115,8 @@ class FloatingService: Service(),
     }
 
 
-    override fun onBind(p0: Intent?): IBinder? {
+    override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
         return null
     }
 
@@ -123,7 +133,7 @@ class FloatingService: Service(),
      */
     private fun showNotification() {
 
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val exitIntent = Intent(this, FloatingService::class.java).apply {
             putExtra(INTENT_COMMAND, INTENT_COMMAND_EXIT)
@@ -200,9 +210,14 @@ class FloatingService: Service(),
 
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(
+            intent = intent,
+            flags = flags,
+            startId = startId,
+        )
 
-        val command = intent.getStringExtra(INTENT_COMMAND)
+        val command = intent?.getStringExtra(INTENT_COMMAND)
 
         // Exit the service if we receive the EXIT command.
         // START_NOT_STICKY is important here, we don't want
@@ -252,16 +267,18 @@ class FloatingService: Service(),
                 // working
                 //windowManager.addView(testView, getLayoutParams())
 
-                val window = Window(this)
+                // TODO: Do the repositories need to be passed using dependency injection?
+                //https://stackoverflow.com/questions/63766576/injecting-a-repository-into-a-service-in-android-using-hilt
+
+                // TODO: pull these out into member variables
+                val container = DefaultAppContainer(applicationContext)
+                val languageRepo = container.thaiLanguageRepository //ThaiLanguageApplication().container.thaiLanguageRepository
+
+                val wordRepo = container.wordsRepository
+
+                val window = Window(this, lifecycleScope, languageRepo, wordRepo)
                 window.open()
 
-
-//                Toast.makeText(
-//                    this,
-//                    // TODO: add the floating window
-//                    "Floating window to be added in the next lessons.",
-//                    Toast.LENGTH_SHORT
-//                ).show()
             }
         }
 

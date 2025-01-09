@@ -5,12 +5,36 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
+import android.widget.EditText
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
+import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.services.registerDraggableTouchListener
+import com.example.thaitoanki.ui.AppViewModelProvider
+import com.example.thaitoanki.ui.screens.ThaiViewModel
+import kotlinx.coroutines.launch
 
 
-class Window(context: Context) {
+class Window(context: Context,
+             val lifecycleScope: LifecycleCoroutineScope,
+             val languageRepository: ThaiLanguageRepository,
+             val wordsRepository: WordsRepository
+) {
+//    val viewModel: ThaiViewModel by viewModels()
+//    lifecycleScope.launch {
+//        repeatOnLifecycle(Lifecycle.State.STARTED) {
+//            viewModel.uiState.collect {
+//                // Update UI elements
+//            }
+//        }
+//    }
+
+    // TODO: pass in viewModel instead?
+    val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -78,17 +102,37 @@ class Window(context: Context) {
     private fun initWindow() {
         // Using kotlin extension for views caused error, so good old findViewById is used
 
-
-
         rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
-//
-//        rootView.findViewById<View>(R.id.content_button).setOnClickListener {
-//            with(rootView.findViewById<EditText>(R.id.content_text)) {
-//                db.insert(text.toString(), true)
-//                setText("")
-//            }
-//        }
-//
+
+        rootView.findViewById<View>(R.id.search_button).setOnClickListener {
+            with(rootView.findViewById<EditText>(R.id.search_input)) {
+                //db.insert(text.toString(), true)
+
+                //wordsRepository.insertWord(text.toString())
+
+                lifecycleScope.launch {
+                    //val results = languageRepository.searchDictionary(text.toString())
+                    //Log.d("Service", results.html())
+                    val searchValue = text.toString()
+                    viewModel.updateSearchValue(text.toString())
+
+                    // TODO: need to add a version of search Dictionary that suspends and does not start another coroutine
+                    //viewModel.searchDictionary()
+
+                    viewModel.sendDictionaryQuery()
+
+                    // test
+                    //close()
+                    //open()
+
+                    setText("")
+
+                    // closing and opening the window affected the search insertion somehow
+                    // rather than closing the window, should I move it offscreen and show another one?
+                }
+            }
+        }
+
         rootView.findViewById<View>(R.id.header).registerDraggableTouchListener(
             initialPosition = { Point(windowParams.x, windowParams.y) },
             positionListener = { x, y -> setPosition(x, y) }

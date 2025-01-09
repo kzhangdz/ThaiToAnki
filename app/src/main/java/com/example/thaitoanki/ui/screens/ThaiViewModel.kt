@@ -123,43 +123,57 @@ class ThaiViewModel(
 
         // TODO: the code might not be properly awaiting for a response to finish before continuing. need to properly await
         viewModelScope.launch {
-            loadingStatus = try {
+            val result = sendDictionaryQuery()
+            if (result){
+                loadingStatus =
+                    LoadingStatus.Success
 
-                val searchResult = thaiLanguageRepository.searchDictionary(searchValue)
-                val thaiLanguageSearchResults = ThaiLanguageSearchResults(searchValue, searchResult)
-
-                val id = thaiLanguageSearchResults.topResultId
-
-                var wordData: ThaiLanguageData? = null
-                // if we have not retrieved the definition, query for it
-                if (!thaiLanguageSearchResults.isDefinitionRetrieved){
-                    val definitionResult = id?.let { thaiLanguageRepository.getWord(it) }
-
-                    if (definitionResult != null) {
-                        wordData = ThaiLanguageData(searchValue, definitionResult, wordId = id)
-                    }
-                }
-                // branch for if the thaiLanguageSearchResults contain the data
-                else{
-                    wordData = ThaiLanguageData(searchValue, searchResult, wordId = id)
-                }
-
-                if (wordData != null) {
-                    // TODO: may want to considering adding a condition to check if the search matches the returned value before saving
-                    // Or, we could add a search results page
-                    //if (wordData.definitions[0] == searchValue)
-                    updateDefinitions(wordData.definitions)
-
-                    // Save the successful search to the database
-                    saveWord()
-                }
-                LoadingStatus.Success
-
-            } catch (e: IOException) {
+            } else {
                 //CLEARTEXT communication to www.thai-language.com not permitted by network security policy
                 //https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
-                LoadingStatus.Error
+                loadingStatus = LoadingStatus.Error
             }
+        }
+    }
+
+    suspend fun sendDictionaryQuery(): Boolean{
+        try {
+
+            val searchResult = thaiLanguageRepository.searchDictionary(searchValue)
+            val thaiLanguageSearchResults = ThaiLanguageSearchResults(searchValue, searchResult)
+
+            val id = thaiLanguageSearchResults.topResultId
+
+            var wordData: ThaiLanguageData? = null
+            // if we have not retrieved the definition, query for it
+            if (!thaiLanguageSearchResults.isDefinitionRetrieved){
+                val definitionResult = id?.let { thaiLanguageRepository.getWord(it) }
+
+                if (definitionResult != null) {
+                    wordData = ThaiLanguageData(searchValue, definitionResult, wordId = id)
+                }
+            }
+            // branch for if the thaiLanguageSearchResults contain the data
+            else{
+                wordData = ThaiLanguageData(searchValue, searchResult, wordId = id)
+            }
+
+            if (wordData != null) {
+                // TODO: may want to considering adding a condition to check if the search matches the returned value before saving
+                // Or, we could add a search results page
+                //if (wordData.definitions[0] == searchValue)
+                updateDefinitions(wordData.definitions)
+
+                // Save the successful search to the database
+                saveWord()
+            }
+
+            return true
+        } catch (e: IOException) {
+            //CLEARTEXT communication to www.thai-language.com not permitted by network security policy
+            //https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
+
+            return false
         }
     }
 
