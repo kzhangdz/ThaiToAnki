@@ -2,11 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permission to have a service running separate from main app usage -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Permission for overlays -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permission used for boot events (i.e. device on) -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".ThaiLanguageApplication"
         android:usesCleartextTraffic="true"
@@ -46,6 +54,21 @@
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Floating windows"/>
         </service>
+
+        <!--
+        Receive boot events
+        BOOT_COMPLETED - This is broadcast once after the device has finished booting.
+        USER_PRESENT - Sent when the user is present after the device wakes up (e.g. when the keyguard is gone).
+        QUICKBOOT_POWERON - This is broadcast that you don’t find in the official Android documentation. It’s sent on some devices and emulators when the device is restarted only.
+        -->
+        <receiver android:name=".services.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <queries>
