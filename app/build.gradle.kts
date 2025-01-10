@@ -91,6 +91,9 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
+    // Carousel/pager for layout xml
+    implementation("com.mig35:carousellayoutmanager:1.4.6")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

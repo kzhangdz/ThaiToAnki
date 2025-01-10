@@ -1,12 +1,10 @@
 package com.example.thaitoanki.ui.screens.components
 
 import android.content.Context
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
@@ -18,11 +16,104 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.TestDefinitions
 import com.example.thaitoanki.ui.theme.ThaiToAnkiTheme
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.HeroCarouselStrategy
 
+//import com.mig35.carousellayoutmanager.CarouselLayoutManager
+//import com.mig35.carousellayoutmanager.CenterScrollListener
+
+
+@Composable
+fun TestFlashcardFront(
+    flashcardInfo: List<Definition>,
+    currentDefinitionIndex: Int,
+    modifier: Modifier = Modifier
+){
+    AndroidView(
+        factory = { context ->
+            View.inflate(context, R.layout.fragment_carousel, null)
+        },
+        modifier = modifier,
+        update = { view ->
+            updateTestFlashcardFrontView(view, flashcardInfo)
+        }
+    )
+}
+
+fun updateTestFlashcardFrontView(view: View, flashcardInfo: List<Definition>){
+    val layoutManager: CarouselLayoutManager = CarouselLayoutManager(HeroCarouselStrategy()) //CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL);
+
+    val recyclerView = view.findViewById<RecyclerView>(R.id.carousel_horizontal);
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setHasFixedSize(true);
+
+    recyclerView.adapter = CustomAdapter(
+        definitions = flashcardInfo
+    )
+    // enable items center scrolling
+    //recyclerView.addOnScrollListener(CenterScrollListener())
+}
+
+class CustomAdapter(private val definitions: List<Definition>) :
+    RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder)
+     */
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // need to declare all the elements in the card
+        // start with just the title for now
+        val wordView: TextView
+
+        init {
+            // Define click listener for the ViewHolder's View
+            wordView = view.findViewById(R.id.word)
+        }
+    }
+
+    // Create new views (invoked by the layout manager)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        // Create a new view, which defines the UI of the list item
+        val view = LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.fragment_flashcard_front, viewGroup, false)
+
+        return ViewHolder(view)
+    }
+
+    // Replace the contents of a view (invoked by the layout manager)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+
+        // Get element from your dataset at this position and replace the
+        // contents of the view with that element
+        viewHolder.wordView.text = definitions[position].baseWord
+    }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    override fun getItemCount() = definitions.size
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TestFlashcardFrontPreview() {
+    ThaiToAnkiTheme(
+        darkTheme = false
+    ) {
+        TestFlashcardFront(
+            flashcardInfo = TestDefinitions.definitions,
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.padding_medium))
+                .verticalScroll(rememberScrollState()),
+            currentDefinitionIndex = 1,
+        )
+    }
+}
 
 @Composable
 fun FlashcardFront(
