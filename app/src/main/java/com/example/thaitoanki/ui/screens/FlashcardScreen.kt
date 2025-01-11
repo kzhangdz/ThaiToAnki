@@ -34,6 +34,7 @@ import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.components.FlashcardFront
+import com.example.thaitoanki.ui.screens.components.TestFlashcardFront
 
 @Composable
 fun FlashcardScreen(
@@ -120,6 +121,7 @@ fun Flashcard(
     FlashcardFront(
         flashcardInfo,
         currentDefinitionIndex,
+        onClick = onFlashcardClick,
         modifier = Modifier
             .graphicsLayer {
                 alpha = animateFront
