@@ -249,13 +249,19 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
     }
 
     // classifier
-//    val classifierSectionViewId = R.id.classifier_container
-//    buildSection(view,
-//        sectionInfo = currentFlashcard.classifiers,
-//        containerId = classifierSectionViewId,
-//        build = {
-//
-//        })
+    val classifierSectionViewId = R.id.classifiers_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.classifiers,
+        containerId = classifierSectionViewId,
+        build = {
+            buildPillSection(
+                view = view,
+                context = context,
+                layoutInflater = layoutInflater,
+                contentId = R.id.classifiers_content,
+                data = currentFlashcard.classifiers
+            )
+        })
 
     // components
     val componentsSectionViewId = R.id.components_container
@@ -263,33 +269,44 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
         sectionInfo = currentFlashcard.components,
         containerId = componentsSectionViewId,
         build = {
-            val parent = view.findViewById<LinearLayout>(R.id.components_content)
-
-            // insert a horizontal recyclerview and add an adapter on it for pills.
-            // the adapter will be for type viewholder
-
-            val recyclerView = layoutInflater.inflate(R.layout.fragment_recycler, null) as RecyclerView
-            recyclerView.adapter = PillListAdapter(
-                definitions = currentFlashcard.components
+            buildPillSection(
+                view = view,
+                context = context,
+                layoutInflater = layoutInflater,
+                contentId = R.id.components_content,
+                data = currentFlashcard.components
             )
-            recyclerView.setLayoutManager(
-                LinearLayoutManager(
-                    context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-            )
-
-            // update seems to run on each state rebuild
-            // check the childcount so it's not added multiple times
-            if (parent.childCount < 1){
-                parent.addView(recyclerView)
-            }
         })
 
     // synonyms
+    val synonymsSectionViewId = R.id.synonyms_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.components,
+        containerId = synonymsSectionViewId,
+        build = {
+            buildPillSection(
+                view = view,
+                context = context,
+                layoutInflater = layoutInflater,
+                contentId = R.id.synonyms_content,
+                data = currentFlashcard.synonyms
+            )
+        })
 
     // related words
+    val relatedWordsViewId = R.id.related_words_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.relatedWords,
+        containerId = relatedWordsViewId,
+        build = {
+            buildPillSection(
+                view = view,
+                context = context,
+                layoutInflater = layoutInflater,
+                contentId = R.id.related_words_content,
+                data = currentFlashcard.relatedWords
+            )
+        })
 
     // examples
     val exampleSectionViewId = R.id.examples_container
@@ -323,6 +340,31 @@ fun buildSection(view: View, sectionInfo: List<Any>, @IdRes containerId: Int, bu
     }
     else{
         containerView.visibility = View.GONE
+    }
+}
+
+fun buildPillSection(view: View, context: Context, layoutInflater: LayoutInflater, @IdRes contentId: Int, data: List<Definition>){
+    val parent = view.findViewById<LinearLayout>(contentId)
+
+    // insert a horizontal recyclerview and add an adapter on it for pills.
+    // the adapter will be for type viewholder
+
+    val recyclerView = layoutInflater.inflate(R.layout.fragment_recycler, null) as RecyclerView
+    recyclerView.adapter = PillListAdapter(
+        definitions = data
+    )
+    recyclerView.setLayoutManager(
+        LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+    )
+
+    // update seems to run on each state rebuild
+    // check the childcount so it's not added multiple times
+    if (parent.childCount < 1){
+        parent.addView(recyclerView)
     }
 }
 

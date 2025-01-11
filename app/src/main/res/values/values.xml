@@ -11,6 +11,7 @@
         <item name="android:textColor">@color/md_theme_onSurface_highContrast</item>
         <item name="android:minWidth">@dimen/width_pill</item>
         <item name="android:minHeight">@dimen/height_pill</item>
+        <item name="android:maxWidth">152dp</item>
         <item name='android:gravity'>center</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>

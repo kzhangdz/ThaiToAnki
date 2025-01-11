@@ -140,7 +140,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/classifier_container"
+                    android:id="@+id/classifiers_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -162,22 +162,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/classifier_label"/>
 
-                            <!--
+                            <!-- Populate this section with pills and text -->
                             <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:id="@+id/classifiers_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:orientation="horizontal">
-
-                                <include layout="@layout/fragment_pill"/>
                             </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/classifiers"
-                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="BodyText"/>
-                            -->
                         </LinearLayout>
                         <View style="@style/Divider"/>
                     </LinearLayout>
@@ -243,6 +235,12 @@
                                 android:text="@string/synonyms_label"/>
 
                             <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/synonyms_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
                         </LinearLayout>
                         <View style="@style/Divider"/>
                     </LinearLayout>
@@ -272,6 +270,12 @@
                                 android:text="@string/related_words_label"/>
 
                             <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/related_words_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
                         </LinearLayout>
                         <View style="@style/Divider"/>
                     </LinearLayout>

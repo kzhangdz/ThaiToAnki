@@ -16,6 +16,6 @@
             style="@style/Pill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pill" />
+            android:text="Pill\ntestalongpieceoftext to see how it displays" />
     </androidx.cardview.widget.CardView>
 </LinearLayout>
