@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -25,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.TestDefinitions
+import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 import com.example.thaitoanki.ui.theme.ThaiToAnkiTheme
 
 //import com.mig35.carousellayoutmanager.CarouselLayoutManager
@@ -256,6 +258,37 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
 //        })
 
     // components
+    val componentsSectionViewId = R.id.components_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.components,
+        containerId = componentsSectionViewId,
+        build = {
+            val parent = view.findViewById<LinearLayout>(R.id.components_content)
+
+            // insert a horizontal recyclerview and add an adapter on it for pills.
+            // the adapter will be for type viewholder
+
+            val recyclerView = layoutInflater.inflate(R.layout.fragment_recycler, null) as RecyclerView
+            recyclerView.adapter = PillListAdapter(
+                definitions = currentFlashcard.components
+            )
+            recyclerView.setLayoutManager(
+                LinearLayoutManager(
+                    context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            )
+
+            // update seems to run on each state rebuild
+            // check the childcount so it's not added multiple times
+            if (parent.childCount < 1){
+                parent.addView(recyclerView)
+            }
+        })
+
+
+    // components
 //    val componentsSectionViewId = R.id.components_container
 //    buildSection(view,
 //        sectionInfo = currentFlashcard.components,
@@ -298,20 +331,20 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
     // related words
 
     // examples
-//    val exampleSectionViewId = R.id.examples_container
-//    buildSection(view,
-//        sectionInfo = currentFlashcard.examples,
-//        containerId = exampleSectionViewId,
-//        build = {
-//            val parent = view.findViewById<LinearLayout>(R.id.examples_section)
-//
-//
-//            //val newView = layoutInflater.inflate(R.layout.fragment_pill, parent)
-//
-////            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-////            ViewGroup parent = (ViewGroup)findViewById(R.id.where_you_want_to_insert);
-////            inflater.inflate(R.layout.the_child_view, parent);
-//        })
+    val exampleSectionViewId = R.id.examples_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.examples,
+        containerId = exampleSectionViewId,
+        build = {
+            val parent = view.findViewById<LinearLayout>(R.id.examples_section)
+
+
+            //val newView = layoutInflater.inflate(R.layout.fragment_pill, parent)
+
+//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            ViewGroup parent = (ViewGroup)findViewById(R.id.where_you_want_to_insert);
+//            inflater.inflate(R.layout.the_child_view, parent);
+        })
 
     // sentences
 
@@ -320,12 +353,16 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
 
 // display or hide sections of the flashcard
 fun buildSection(view: View, sectionInfo: List<Any>, @IdRes containerId: Int, build: () -> Unit){
+    val containerView: View = view.findViewById(containerId)
+
     if(sectionInfo.isNotEmpty()){
         build()
+
+        containerView.visibility = View.VISIBLE
     }
     else{
-        val containerView: View = view.findViewById(containerId)
-        (containerView.getParent() as ViewGroup).removeView(containerView)
+        //(containerView.getParent() as ViewGroup).removeView(containerView)
+        containerView.visibility = View.GONE
     }
 }
 

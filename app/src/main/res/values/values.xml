@@ -6,12 +6,13 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
-    <style name="Theme.ThaiToAnki.Pill">
+    <style name="Pill">
         <item name="android:textSize">@dimen/text_pill</item>
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:minWidth">@dimen/height_pill</item>
+        <item name="android:minWidth">@dimen/width_pill</item>
         <item name="android:minHeight">@dimen/height_pill</item>
-        <item name="android:backgroundTint">#999999</item>
+        <item name='android:gravity'>center</item>
+        <item name="android:background">#999999</item>
     </style>
 
     <!-- text formatting styles -->
