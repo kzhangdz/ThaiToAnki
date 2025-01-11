@@ -287,45 +287,6 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
             }
         })
 
-
-    // components
-//    val componentsSectionViewId = R.id.components_container
-//    buildSection(view,
-//        sectionInfo = currentFlashcard.components,
-//        containerId = componentsSectionViewId,
-//        build = {
-//            val parent = view.findViewById<LinearLayout>(R.id.components_content)
-//
-//            for (i in 0..<currentFlashcard.components.size){
-//                //val newView = View()
-//                //parent.addView(R.layout.fragment_pill)
-//                //val pill = layoutInflater.inflate(R.layout.fragment_pill, parent) as Button
-//
-//                // TODO: might need an arrayAdapter for this to work
-//                // Might also need to switch to ListView
-////                val pill = View.inflate(context, R.layout.fragment_pill, parent) as ViewGroup
-////
-////                Log.d("test", pill.getChildAt(0).toString())
-////                //https://stackoverflow.com/questions/8395168/android-get-children-inside-a-view
-//
-////                val pillButton = view.findViewById<Button>(R.id.pill)
-////                pillButton.text = "test"
-////
-////                view.findView
-//
-//                // set the id
-//                //pill.setTag(i)
-//                //pill.id = View.generateViewId()
-//
-//                // adjust the text inside
-//                //pill.text = "text"//(currentFlashcard.components[i].baseWord)
-//            }
-//
-////            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-////            ViewGroup parent = (ViewGroup)findViewById(R.id.where_you_want_to_insert);
-////            inflater.inflate(R.layout.the_child_view, parent);
-//        })
-
     // synonyms
 
     // related words
@@ -361,7 +322,6 @@ fun buildSection(view: View, sectionInfo: List<Any>, @IdRes containerId: Int, bu
         containerView.visibility = View.VISIBLE
     }
     else{
-        //(containerView.getParent() as ViewGroup).removeView(containerView)
         containerView.visibility = View.GONE
     }
 }

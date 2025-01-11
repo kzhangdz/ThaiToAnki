@@ -1,5 +1,6 @@
 package com.example.thaitoanki.ui.screens.adapters
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,9 +52,15 @@ class PillListAdapter(private val definitions: List<Definition>) :
             // modify the pill text to display a paragraph
             if (isNotExpanded){
                 // expand
+                // set gravity to left (switch from Center to CenterVertical, which doesn't include horizontal axis)
+                viewHolder.pillTextView.gravity = Gravity.CENTER_VERTICAL
+
                 viewHolder.pillTextView.text = definitions[position].baseWord + "\n" + definitions[position].definition
             }
             else{
+                // set gravity to center
+                viewHolder.pillTextView.gravity = Gravity.CENTER
+
                 viewHolder.pillTextView.text = definitions[position].baseWord
             }
 
