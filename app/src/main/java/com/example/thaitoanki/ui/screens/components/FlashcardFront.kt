@@ -327,6 +327,27 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
     // sentences
 
     // reference
+    val referencesSectionViewId = R.id.references_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.baseWord.toList(),
+        containerId = referencesSectionViewId,
+        build = {
+            val parent = view.findViewById<LinearLayout>(R.id.references_content)
+
+            // generate a references data class on load?
+//            {
+//                "link": "https://etc",
+//                "display": "Wiktionary"
+//            }
+
+            // TODO: this should also probably be a recycler view
+
+            //val newView = layoutInflater.inflate(R.layout.fragment_pill, parent)
+
+//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            ViewGroup parent = (ViewGroup)findViewById(R.id.where_you_want_to_insert);
+//            inflater.inflate(R.layout.the_child_view, parent);
+        })
 }
 
 // display or hide sections of the flashcard
