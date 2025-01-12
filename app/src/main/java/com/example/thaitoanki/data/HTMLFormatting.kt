@@ -1,5 +1,8 @@
 package com.example.thaitoanki.data
 
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import com.example.thaitoanki.data.network.Definition
 
 object HTMLFormatting {
@@ -30,7 +33,7 @@ object HTMLFormatting {
     fun formatExamplesToHTML(examples: List<Definition>, word: String): String{
         var HTMLString = ""
         for(example in examples){
-            var currentHTMLString = addHighlightHTML(example, word)
+            var currentHTMLString = addHighlightHTML(example.baseWord, word)
 
             currentHTMLString += " - ${example.definition}"
 
@@ -51,7 +54,7 @@ object HTMLFormatting {
         var HTMLString = ""
         for(sentence in sentences){
             // get output like <span class="highlight">พูด</span>ภาษาไทยได้ไหมครับ
-            var currentHTMLString = addHighlightHTML(sentence, word)
+            var currentHTMLString = addHighlightHTML(sentence.baseWord, word)
 
             // add div around the output
             currentHTMLString = "<div>${currentHTMLString}</div>"
@@ -73,21 +76,22 @@ object HTMLFormatting {
     /*
     Given a word, add a <span class="highlight"></span> around the word, using the sliding window method
      */
-    fun addHighlightHTML(definition: Definition, word: String): String{
+    fun addHighlightHTML(stringToModify: String, word: String): String {
         var currentHTMLString = ""
 
+
         var i = 0
-        while(i < definition.baseWord.length){ //- word.length
+        while(i < stringToModify.length){ //- word.length
             val windowEndIndex = i + word.length
 
             // at the end, if there isn't enough room left for the window
-            if(windowEndIndex > definition.baseWord.length){
+            if(windowEndIndex > stringToModify.length){
                 // add the current character
-                currentHTMLString += definition.baseWord[i]
+                currentHTMLString += stringToModify[i]
                 i++
             }
             else {
-                val currentWindow: String = definition.baseWord.substring(i, windowEndIndex)
+                val currentWindow: String = stringToModify.substring(i, windowEndIndex)
 
                 if (currentWindow == word) {
                     currentHTMLString += """<span class="highlight">${currentWindow}</span>"""
@@ -103,5 +107,18 @@ object HTMLFormatting {
         }
 
         return currentHTMLString
+    }
+
+    fun addHighlightSpannable(stringToModify: String, word: String, color: Int): SpannableString {
+        val spannable = SpannableString(stringToModify);
+
+        var index = stringToModify.indexOf(word);
+
+        while ( index >= 0) {
+            spannable.setSpan(ForegroundColorSpan(color), index, index + word.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            index = stringToModify.indexOf(word, index + word.length) // returns -1 if not found
+        }
+
+        return spannable
     }
 }

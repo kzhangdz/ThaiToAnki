@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.text.Html
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.thaitoanki.R
+import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.TestDefinitions
 import com.example.thaitoanki.services.toAnnotatedString
@@ -339,15 +341,19 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
         build = {
             val parent = view.findViewById<LinearLayout>(R.id.examples_content)
 
+            val color = context.getColor(R.color.md_theme_primary)
 
             // modify the text view
             val examplesTextView = view.findViewById<TextView>(R.id.examples_text)
-            // todo: add formatting to turn into spannable string
-            val displayText = currentFlashcard.examples[0].baseWord + " - " + currentFlashcard.examples[0].definition
+            val displayText = HTMLFormatting.addHighlightSpannable(
+                stringToModify = currentFlashcard.examples[0].baseWord + " - " + currentFlashcard.examples[0].definition,
+                word = currentFlashcard.baseWord,
+                color = color
+            )
             examplesTextView.text = displayText
 
             // on click, bring up a dialog to switch to other examples
-
+            // TODO: temporarily
         })
 
     // sentences
