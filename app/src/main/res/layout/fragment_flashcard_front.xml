@@ -114,22 +114,11 @@
                                 android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/partOfSpeech"
+                                    android:id="@+id/partOfSpeechAndDefinition"
                                     style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="PartOfSpeech"/>
-
-                                <Space
-                                    android:id="@+id/space"
-                                    android:layout_height="4dp" android:layout_width="4dp"/>
-
-                                <TextView
-                                    android:id="@+id/definition"
-                                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Definition"/>
+                                    android:text="PartOfSpeechAndDefinition"/>
                             </LinearLayout>
                         </LinearLayout>
                         <View style="@style/Divider"/>

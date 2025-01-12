@@ -2,6 +2,7 @@ package com.example.thaitoanki.ui.screens.components
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Html
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -22,14 +23,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
+import androidx.core.text.toSpanned
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.TestDefinitions
+import com.example.thaitoanki.services.toAnnotatedString
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 import com.example.thaitoanki.ui.theme.ThaiToAnkiTheme
+import okhttp3.internal.format
 
 
 //import com.mig35.carousellayoutmanager.CarouselLayoutManager
@@ -125,7 +130,7 @@ class CustomAdapter(private val definitions: List<Definition>) :
         init {
             // Define click listener for the ViewHolder's View
             wordView = view.findViewById(R.id.word)
-            definitionView = view.findViewById(R.id.definition)
+            definitionView = view.findViewById(R.id.partOfSpeechAndDefinition)
 
         }
     }
@@ -236,31 +241,35 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
             )
         })
 
-    // onClickListener
-
     // romanization
-
+    val romanizationSectionViewId = R.id.romanization
+    buildSection(view,
+        sectionInfo = currentFlashcard.romanization.toList(),
+        containerId = romanizationSectionViewId,
+        build = {
+            buildHeaderClickableTextSection(
+                view = view,
+                context = context,
+                textViewId = romanizationSectionViewId,
+                textLabelId = R.string.romanization_label,
+                data = currentFlashcard.romanization
+            )
+        })
 
     // information sections
-    // partOfSpeech
-    val partOfSpeechTextView = view.findViewById<TextView>(R.id.partOfSpeech)
-    if (currentFlashcard.partOfSpeech.isNotEmpty()){
-        partOfSpeechTextView.setText(currentFlashcard.partOfSpeech)
-    }
-    else{
-        val definitionSectionView: View = view.findViewById<LinearLayout>(R.id.definition_container)
-        (definitionSectionView.getParent() as ViewGroup).removeView(definitionSectionView)
-    }
 
     // definition
-    val definitionTextView = view.findViewById<TextView>(R.id.definition)
-    if (currentFlashcard.definition.isNotEmpty()){
-        definitionTextView.setText(currentFlashcard.definition)
-    }
-    else{
-        val definitionSectionView: View = view.findViewById<LinearLayout>(R.id.definition_container)
-        (definitionSectionView.getParent() as ViewGroup).removeView(definitionSectionView)
-    }
+    val definitionSectionViewId = R.id.definition_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.definition.toList(),
+        containerId = definitionSectionViewId,
+        build = {
+            // combine part of speech and definition
+            val definitionTextView = view.findViewById<TextView>(R.id.partOfSpeechAndDefinition)
+            val partOfSpeech: String = if (currentFlashcard.partOfSpeech.isEmpty()) "" else currentFlashcard.partOfSpeech + " "
+            val displayText: String = partOfSpeech + currentFlashcard.definition
+            definitionTextView.text = displayText
+        })
 
     // classifier
     val classifierSectionViewId = R.id.classifiers_container
@@ -390,8 +399,10 @@ fun buildHeaderClickableTextSection(view: View, context: Context, @IdRes textVie
 
     // onClick, show the value. Otherwise, if it's already shown, show the original label
     textView.setOnClickListener(){
-        if (textView.text == formattedLabel){
-            textView.text = data
+        if (textView.text.toString() == formattedLabel.toString()){
+            // converts the data to html if it's a string w/ tags, so that it can be converted to a spannable
+            val html = Html.fromHtml(data, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            textView.text = html.toSpanned()
         }
         else{
             textView.text = formattedLabel
