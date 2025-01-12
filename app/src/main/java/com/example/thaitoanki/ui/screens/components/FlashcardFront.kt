@@ -1,14 +1,18 @@
 package com.example.thaitoanki.ui.screens.components
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,14 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.TestDefinitions
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 import com.example.thaitoanki.ui.theme.ThaiToAnkiTheme
+
 
 //import com.mig35.carousellayoutmanager.CarouselLayoutManager
 //import com.mig35.carousellayoutmanager.CenterScrollListener
@@ -219,8 +222,19 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
     }
 
     // pronunciation
-    val pronunciationTextView = view.findViewById<TextView>(R.id.pronunciation)
-    pronunciationTextView.setText(R.string.pronunciation_label)
+    val pronunciationSectionViewId = R.id.pronunciation
+    buildSection(view,
+        sectionInfo = currentFlashcard.pronunciation.toList(),
+        containerId = pronunciationSectionViewId,
+        build = {
+            buildHeaderClickableTextSection(
+                view = view,
+                context = context,
+                textViewId = pronunciationSectionViewId,
+                textLabelId = R.string.pronunciation_label,
+                data = currentFlashcard.pronunciation
+            )
+        })
 
     // onClickListener
 
@@ -361,6 +375,27 @@ fun buildSection(view: View, sectionInfo: List<Any>, @IdRes containerId: Int, bu
     }
     else{
         containerView.visibility = View.GONE
+    }
+}
+
+fun buildHeaderClickableTextSection(view: View, context: Context, @IdRes textViewId: Int, @StringRes textLabelId: Int, data: String){
+    val textView = view.findViewById<TextView>(textViewId)
+
+    // customize the label with spannable string for underline and italics
+    // (getting the string from resources doesn't include the html tag <u> and <i>)
+    val label = context.getString(textLabelId)
+    val formattedLabel = SpannableString(label)
+    formattedLabel.setSpan(UnderlineSpan(), 0, formattedLabel.length, 0)
+    formattedLabel.setSpan(StyleSpan(Typeface.ITALIC), 0, formattedLabel.length, 0)
+
+    // onClick, show the value. Otherwise, if it's already shown, show the original label
+    textView.setOnClickListener(){
+        if (textView.text == formattedLabel){
+            textView.text = data
+        }
+        else{
+            textView.text = formattedLabel
+        }
     }
 }
 
