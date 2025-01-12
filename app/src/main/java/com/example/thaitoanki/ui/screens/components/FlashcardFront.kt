@@ -304,7 +304,7 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
     // synonyms
     val synonymsSectionViewId = R.id.synonyms_container
     buildSection(view,
-        sectionInfo = currentFlashcard.components,
+        sectionInfo = currentFlashcard.synonyms,
         containerId = synonymsSectionViewId,
         build = {
             buildPillSection(
@@ -337,14 +337,17 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
         sectionInfo = currentFlashcard.examples,
         containerId = exampleSectionViewId,
         build = {
-            val parent = view.findViewById<LinearLayout>(R.id.examples_section)
+            val parent = view.findViewById<LinearLayout>(R.id.examples_content)
 
 
-            //val newView = layoutInflater.inflate(R.layout.fragment_pill, parent)
+            // modify the text view
+            val examplesTextView = view.findViewById<TextView>(R.id.examples_text)
+            // todo: add formatting to turn into spannable string
+            val displayText = currentFlashcard.examples[0].baseWord + " - " + currentFlashcard.examples[0].definition
+            examplesTextView.text = displayText
 
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            ViewGroup parent = (ViewGroup)findViewById(R.id.where_you_want_to_insert);
-//            inflater.inflate(R.layout.the_child_view, parent);
+            // on click, bring up a dialog to switch to other examples
+
         })
 
     // sentences

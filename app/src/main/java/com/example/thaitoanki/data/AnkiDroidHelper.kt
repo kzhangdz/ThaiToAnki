@@ -424,7 +424,7 @@ class AnkiDroidHelper(context: Context) {
         var i = 0
         while(i < definition.baseWord.length){ //- word.length
             val windowEndIndex = i + word.length
-
+                
             // at the end, if there isn't enough room left for the window
             if(windowEndIndex > definition.baseWord.length){
                 // add the current character
