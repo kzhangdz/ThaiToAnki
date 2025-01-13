@@ -44,7 +44,14 @@ fun FlashcardScreen(
     modifier: Modifier = Modifier,
     flashcardViewModel: FlashcardViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ){
-    val flashcardUiState by flashcardViewModel.flashcardUiState.collectAsState()
+    val flashcardDefinitions by flashcardViewModel.definitionsState.collectAsState()
+    val flashcardUiState by flashcardViewModel.uiState.collectAsState()
+
+    // using the retrieved definition data from the repository, set the flashcardUiState
+    flashcardViewModel.updateDefinitions(flashcardDefinitions)
+    if(flashcardUiState.currentExampleIndices.isEmpty()){
+        flashcardViewModel.initializeExampleIndices()
+    }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -64,10 +71,10 @@ fun FlashcardScreen(
                 Text("No definitions found")
             }
             else {
-                // TODO: Carousel of flashcards
                 Flashcard(
                     flashcardInfo = flashcardUiState.currentDefinitions,
-                    currentDefinitionIndex = flashcardViewModel.currentDefinitionIndex,
+                    currentDefinitionIndex = flashcardUiState.currentDefinitionIndex, //flashcardViewModel.currentDefinitionIndex,
+                    currentExampleIndices = flashcardUiState.currentExampleIndices,
                     onFlashcardClick = {
                         flashcardViewModel.increaseCurrentDefinitionIndex()
                     },
@@ -77,6 +84,10 @@ fun FlashcardScreen(
                     onRightButtonClick = {
                         flashcardViewModel.increaseCurrentDefinitionIndex()
                                          }, //onRightButtonClick,
+                    onExampleClick = {
+                        // viewModel function to increase the current example index
+
+                    },
                     modifier = Modifier
                         .height(300.dp)
                         .fillMaxWidth()
@@ -96,9 +107,11 @@ fun FlashcardScreen(
 fun Flashcard(
     flashcardInfo: List<Definition>,
     currentDefinitionIndex: Int,
+    currentExampleIndices: List<Int?>,
     onFlashcardClick: () -> Unit,
     onLeftButtonClick: () -> Unit,
     onRightButtonClick: () -> Unit,
+    onExampleClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -121,7 +134,9 @@ fun Flashcard(
     FlashcardFront(
         flashcardInfo,
         currentDefinitionIndex,
+        currentExampleIndices,
         onClick = onFlashcardClick,
+        onExampleClick = onExampleClick,
         modifier = Modifier
             .graphicsLayer {
                 alpha = animateFront

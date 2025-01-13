@@ -185,10 +185,13 @@ fun TestFlashcardFrontPreview() {
 fun FlashcardFront(
     flashcardInfo: List<Definition>,
     currentDefinitionIndex: Int,
+    currentExampleIndices: List<Int?>,
     onClick: () -> Unit = {},
+    onExampleClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ){
     val currentFlashcard = flashcardInfo[currentDefinitionIndex]
+    val currentDefinitionExampleIndex = currentExampleIndices[currentDefinitionIndex]
     
     AndroidView(
         factory = { context ->
@@ -196,13 +199,13 @@ fun FlashcardFront(
         },
         modifier = modifier,
         update = { view ->
-            updateFlashcardFrontView(view, currentFlashcard, onClick)
+            updateFlashcardFrontView(view, currentFlashcard, currentDefinitionExampleIndex, onClick, onExampleClick)
         }
     )
 }
 
 // TODO: move these functions out if needed in the service
-fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: () -> Unit){
+fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, currentDefinitionExampleIndex: Int?, onClick: () -> Unit, onExampleClick: () -> Unit){
     // variables used for adding views to sections
     val context = view.context.applicationContext
     val layoutInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -341,19 +344,28 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, onClick: 
         build = {
             val parent = view.findViewById<LinearLayout>(R.id.examples_content)
 
-            val color = context.getColor(R.color.md_theme_primary)
+            // get the current example
+            if(currentDefinitionExampleIndex != null){
 
-            // modify the text view
-            val examplesTextView = view.findViewById<TextView>(R.id.examples_text)
-            val displayText = HTMLFormatting.addHighlightSpannable(
-                stringToModify = currentFlashcard.examples[0].baseWord + " - " + currentFlashcard.examples[0].definition,
-                word = currentFlashcard.baseWord,
-                color = color
-            )
-            examplesTextView.text = displayText
+                // modify the text view
+                val examplesTextView = view.findViewById<TextView>(R.id.examples_text)
+                val color = context.getColor(R.color.md_theme_primary)
+                val displayText = HTMLFormatting.addHighlightSpannable(
+                    stringToModify = currentFlashcard.examples[currentDefinitionExampleIndex].baseWord + " - " + currentFlashcard.examples[0].definition,
+                    word = currentFlashcard.baseWord,
+                    color = color
+                )
+                examplesTextView.text = displayText
 
-            // on click, bring up a dialog to switch to other examples
-            // TODO: temporarily
+                // on click, bring up a dialog to switch to other examples
+                // TODO: temporarily switch to the next item on click
+                examplesTextView.setOnClickListener(){
+                    // viewModel function passed in, which will increase the current example index
+                    onExampleClick()
+                }
+            }
+
+
         })
 
     // sentences
@@ -456,6 +468,7 @@ fun FlashcardFrontPreview() {
                 .padding(dimensionResource(R.dimen.padding_medium))
                 .verticalScroll(rememberScrollState()),
             currentDefinitionIndex = 1,
+            currentExampleIndices = List(size = TestDefinitions.definitions.size) { 0 }
         )
     }
 }
