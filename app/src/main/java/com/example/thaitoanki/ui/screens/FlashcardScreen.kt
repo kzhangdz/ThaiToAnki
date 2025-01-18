@@ -86,7 +86,7 @@ fun FlashcardScreen(
                                          }, //onRightButtonClick,
                     onExampleClick = {
                         // viewModel function to increase the current example index
-
+                        flashcardViewModel.increaseCurrentExampleIndex()
                     },
                     modifier = Modifier
                         .height(300.dp)

@@ -351,7 +351,7 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, currentDe
                 val examplesTextView = view.findViewById<TextView>(R.id.examples_text)
                 val color = context.getColor(R.color.md_theme_primary)
                 val displayText = HTMLFormatting.addHighlightSpannable(
-                    stringToModify = currentFlashcard.examples[currentDefinitionExampleIndex].baseWord + " - " + currentFlashcard.examples[0].definition,
+                    stringToModify = currentFlashcard.examples[currentDefinitionExampleIndex].baseWord + " - " + currentFlashcard.examples[currentDefinitionExampleIndex].definition,
                     word = currentFlashcard.baseWord,
                     color = color
                 )

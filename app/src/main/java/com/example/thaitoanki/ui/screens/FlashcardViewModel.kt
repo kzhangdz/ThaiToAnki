@@ -166,6 +166,22 @@ class FlashcardViewModel(
         }
     }
 
+    fun increaseCurrentExampleIndex(){
+        val currentExamples = uiState.value.currentDefinitions[currentDefinitionIndex].examples
+        val currentExampleIndices = uiState.value.currentExampleIndices.toMutableList()
+        val currentExampleIndex = currentExampleIndices[currentDefinitionIndex]
+        if (currentExampleIndex != null){
+            val updatedIndex = increaseIndex(currentExamples, currentExampleIndex)
+            currentExampleIndices[currentDefinitionIndex] = updatedIndex
+            _uiState.update {
+                    currentState ->
+                currentState.copy(currentExampleIndices = currentExampleIndices)
+            }
+        }
+    }
+
+    // TODO: function for increasing current example index
+
 //    fun increaseCurrentDefinitionIndex(){
 //        currentDefinitionIndex = increaseIndex(flashcardUiState.value.currentDefinitions, currentDefinitionIndex)
 //    }
