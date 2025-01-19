@@ -13,8 +13,8 @@
     <string name="no_history">No Search History</string>
 
     <!-- Flashcard -->
-    <string name="pronunciation_label">Pronunciation</string>
-    <string name="romanization_label">Romanization</string>
+    <string name="pronunciation_label"><i><u>Pronunciation</u></i></string>
+    <string name="romanization_label"><i><u>Romanization</u></i></string>
     <string name="classifier_label">Classifier</string>
     <string name="components_label">Components</string>
     <string name="synonyms_label">Synonyms</string>

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- android:padding="16dp" -->
+<!-- android:background="#E0F7FA" -->
+<!--<com.example.thaitoanki.ui.screens.components.NestedScrollableHost-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android">-->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/flashcard_front"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp"
-    android:background="#E0F7FA"
+    android:padding="@dimen/padding_small"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/flashcard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
@@ -16,6 +23,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,23 +46,21 @@
                     android:id="@+id/word"
                     style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginTop="4dp"
                     android:text="Title"
                     android:textColor="@color/md_theme_onPrimary_highContrast"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/pronunciation"
                     style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginTop="4dp"
                     android:text="@string/pronunciation_label"
                     android:textColor="@color/md_theme_onPrimary_highContrast"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -59,10 +70,9 @@
                 <TextView
                     android:id="@+id/romanization"
                     style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginTop="4dp"
                     android:text="@string/romanization_label"
                     android:textColor="@color/md_theme_onPrimary_highContrast"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -73,254 +83,315 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Each of the information sections -->
+            <!-- Starts with a container to set background color-->
             <LinearLayout
-                android:id="@+id/definition_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/md_theme_background">
 
                 <LinearLayout
+                    android:id="@+id/definition_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/definitionAndPartOfSpeech"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/definition_section"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Definition"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/partOfSpeechAndDefinition"
+                                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="PartOfSpeechAndDefinition"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/classifier_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/classifiers_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/classifier_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/classifier_label"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <!--
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/classifier_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/classifier_label"/>
 
-                            <include layout="@layout/fragment_pill"/>
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/classifiers_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
+
                         </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/classifiers"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="BodyText"/>
-                        -->
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/components_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/components_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/components_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/components_section"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/components_label"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/components_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/components_label"/>
 
-                        <!-- Populate this section with pills and text -->
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/components_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/synonyms_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/synonyms_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/synonyms_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/synonyms_label"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/synonyms_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/synonyms_label"/>
 
-                        <!-- Populate this section with pills and text -->
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/synonyms_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/related_words_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/related_words_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/related_words_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/related_words_label"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/related_words_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/related_words_label"/>
 
-                        <!-- Populate this section with pills and text -->
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/related_words_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/examples_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/examples_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/examples_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/examples_section"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/examples_label"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/examples_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/examples_label"/>
 
-                        <!-- Populate this section with pills and text -->
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/examples_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/examples_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                </TextView>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/sentences_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/sentences_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/sentences_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/sentences_label"/>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/sentences_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sentences_label"/>
 
-                        <!-- Populate this section with pills and text -->
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/sentences_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/sentences_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                </TextView>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/references_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/references_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="@dimen/padding_small">
-                        <TextView
-                            android:id="@+id/references_label"
-                            style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/references_label"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <!-- Populate this section with pills and text -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="@dimen/padding_small">
+                            <TextView
+                                android:id="@+id/references_label"
+                                style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/references_label"/>
+
+                            <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/references_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View style="@style/Divider"/>
                     </LinearLayout>
-                    <View style="@style/Divider"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+        </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>
+
+<!--</com.example.thaitoanki.ui.screens.components.NestedScrollableHost>-->
 
 <!--
 <TextView

@@ -8,7 +8,7 @@ import com.example.thaitoanki.data.database.entities.Sentence
 import com.example.thaitoanki.data.database.entities.Synonym
 import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 import kotlinx.coroutines.flow.Flow
 
 interface WordsRepository {

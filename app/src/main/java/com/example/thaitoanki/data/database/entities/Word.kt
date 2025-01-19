@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.thaitoanki.network.Definition
 
 /*
 Class to hold Definitions in the Room database

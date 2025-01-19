@@ -10,16 +10,15 @@ import com.example.thaitoanki.data.database.entities.Sentence
 import com.example.thaitoanki.data.database.entities.Synonym
 import com.example.thaitoanki.data.database.entities.Word
 import com.example.thaitoanki.data.database.entities.WordWithDetails
-import com.example.thaitoanki.network.Definition
-import com.example.thaitoanki.network.toClassifiers
-import com.example.thaitoanki.network.toComponents
-import com.example.thaitoanki.network.toExamples
-import com.example.thaitoanki.network.toRelatedWords
-import com.example.thaitoanki.network.toSentences
-import com.example.thaitoanki.network.toSynonyms
-import com.example.thaitoanki.network.toWord
+import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.toClassifiers
+import com.example.thaitoanki.data.network.toComponents
+import com.example.thaitoanki.data.network.toExamples
+import com.example.thaitoanki.data.network.toRelatedWords
+import com.example.thaitoanki.data.network.toSentences
+import com.example.thaitoanki.data.network.toSynonyms
+import com.example.thaitoanki.data.network.toWord
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
 const val LOG_TAG = "OfflineWordsRepository"

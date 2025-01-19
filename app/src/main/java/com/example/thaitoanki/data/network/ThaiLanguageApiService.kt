@@ -1,4 +1,4 @@
-package com.example.thaitoanki.network
+package com.example.thaitoanki.data.network
 
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

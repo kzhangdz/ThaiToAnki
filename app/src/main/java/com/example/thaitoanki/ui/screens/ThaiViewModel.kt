@@ -1,6 +1,5 @@
 package com.example.thaitoanki.ui.screens
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,20 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
-import com.example.thaitoanki.data.database.entities.Word
-import com.example.thaitoanki.data.database.entities.WordWithDetails
-import com.example.thaitoanki.data.database.entities.toDefinition
-import com.example.thaitoanki.network.Definition
-import com.example.thaitoanki.network.ThaiLanguageData
-import com.example.thaitoanki.network.ThaiLanguageSearchResults
-import com.example.thaitoanki.network.toWord
-import kotlinx.coroutines.flow.Flow
+import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.ThaiLanguageData
+import com.example.thaitoanki.data.network.ThaiLanguageSearchResults
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException

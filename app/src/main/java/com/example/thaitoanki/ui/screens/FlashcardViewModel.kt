@@ -16,15 +16,18 @@
 
 package com.example.thaitoanki.ui.screens
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.entities.toDefinition
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +46,10 @@ class FlashcardViewModel(
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
+
+    // current thinking
+    // Need to have a mutableStateFlow for FlashcardUiState.
+    //
 
 //    val flashcardUiState: StateFlow<FlashcardUiState> = wordsRepository.getUniqueWordsStream()
 //        .map {
@@ -63,7 +70,7 @@ class FlashcardViewModel(
     // TODO: does the current index need to be a MutableStateFlow?
     var currentDefinitionIndex by mutableStateOf(0)
 
-    val flashcardUiState: StateFlow<FlashcardUiState> = wordsRepository.getMatchingWordsStream(word)
+    val definitionsState: StateFlow<List<Definition>> = wordsRepository.getMatchingWordsStream(word)
         .map { words ->
             // convert List<WordWithDetails> to FlashcardUiState
             val matchingDefinitions: List<Definition> = words.map { word ->
@@ -71,34 +78,151 @@ class FlashcardViewModel(
             }
 
             // TODO: add in currentsentence indices later
-            FlashcardUiState(
-                currentDefinitionIndex = currentDefinitionIndex,
-                currentDefinitions = matchingDefinitions,
-            )
+//            FlashcardUiState(
+//                currentDefinitionIndex = currentDefinitionIndex,
+//                currentDefinitions = matchingDefinitions,
+//            )
+            matchingDefinitions
         }
         .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = FlashcardUiState()
+                initialValue = listOf()
             )
 
-    fun increaseCurrentDefinitionIndex(){
-        val maxIndex = flashcardUiState.value.currentDefinitions.size - 1
-        var updatedIndex = currentDefinitionIndex + 1
+    // currentExampleIndices
+//    var currentExampleIndices: MutableState<List<Int>> by mutableStateOf(
+//        List(size = flashcardUiState.value.currentDefinitions.size) { 0 }
+//    )
+
+    // initialize our main flashcard state using the data retrieved from the repository
+
+    // only allow the state to be modified in this class by making it private
+    private val _uiState = MutableStateFlow(FlashcardUiState())
+
+    // public variable that acts as our getter method for the state. read-only state flow
+    val uiState: StateFlow<FlashcardUiState> = _uiState.asStateFlow()
+
+    fun initializeExampleIndices(){
+        val indexList = mutableListOf<Int?>()
+        for (definition in _uiState.value.currentDefinitions){
+            if (definition.examples.isNotEmpty()){
+                indexList.add(0)
+            }
+            else{
+                indexList.add(null)
+            }
+        }
+        _uiState.update {
+                currentState ->
+            currentState.copy(
+                currentExampleIndices = indexList
+            )
+        }
+    }
+
+    fun initializeSentenceIndices(){
+        val indexList = mutableListOf<Int?>()
+        for (definition in _uiState.value.currentDefinitions){
+            if (definition.sentences.isNotEmpty()){
+                indexList.add(0)
+            }
+            else{
+                indexList.add(null)
+            }
+        }
+        _uiState.update {
+                currentState ->
+            currentState.copy(
+                currentSentenceIndices = indexList
+            )
+        }
+    }
+
+//    val currentExampleIndices by mutableStateListOf<Int>(
+//        List(size = flashcardUiState.value.currentDefinitions.size) { 0 }
+//    )
+
+    private fun increaseIndex(baseList: List<Any>, valueToChange: Int): Int{
+        val maxIndex = baseList.size - 1
+        var updatedIndex = valueToChange + 1
         if(updatedIndex > maxIndex){
             updatedIndex = 0
         }
-        currentDefinitionIndex = updatedIndex
+        return updatedIndex
+    }
+
+    private fun decreaseIndex(baseList: List<Any>, valueToChange: Int): Int{
+        var updatedIndex = valueToChange - 1
+        if(updatedIndex < 0){
+            val maxIndex = baseList.size - 1
+            updatedIndex = maxIndex
+        }
+        return updatedIndex
+    }
+
+    fun increaseCurrentDefinitionIndex(){
+        val updatedIndex = increaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
+        _uiState.update {
+                currentState ->
+            currentState.copy(currentDefinitionIndex = updatedIndex)
+        }
     }
 
     fun decreaseCurrentDefinitionIndex(){
-        var updatedIndex = currentDefinitionIndex - 1
-        if(updatedIndex < 0){
-            val maxIndex = flashcardUiState.value.currentDefinitions.size - 1
-            updatedIndex = maxIndex
+        val updatedIndex = decreaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
+        _uiState.update {
+                currentState ->
+            currentState.copy(currentDefinitionIndex = updatedIndex)
         }
-        currentDefinitionIndex = updatedIndex
     }
+
+    fun updateDefinitions(definitions: List<Definition>){
+        _uiState.update {
+                currentState ->
+            currentState.copy(currentDefinitions = definitions)
+        }
+    }
+
+    fun increaseCurrentExampleIndex(){
+        val currentExamples = uiState.value.currentDefinitions[currentDefinitionIndex].examples
+        val currentExampleIndices = uiState.value.currentExampleIndices.toMutableList()
+        val currentExampleIndex = currentExampleIndices[currentDefinitionIndex]
+        if (currentExampleIndex != null){
+            val updatedIndex = increaseIndex(currentExamples, currentExampleIndex)
+            currentExampleIndices[currentDefinitionIndex] = updatedIndex
+            _uiState.update {
+                    currentState ->
+                currentState.copy(currentExampleIndices = currentExampleIndices)
+            }
+        }
+    }
+
+    fun increaseCurrentSentenceIndex(){
+        val currentSentences = uiState.value.currentDefinitions[currentDefinitionIndex].sentences
+        val currentSentenceIndices = uiState.value.currentSentenceIndices.toMutableList()
+        val currentSentenceIndex = currentSentenceIndices[currentDefinitionIndex]
+        if (currentSentenceIndex != null){
+            val updatedIndex = increaseIndex(currentSentences, currentSentenceIndex)
+            currentSentenceIndices[currentDefinitionIndex] = updatedIndex
+            _uiState.update {
+                    currentState ->
+                currentState.copy(currentSentenceIndices = currentSentenceIndices)
+            }
+        }
+    }
+
+//    fun increaseCurrentDefinitionIndex(){
+//        currentDefinitionIndex = increaseIndex(flashcardUiState.value.currentDefinitions, currentDefinitionIndex)
+//    }
+//
+//    fun decreaseCurrentDefinitionIndex(){
+//        currentDefinitionIndex = decreaseIndex(flashcardUiState.value.currentDefinitions, currentDefinitionIndex)
+//    }
+
+//    fun increaseCurrentExampleIndex(){
+//        currentExampleIndices[0] = increaseIndex(flashcardUiState.value., currentExampleIndex)
+//    }
 }
 
 /**
@@ -107,5 +231,6 @@ class FlashcardViewModel(
 data class FlashcardUiState(
     val currentDefinitionIndex: Int = 0,
     val currentDefinitions: List<Definition> = listOf(),
+    val currentExampleIndices: List<Int?> = listOf(),
     val currentSentenceIndices: List<Int?> = listOf()
 )

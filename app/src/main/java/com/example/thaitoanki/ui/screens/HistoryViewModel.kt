@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.entities.toDefinition
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

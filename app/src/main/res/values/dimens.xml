@@ -18,9 +18,10 @@
     <dimen name="padding_medium">16dp</dimen>
     <dimen name="padding_small">8dp</dimen>
 
+    <dimen name="width_pill">48dp</dimen>
     <dimen name="height_pill">32dp</dimen>
 
-    <dimen name="text_title">34sp</dimen>
+    <dimen name="text_title">56sp</dimen> <!-- 4x body text -->
     <dimen name="text_body">14sp</dimen>
     <dimen name="text_pill">12sp</dimen>
     <dimen name="thickness_divider">1dp</dimen>

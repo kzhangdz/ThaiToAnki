@@ -92,6 +92,12 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
+    // Carousel/pager for layout xml
+//    implementation("com.mig35:carousellayoutmanager:1.4.6")
+//    implementation("com.github.smarteist:autoimageslider:1.4.0")
+//    implementation("com.github.smarteist:Android-Image-Slider:Tag")
+//    implementation("io.github.antwhale:AntwhaleImageSlider:1.0.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

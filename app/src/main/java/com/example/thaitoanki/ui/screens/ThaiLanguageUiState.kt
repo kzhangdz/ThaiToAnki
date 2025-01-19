@@ -1,6 +1,6 @@
 package com.example.thaitoanki.ui.screens
 
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 
 data class ThaiLanguageUiState(
     val currentWord: String = "",

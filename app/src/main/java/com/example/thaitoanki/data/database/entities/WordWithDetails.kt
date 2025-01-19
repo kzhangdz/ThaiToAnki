@@ -2,7 +2,7 @@ package com.example.thaitoanki.data.database.entities
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.thaitoanki.network.Definition
+import com.example.thaitoanki.data.network.Definition
 
 /*
 https://stackoverflow.com/questions/47511750/how-to-use-foreign-key-in-room-persistence-library
