@@ -52,6 +52,9 @@ fun FlashcardScreen(
     if(flashcardUiState.currentExampleIndices.isEmpty()){
         flashcardViewModel.initializeExampleIndices()
     }
+    if(flashcardUiState.currentSentenceIndices.isEmpty()){
+        flashcardViewModel.initializeSentenceIndices()
+    }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -75,6 +78,7 @@ fun FlashcardScreen(
                     flashcardInfo = flashcardUiState.currentDefinitions,
                     currentDefinitionIndex = flashcardUiState.currentDefinitionIndex, //flashcardViewModel.currentDefinitionIndex,
                     currentExampleIndices = flashcardUiState.currentExampleIndices,
+                    currentSentenceIndices = flashcardUiState.currentSentenceIndices,
                     onFlashcardClick = {
                         flashcardViewModel.increaseCurrentDefinitionIndex()
                     },
@@ -87,6 +91,9 @@ fun FlashcardScreen(
                     onExampleClick = {
                         // viewModel function to increase the current example index
                         flashcardViewModel.increaseCurrentExampleIndex()
+                    },
+                    onSentenceClick = {
+                        flashcardViewModel.increaseCurrentSentenceIndex()
                     },
                     modifier = Modifier
                         .height(300.dp)
@@ -108,10 +115,12 @@ fun Flashcard(
     flashcardInfo: List<Definition>,
     currentDefinitionIndex: Int,
     currentExampleIndices: List<Int?>,
+    currentSentenceIndices: List<Int?>,
     onFlashcardClick: () -> Unit,
     onLeftButtonClick: () -> Unit,
     onRightButtonClick: () -> Unit,
     onExampleClick: () -> Unit,
+    onSentenceClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     var isRotated by rememberSaveable { mutableStateOf(false) }
@@ -135,8 +144,10 @@ fun Flashcard(
         flashcardInfo,
         currentDefinitionIndex,
         currentExampleIndices,
+        currentSentenceIndices,
         onClick = onFlashcardClick,
         onExampleClick = onExampleClick,
+        onSentenceClick = onSentenceClick,
         modifier = Modifier
             .graphicsLayer {
                 alpha = animateFront

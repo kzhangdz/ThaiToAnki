@@ -333,7 +333,18 @@
                                 android:text="@string/sentences_label"/>
 
                             <!-- Populate this section with pills and text -->
+                            <LinearLayout
+                                android:id="@+id/sentences_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/sentences_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
 
+                                </TextView>
+                            </LinearLayout>
                         </LinearLayout>
                         <View style="@style/Divider"/>
                     </LinearLayout>

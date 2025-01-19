@@ -121,6 +121,24 @@ class FlashcardViewModel(
         }
     }
 
+    fun initializeSentenceIndices(){
+        val indexList = mutableListOf<Int?>()
+        for (definition in _uiState.value.currentDefinitions){
+            if (definition.sentences.isNotEmpty()){
+                indexList.add(0)
+            }
+            else{
+                indexList.add(null)
+            }
+        }
+        _uiState.update {
+                currentState ->
+            currentState.copy(
+                currentSentenceIndices = indexList
+            )
+        }
+    }
+
 //    val currentExampleIndices by mutableStateListOf<Int>(
 //        List(size = flashcardUiState.value.currentDefinitions.size) { 0 }
 //    )
@@ -180,7 +198,19 @@ class FlashcardViewModel(
         }
     }
 
-    // TODO: function for increasing current example index
+    fun increaseCurrentSentenceIndex(){
+        val currentSentences = uiState.value.currentDefinitions[currentDefinitionIndex].sentences
+        val currentSentenceIndices = uiState.value.currentSentenceIndices.toMutableList()
+        val currentSentenceIndex = currentSentenceIndices[currentDefinitionIndex]
+        if (currentSentenceIndex != null){
+            val updatedIndex = increaseIndex(currentSentences, currentSentenceIndex)
+            currentSentenceIndices[currentDefinitionIndex] = updatedIndex
+            _uiState.update {
+                    currentState ->
+                currentState.copy(currentSentenceIndices = currentSentenceIndices)
+            }
+        }
+    }
 
 //    fun increaseCurrentDefinitionIndex(){
 //        currentDefinitionIndex = increaseIndex(flashcardUiState.value.currentDefinitions, currentDefinitionIndex)

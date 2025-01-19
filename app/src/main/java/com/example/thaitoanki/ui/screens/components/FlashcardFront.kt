@@ -25,6 +25,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import androidx.core.text.toSpannable
 import androidx.core.text.toSpanned
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -186,26 +187,45 @@ fun FlashcardFront(
     flashcardInfo: List<Definition>,
     currentDefinitionIndex: Int,
     currentExampleIndices: List<Int?>,
+    currentSentenceIndices: List<Int?>,
     onClick: () -> Unit = {},
     onExampleClick: () -> Unit = {},
+    onSentenceClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ){
     val currentFlashcard = flashcardInfo[currentDefinitionIndex]
     val currentDefinitionExampleIndex = currentExampleIndices[currentDefinitionIndex]
-    
+    val currentSentenceIndex = currentSentenceIndices[currentDefinitionIndex]
+
     AndroidView(
         factory = { context ->
             View.inflate(context, R.layout.fragment_flashcard_front, null)
         },
         modifier = modifier,
         update = { view ->
-            updateFlashcardFrontView(view, currentFlashcard, currentDefinitionExampleIndex, onClick, onExampleClick)
+            updateFlashcardFrontView(
+                view,
+                currentFlashcard,
+                currentDefinitionExampleIndex,
+                currentSentenceIndex,
+                onClick,
+                onExampleClick,
+                onSentenceClick
+            )
         }
     )
 }
 
 // TODO: move these functions out if needed in the service
-fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, currentDefinitionExampleIndex: Int?, onClick: () -> Unit, onExampleClick: () -> Unit){
+fun updateFlashcardFrontView(
+    view: View,
+    currentFlashcard: Definition,
+    currentDefinitionExampleIndex: Int?,
+    currentDefinitionSentenceIndex: Int?,
+    onClick: () -> Unit,
+    onExampleClick: () -> Unit,
+    onSentenceClick: () -> Unit,
+){
     // variables used for adding views to sections
     val context = view.context.applicationContext
     val layoutInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -364,11 +384,42 @@ fun updateFlashcardFrontView(view: View, currentFlashcard: Definition, currentDe
                     onExampleClick()
                 }
             }
-
-
         })
 
     // sentences
+    val sentenceSectionViewId = R.id.sentences_container
+    buildSection(view,
+        sectionInfo = currentFlashcard.sentences,
+        containerId = exampleSectionViewId,
+        build = {
+            val parent = view.findViewById<LinearLayout>(R.id.sentences_content)
+
+            // get the current sentence
+            if(currentDefinitionSentenceIndex != null){
+
+                // modify the text view
+                val sentencesTextView = view.findViewById<TextView>(R.id.sentences_text)
+                val color = context.getColor(R.color.md_theme_primary)
+                val sentenceText = HTMLFormatting.addHighlightSpannable(
+                    stringToModify = currentFlashcard.sentences[currentDefinitionSentenceIndex].baseWord + "\n",
+                    word = currentFlashcard.baseWord,
+                    color = color
+                )
+                val romanizationText = HtmlCompat.fromHtml(currentFlashcard.sentences[currentDefinitionSentenceIndex].romanization, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    .toSpannable()
+                val definitionText = "\n" + currentFlashcard.sentences[currentDefinitionSentenceIndex].definition
+                    .toSpannable()
+                val displayText = TextUtils.concat(sentenceText, romanizationText, definitionText)
+                sentencesTextView.text = displayText
+
+                // on click, bring up a dialog to switch to other examples
+                // TODO: temporarily switch to the next item on click
+                sentencesTextView.setOnClickListener(){
+                    // viewModel function passed in, which will increase the current example index
+                    onSentenceClick()
+                }
+            }
+        })
 
     // reference
     val referencesSectionViewId = R.id.references_container
@@ -468,7 +519,8 @@ fun FlashcardFrontPreview() {
                 .padding(dimensionResource(R.dimen.padding_medium))
                 .verticalScroll(rememberScrollState()),
             currentDefinitionIndex = 1,
-            currentExampleIndices = List(size = TestDefinitions.definitions.size) { 0 }
+            currentExampleIndices = List(size = TestDefinitions.definitions.size) { 0 },
+            currentSentenceIndices = List(size = TestDefinitions.definitions.size) { 0 }
         )
     }
 }
