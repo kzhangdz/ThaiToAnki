@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
@@ -19,40 +20,13 @@ import com.example.thaitoanki.ui.screens.ThaiViewModel
 import kotlinx.coroutines.launch
 
 
-class Window(context: Context,
-             val lifecycleScope: LifecycleCoroutineScope,
-             val languageRepository: ThaiLanguageRepository,
-             val wordsRepository: WordsRepository
+open class Window(context: Context,
+                  @LayoutRes val layoutId: Int
 ) {
-//    val viewModel: ThaiViewModel by viewModels()
-//    lifecycleScope.launch {
-//        repeatOnLifecycle(Lifecycle.State.STARTED) {
-//            viewModel.uiState.collect {
-//                // Update UI elements
-//            }
-//        }
-//    }
-
-    // TODO: pass in viewModel instead?
-    val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    private val rootView = layoutInflater.inflate(R.layout.window_search, null) as WindowContentLayout // allows us to access setListener()
-    //private val rootView = layoutInflater.inflate(R.layout.window, null) as WindowContentLayout
-
-//    private val overlayView = ComposeView(context).apply {
-//        setViewTreeLifecycleOwner(context@FloatingService)
-//        setViewTreeSavedStateRegistryOwner(this@FloatingService) // pass in the FLoatingService as a class?
-//        setContent {
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//            ) {
-//                Text("temp")
-//            }
-//        }
-//    }
+    protected val rootView = layoutInflater.inflate(layoutId, null) as WindowContentLayout // allows us to access setListener()
 
     private val windowParams = WindowManager.LayoutParams(
         0,
@@ -99,56 +73,13 @@ class Window(context: Context,
     }
 
 
-    private fun initWindow() {
+    /*
+    Function to set the behavior of the window, such as buttons
+     */
+    open fun initWindow() {
         // Using kotlin extension for views caused error, so good old findViewById is used
 
         rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
-
-        rootView.findViewById<View>(R.id.search_button).setOnClickListener {
-            with(rootView.findViewById<EditText>(R.id.search_input)) {
-                //db.insert(text.toString(), true)
-
-                //wordsRepository.insertWord(text.toString())
-
-                lifecycleScope.launch {
-                    //val results = languageRepository.searchDictionary(text.toString())
-                    //Log.d("Service", results.html())
-                    val searchValue = text.toString()
-                    viewModel.updateSearchValue(text.toString())
-
-                    // TODO: need to add a version of search Dictionary that suspends and does not start another coroutine
-                    //viewModel.searchDictionary()
-
-                    viewModel.sendDictionaryQuery()
-
-                    // test
-                    //close()
-                    //open()
-
-                    setText("")
-
-                    // closing and opening the window affected the search insertion somehow
-                    // rather than closing the window, should I move it offscreen and show another one?
-
-                    // have the definition window open off screen?
-                    // then after a word is saved, use a broadcast receiver notify the definition window and retrieve definitions?
-                    // try to do it by collecting from the flow first
-
-                    // I think I can open multiple windows. max is 300
-                    // can probably put it directly over the searchWindow's
-
-                    // next step for now is to make an inheritable window
-
-                    // An overlay is just a layout, without an underlying activity
-
-
-
-                    // Can I actually just do an overlay activity instead?
-                    // This link uses an intent to start a second activity that's based in a window manager
-                    // https://stackoverflow.com/questions/18843868/android-overlay-on-window-over-activities-of-a-task
-                }
-            }
-        }
 
         rootView.findViewById<View>(R.id.header).registerDraggableTouchListener(
             initialPosition = { Point(windowParams.x, windowParams.y) },

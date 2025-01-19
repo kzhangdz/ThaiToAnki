@@ -39,6 +39,7 @@ import com.example.thaitoanki.ThaiLanguageApplication
 import com.example.thaitoanki.data.DefaultAppContainer
 import com.example.thaitoanki.data.database.OfflineWordsRepository
 import com.example.thaitoanki.data.database.WordsDatabase
+import com.example.thaitoanki.services.windows.SearchWindow
 import com.example.thaitoanki.services.windows.Window
 import com.example.thaitoanki.ui.ThaiToAnkiAppBar
 
@@ -276,8 +277,19 @@ class FloatingService: LifecycleService(),
 
                 val wordRepo = container.wordsRepository
 
-                val window = Window(this, lifecycleScope, languageRepo, wordRepo)
+                //val window = Window(this, lifecycleScope, languageRepo, wordRepo)
+                //window.open()
+
+                val window = SearchWindow(
+                    this,
+                    lifecycleScope = lifecycleScope,
+                    languageRepository = languageRepo,
+                    wordsRepository = wordRepo
+                )
                 window.open()
+
+
+                // TODO: test opening another window
 
             }
         }
