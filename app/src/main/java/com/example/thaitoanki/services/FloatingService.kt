@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -28,8 +29,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -39,9 +46,14 @@ import com.example.thaitoanki.ThaiLanguageApplication
 import com.example.thaitoanki.data.DefaultAppContainer
 import com.example.thaitoanki.data.database.OfflineWordsRepository
 import com.example.thaitoanki.data.database.WordsDatabase
+import com.example.thaitoanki.services.windows.FlashcardWindow
 import com.example.thaitoanki.services.windows.SearchWindow
 import com.example.thaitoanki.services.windows.Window
 import com.example.thaitoanki.ui.ThaiToAnkiAppBar
+import com.example.thaitoanki.ui.screens.FlashcardViewModel
+import com.example.thaitoanki.ui.screens.HistoryViewModel
+import com.example.thaitoanki.ui.screens.ThaiViewModel
+import com.example.thaitoanki.ui.thaiLanguageApplication
 
 
 const val INTENT_COMMAND = "com.example.thaitoanki.COMMAND" //"com.localazy.quicknote.COMMAND"
@@ -58,7 +70,9 @@ private const val CODE_NOTE_INTENT = 3
 class FloatingService: LifecycleService(),
     // two dependencies added to allow Jetpack Compose in a service
     LifecycleOwner,
-    SavedStateRegistryOwner
+    SavedStateRegistryOwner,
+
+    ViewModelStoreOwner
 {
     // variables for showing an overlay with Jetpack Compose
     lateinit var windowManager: WindowManager
@@ -212,6 +226,7 @@ class FloatingService: LifecycleService(),
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
         super.onStartCommand(
             intent = intent,
             flags = flags,
@@ -274,14 +289,18 @@ class FloatingService: LifecycleService(),
                 // TODO: pull these out into member variables
                 val container = DefaultAppContainer(applicationContext)
                 val languageRepo = container.thaiLanguageRepository //ThaiLanguageApplication().container.thaiLanguageRepository
-
                 val wordRepo = container.wordsRepository
+
+                val viewModelProvider = ServiceViewModelProvider(applicationContext)
 
                 //val window = Window(this, lifecycleScope, languageRepo, wordRepo)
                 //window.open()
 
+                // Pass ContextThemeWrapper so you can inflate components with Material Themes
+                //https://stackoverflow.com/questions/38712073/android-set-theme-for-view-that-created-by-service
                 val window = SearchWindow(
-                    this,
+                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
+                    applicationContext,
                     lifecycleScope = lifecycleScope,
                     languageRepository = languageRepo,
                     wordsRepository = wordRepo
@@ -290,7 +309,14 @@ class FloatingService: LifecycleService(),
 
 
                 // TODO: test opening another window
-
+                val flashcardWindow = FlashcardWindow(
+                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
+                    applicationContext,
+                    lifecycleScope = lifecycleScope,
+                    languageRepository = languageRepo,
+                    wordsRepository = wordRepo
+                )
+                flashcardWindow.open()
             }
         }
 
@@ -308,4 +334,38 @@ class FloatingService: LifecycleService(),
         )
     }
 
+    override val viewModelStore: ViewModelStore = ViewModelStore()
+
+    /*
+    @NonNull ViewModelStore getViewModelStore(@NonNull Fragment f) {
+        ViewModelStore viewModelStore = mViewModelStores.get(f.mWho);
+        if (viewModelStore == null) {
+            viewModelStore = new ViewModelStore();
+            mViewModelStores.put(f.mWho, viewModelStore);
+        }
+        return viewModelStore;
+    }
+     */
+}
+
+class ServiceViewModelProvider(applicationContext: Context) {
+    val Factory = viewModelFactory {
+
+        val container = DefaultAppContainer(applicationContext)
+        val languageRepo = container.thaiLanguageRepository //ThaiLanguageApplication().container.thaiLanguageRepository
+
+        val wordRepo = container.wordsRepository
+        // Initializer for ThaiViewModel
+        initializer {
+            ThaiViewModel(languageRepo, wordRepo)
+        }
+        // Initializer for FlashcardViewModel
+        initializer {
+            FlashcardViewModel(this.createSavedStateHandle(), wordRepo)
+        }
+        // Initializer for HistoryViewModel
+        initializer {
+            HistoryViewModel(wordRepo)
+        }
+    }
 }

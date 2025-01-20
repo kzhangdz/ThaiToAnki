@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.thaitoanki.ThaiLanguageApplication
+import com.example.thaitoanki.data.DefaultAppContainer
 import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.ThaiViewModel

@@ -1,6 +1,7 @@
 package com.example.thaitoanki.services.windows
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
@@ -9,31 +10,48 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
+import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.services.registerDraggableTouchListener
 import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import kotlinx.coroutines.launch
 
 
+// pass in viewModel that was initialized by the ViewModelFactory, which we used in the Service.
+// The service can use the viewModel because it is a ViewModelStoreOwner
+
 class SearchWindow(
-    context: Context,
+    context: ContextWrapper,
+    applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository
 ): Window(
     context = context,
+    applicationContext = applicationContext,
     layoutId = R.layout.window_search
 ) {
 
     // TODO: pass in viewModel instead?
-    val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
+    //val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
+
+    val viewModelStoreOwner: ViewModelStoreOwner = this
+    val viewModel: ThaiViewModel = ViewModelProvider.create(
+        viewModelStoreOwner,
+        factory = ServiceViewModelProvider(applicationContext).Factory,
+//        extras = MutableCreationExtras().apply {
+//            set(ThaiViewModel.MY_REPOSITORY_KEY, myRepository)
+//        },
+    )[ThaiViewModel::class]
 
     override fun initWindow() {
-        // super init
+        // super init for window commands, like closing and minimizing
         super.initWindow()
 
         rootView.findViewById<View>(R.id.search_button).setOnClickListener {
@@ -46,7 +64,7 @@ class SearchWindow(
                     //val results = languageRepository.searchDictionary(text.toString())
                     //Log.d("Service", results.html())
                     val searchValue = text.toString()
-                    viewModel.updateSearchValue(text.toString())
+                    viewModel.updateSearchValue(searchValue)
 
                     // TODO: need to add a version of search Dictionary that suspends and does not start another coroutine
                     //viewModel.searchDictionary()

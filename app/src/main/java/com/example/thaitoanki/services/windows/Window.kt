@@ -1,6 +1,7 @@
 package com.example.thaitoanki.services.windows
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
@@ -10,6 +11,8 @@ import android.view.*
 import android.widget.EditText
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
@@ -19,14 +22,19 @@ import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import kotlinx.coroutines.launch
 
+// implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
+open class Window(
+    context: ContextWrapper,
+    applicationContext: Context,
+    @LayoutRes val layoutId: Int,
 
-open class Window(context: Context,
-                  @LayoutRes val layoutId: Int
-) {
+    ): ViewModelStoreOwner {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     protected val rootView = layoutInflater.inflate(layoutId, null) as WindowContentLayout // allows us to access setListener()
+
+    //val viewMoel
 
     private val windowParams = WindowManager.LayoutParams(
         0,
@@ -166,5 +174,7 @@ open class Window(context: Context,
             PixelFormat.TRANSLUCENT
         )
     }
+
+    override val viewModelStore: ViewModelStore = ViewModelStore()
 
 }
