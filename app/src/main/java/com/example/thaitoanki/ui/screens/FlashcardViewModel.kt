@@ -65,10 +65,11 @@ class FlashcardViewModel(
 //        )
     // stateIn converts Flow into StateFlow
 
-    private val word: String = checkNotNull(savedStateHandle.get("word"))
+    //private
+    val word: String = checkNotNull(savedStateHandle.get("word"))
 
     // TODO: does the current index need to be a MutableStateFlow?
-    var currentDefinitionIndex by mutableStateOf(0)
+    //var currentDefinitionIndex by mutableStateOf(0)
 
     val definitionsState: StateFlow<List<Definition>> = wordsRepository.getMatchingWordsStream(word)
         .map { words ->
@@ -185,6 +186,8 @@ class FlashcardViewModel(
     }
 
     fun increaseCurrentExampleIndex(){
+        val currentDefinitionIndex = uiState.value.currentDefinitionIndex
+
         val currentExamples = uiState.value.currentDefinitions[currentDefinitionIndex].examples
         val currentExampleIndices = uiState.value.currentExampleIndices.toMutableList()
         val currentExampleIndex = currentExampleIndices[currentDefinitionIndex]
@@ -199,6 +202,8 @@ class FlashcardViewModel(
     }
 
     fun increaseCurrentSentenceIndex(){
+        val currentDefinitionIndex = uiState.value.currentDefinitionIndex
+
         val currentSentences = uiState.value.currentDefinitions[currentDefinitionIndex].sentences
         val currentSentenceIndices = uiState.value.currentSentenceIndices.toMutableList()
         val currentSentenceIndex = currentSentenceIndices[currentDefinitionIndex]

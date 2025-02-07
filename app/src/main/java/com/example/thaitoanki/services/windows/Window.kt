@@ -10,10 +10,15 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
@@ -25,10 +30,13 @@ import kotlinx.coroutines.launch
 // implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
 open class Window(
     context: ContextWrapper,
+    serviceContext: Context,
     applicationContext: Context,
     @LayoutRes val layoutId: Int,
 
-    ): ViewModelStoreOwner {
+    ):
+    SavedStateRegistryOwner,
+    ViewModelStoreOwner {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -77,7 +85,7 @@ open class Window(
 
 
     private fun initWindowParams() {
-        calculateSizeAndPosition(windowParams, 300, 80)
+        calculateSizeAndPosition(windowParams, 300, 400)
     }
 
 
@@ -156,7 +164,7 @@ open class Window(
     }
 
 
-    fun close() {
+    open fun close() {
         try {
             windowManager.removeView(rootView)
         } catch (e: Exception) {
@@ -176,5 +184,15 @@ open class Window(
     }
 
     override val viewModelStore: ViewModelStore = ViewModelStore()
+
+
+    // overrides for SavedStateRegistryOwner
+    private var _lifecycle = LifecycleRegistry(this)
+    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+
+    override val lifecycle: Lifecycle
+        get() = _lifecycle
+    override val savedStateRegistry: SavedStateRegistry
+        get() = savedStateRegistryController.savedStateRegistry
 
 }

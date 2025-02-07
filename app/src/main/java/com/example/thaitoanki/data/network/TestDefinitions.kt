@@ -4,6 +4,10 @@ object TestDefinitions{
 
     val definitions: List<Definition> = listOf(
         Definition(
+            baseWord = "test",
+            definition = "test limited info"
+        ),
+        Definition(
             baseWord = "เช่น",
             definition = "example; sample; specimen",
             romanization = """<span>chen<sup>F</sup></span>""",

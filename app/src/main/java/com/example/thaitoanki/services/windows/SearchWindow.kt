@@ -10,12 +10,15 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
+import com.example.thaitoanki.services.FloatingService
 import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.services.registerDraggableTouchListener
 import com.example.thaitoanki.ui.AppViewModelProvider
@@ -28,12 +31,14 @@ import kotlinx.coroutines.launch
 
 class SearchWindow(
     context: ContextWrapper,
-    applicationContext: Context,
+    val serviceContext: Context,
+    val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository
 ): Window(
     context = context,
+    serviceContext = serviceContext,
     applicationContext = applicationContext,
     layoutId = R.layout.window_search
 ) {
@@ -44,7 +49,7 @@ class SearchWindow(
     val viewModelStoreOwner: ViewModelStoreOwner = this
     val viewModel: ThaiViewModel = ViewModelProvider.create(
         viewModelStoreOwner,
-        factory = ServiceViewModelProvider(applicationContext).Factory,
+        factory = ServiceViewModelProvider(serviceContext, applicationContext).Factory,
 //        extras = MutableCreationExtras().apply {
 //            set(ThaiViewModel.MY_REPOSITORY_KEY, myRepository)
 //        },
@@ -76,6 +81,20 @@ class SearchWindow(
                     //open()
 
                     setText("")
+
+                    //SavedStateHandle().set("word", searchValue)
+
+                    val flashcardWindow = FlashcardWindow(
+                        searchValue,
+                        ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
+                        serviceContext,
+                        applicationContext,
+                        lifecycleScope = lifecycleScope,
+                        languageRepository = languageRepository,
+                        wordsRepository = wordsRepository
+                    )
+                    flashcardWindow.setUpWindow()
+                    flashcardWindow.open()
 
                     // closing and opening the window affected the search insertion somehow
                     // rather than closing the window, should I move it offscreen and show another one?

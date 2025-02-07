@@ -1,5 +1,6 @@
 package com.example.thaitoanki.services
 
+import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -25,16 +26,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.enableSavedStateHandles
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.savedstate.SavedStateRegistry
@@ -54,6 +64,7 @@ import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import com.example.thaitoanki.ui.thaiLanguageApplication
+import java.security.Provider
 
 
 const val INTENT_COMMAND = "com.example.thaitoanki.COMMAND" //"com.localazy.quicknote.COMMAND"
@@ -72,7 +83,8 @@ class FloatingService: LifecycleService(),
     LifecycleOwner,
     SavedStateRegistryOwner,
 
-    ViewModelStoreOwner
+    ViewModelStoreOwner,
+    HasDefaultViewModelProviderFactory
 {
     // variables for showing an overlay with Jetpack Compose
     lateinit var windowManager: WindowManager
@@ -91,6 +103,8 @@ class FloatingService: LifecycleService(),
         _savedStateRegistryController.performAttach()
         _savedStateRegistryController.performRestore(null)
         //_lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+
+        //enableSavedStateHandles()
 
         layoutInflater = this.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         testView = layoutInflater.inflate(R.layout.fragment_search_bar, null)
@@ -233,6 +247,23 @@ class FloatingService: LifecycleService(),
             startId = startId,
         )
 
+        val extras = MutableCreationExtras()
+        (applicationContext as? Application)?.let { application ->
+            extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] = application
+        }
+        extras[SAVED_STATE_REGISTRY_OWNER_KEY] = this
+        extras[VIEW_MODEL_STORE_OWNER_KEY] = this
+        //arguments?.let { args -> extras[DEFAULT_ARGS_KEY] = args }
+        defaultViewModelCreationExtras = extras
+        defaultViewModelProviderFactory = ServiceViewModelProvider(this, applicationContext).Factory
+
+
+        //savedStateRegistryController.performAttach()
+        // needs to be called before using createSavedStateHandle
+        enableSavedStateHandles()
+        //savedStateRegistryController.performRestore(savedState = restoredState)
+        //_lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+
         val command = intent?.getStringExtra(INTENT_COMMAND)
 
         // Exit the service if we receive the EXIT command.
@@ -291,7 +322,7 @@ class FloatingService: LifecycleService(),
                 val languageRepo = container.thaiLanguageRepository //ThaiLanguageApplication().container.thaiLanguageRepository
                 val wordRepo = container.wordsRepository
 
-                val viewModelProvider = ServiceViewModelProvider(applicationContext)
+                //val viewModelProvider = ServiceViewModelProvider(applicationContext)
 
                 //val window = Window(this, lifecycleScope, languageRepo, wordRepo)
                 //window.open()
@@ -300,7 +331,8 @@ class FloatingService: LifecycleService(),
                 //https://stackoverflow.com/questions/38712073/android-set-theme-for-view-that-created-by-service
                 val window = SearchWindow(
                     ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
-                    applicationContext,
+                    serviceContext = this,
+                    applicationContext = applicationContext,
                     lifecycleScope = lifecycleScope,
                     languageRepository = languageRepo,
                     wordsRepository = wordRepo
@@ -309,14 +341,14 @@ class FloatingService: LifecycleService(),
 
 
                 // TODO: test opening another window
-                val flashcardWindow = FlashcardWindow(
-                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
-                    applicationContext,
-                    lifecycleScope = lifecycleScope,
-                    languageRepository = languageRepo,
-                    wordsRepository = wordRepo
-                )
-                flashcardWindow.open()
+//                val flashcardWindow = FlashcardWindow(
+//                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
+//                    applicationContext,
+//                    lifecycleScope = lifecycleScope,
+//                    languageRepository = languageRepo,
+//                    wordsRepository = wordRepo
+//                )
+//                flashcardWindow.open()
             }
         }
 
@@ -336,6 +368,25 @@ class FloatingService: LifecycleService(),
 
     override val viewModelStore: ViewModelStore = ViewModelStore()
 
+//    private val defaultFactory by lazy {
+//        SavedStateViewModelFactory((this?.applicationContext as? Application), this)
+//    }
+//    override val defaultViewModelProviderFactory = defaultFactory
+
+//    override val defaultViewModelCreationExtras: CreationExtras
+//        get() {
+//            val extras = MutableCreationExtras()
+//            (applicationContext as? Application)?.let { application ->
+//                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] = application
+//            }
+//            extras[SAVED_STATE_REGISTRY_OWNER_KEY] = this
+//            extras[VIEW_MODEL_STORE_OWNER_KEY] = this
+//            //arguments?.let { args -> extras[DEFAULT_ARGS_KEY] = args }
+//            return extras
+//        }
+    override lateinit var defaultViewModelCreationExtras: CreationExtras
+    override lateinit var defaultViewModelProviderFactory: ViewModelProvider.Factory
+
     /*
     @NonNull ViewModelStore getViewModelStore(@NonNull Fragment f) {
         ViewModelStore viewModelStore = mViewModelStores.get(f.mWho);
@@ -348,7 +399,7 @@ class FloatingService: LifecycleService(),
      */
 }
 
-class ServiceViewModelProvider(applicationContext: Context) {
+class ServiceViewModelProvider(serviceContext: Context, applicationContext: Context) {
     val Factory = viewModelFactory {
 
         val container = DefaultAppContainer(applicationContext)
@@ -361,7 +412,38 @@ class ServiceViewModelProvider(applicationContext: Context) {
         }
         // Initializer for FlashcardViewModel
         initializer {
-            FlashcardViewModel(this.createSavedStateHandle(), wordRepo)
+           /*
+           Creates SavedStateHandle that can be used in your ViewModels
+            This function requires enableSavedStateHandles call during the component initialization. Latest versions of androidx components like ComponentActivity, Fragment, NavBackStackEntry makes this call automatically.
+            This CreationExtras must contain SAVED_STATE_REGISTRY_OWNER_KEY, VIEW_MODEL_STORE_OWNER_KEY and VIEW_MODEL_KEY.
+            Throws:
+            IllegalArgumentException - if this CreationExtras are missing required keys: ViewModelStoreOwnerKey, SavedStateRegistryOwnerKey, VIEW_MODEL_KE
+            */
+
+            /*
+            //https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-common/src/main/java/androidx/navigation/NavBackStackEntry.kt;l=110;drc=28c8a9bc27ec882ab9953df8f8977733a79a8e2c
+            val extras = MutableCreationExtras()
+            (context?.applicationContext as? Application)?.let { application ->
+                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] = application
+            }
+            extras[SAVED_STATE_REGISTRY_OWNER_KEY] = this
+            extras[VIEW_MODEL_STORE_OWNER_KEY] = this
+            arguments?.let { args -> extras[DEFAULT_ARGS_KEY] = args }
+            return extras
+
+             */
+
+            val extras = MutableCreationExtras()
+            (applicationContext as? Application)?.let { application ->
+                extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] = application
+            }
+            extras[SAVED_STATE_REGISTRY_OWNER_KEY] = serviceContext as SavedStateRegistryOwner
+            extras[VIEW_MODEL_STORE_OWNER_KEY] = serviceContext as ViewModelStoreOwner
+
+            //this[SAVED_STATE_REGISTRY_OWNER_KEY] = serviceContext as SavedStateRegistryOwner
+
+            val savedStateHandle: SavedStateHandle = this.createSavedStateHandle()
+            FlashcardViewModel(savedStateHandle, wordRepo)
         }
         // Initializer for HistoryViewModel
         initializer {
