@@ -86,6 +86,9 @@ class FlashcardWindow(
         },
     )[FlashcardViewModel::class]
 
+    // state variables
+    var currentDefinitionIndex = 0;
+
     // NOTE: initWindow was running before the viewModel was generated, so a separate function was created
     //override fun initWindow() {
     fun setUpWindow(){
@@ -118,7 +121,7 @@ class FlashcardWindow(
 
                     updateFlashcardFrontView(
                         view = rootView,
-                        currentFlashcard = def[flashcardViewModel.uiState.value.currentDefinitionIndex],
+                        currentFlashcard = def[currentDefinitionIndex], //def[flashcardViewModel.uiState.value.currentDefinitionIndex],
                         currentDefinitionExampleIndex = 0,
                         currentDefinitionSentenceIndex = 0,
                         onClick = {
@@ -133,10 +136,19 @@ class FlashcardWindow(
 
 
 
-                            flashcardViewModel.increaseCurrentDefinitionIndex()
-                            Log.d("flashcardwindow",
-                                flashcardViewModel.uiState.value.currentDefinitionIndex.toString()
-                            )
+                            // unsure why the uiState and _uiState isn't changed with this command. All parts remain uninitialized
+//                            flashcardViewModel.increaseCurrentDefinitionIndex()
+//                            Log.d("flashcardwindow",
+//                                flashcardViewModel.uiState.value.currentDefinitionIndex.toString()
+//                            )
+
+                            currentDefinitionIndex += 1
+                            if (currentDefinitionIndex >= def.size){
+                                currentDefinitionIndex = 0
+                            }
+                            setUpWindow() // reload the window view with the new configuration
+
+
 
                             // change title
 //                            val titleTextView = rootView.findViewById<TextView>(R.id.word)
