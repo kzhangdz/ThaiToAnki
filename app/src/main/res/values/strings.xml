@@ -32,4 +32,6 @@
     <string name="notification_subtitle">May need to restart app to access floating window</string>
 
     <string name="overlay_settings">Overlay Permissions</string>
+    <string name="default_part_of_speech_and_definition">No definition</string>
+    <string name="default_word_title">No Word Found</string>
 </resources>

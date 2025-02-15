@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_marginTop="4dp"
-                    android:text="Title"
+                    android:text="@string/default_word_title"
                     android:textColor="@color/md_theme_onPrimary_highContrast"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +118,7 @@
                                     style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="PartOfSpeechAndDefinition"/>
+                                    android:text="@string/default_part_of_speech_and_definition"/>
                             </LinearLayout>
                         </LinearLayout>
                         <View style="@style/Divider"/>
