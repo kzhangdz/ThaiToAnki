@@ -32,90 +32,80 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Header information -->
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:background="@color/md_theme_primary"
-                android:padding="@dimen/padding_small">
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="4dp">
 
                 <include
-                    layout="@layout/fragment_pill"
                     android:id="@+id/counter"
+                    layout="@layout/fragment_pill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    />
+                    android:layout_gravity="end"/>
 
-                <ImageButton
-                    android:id="@+id/left_button"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/baseline_arrow_left_64"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:elevation="2dp"
-                    android:contentDescription="Previous"
-                    />
+                    android:gravity="center">
 
-                <ImageButton
-                    android:id="@+id/right_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/baseline_arrow_right_64"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:elevation="2dp"
-                    android:contentDescription="Next"
-                    />
+                    <ImageButton
+                        android:id="@+id/left_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="Previous"
+                        android:elevation="2dp"
+                        android:src="@drawable/baseline_arrow_left_64" />
 
-                <TextView
-                    android:id="@+id/word"
-                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/default_word_title"
-                    android:textColor="@color/md_theme_onPrimary_highContrast"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/counter" />
+                    <TextView
+                        android:id="@+id/word"
+                        style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat.Title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="4dp"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text="@string/default_word_title"
+                        android:textColor="@color/md_theme_onPrimary_highContrast" />
+
+                    <ImageButton
+                        android:id="@+id/right_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="Next"
+                        android:elevation="2dp"
+                        android:src="@drawable/baseline_arrow_right_64" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/pronunciation"
-                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="@string/pronunciation_label"
-                    android:textColor="@color/md_theme_onPrimary_highContrast"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/word" />
+                    android:textColor="@color/md_theme_onPrimary_highContrast" />
 
                 <TextView
                     android:id="@+id/romanization"
-                    style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="@string/romanization_label"
-                    android:textColor="@color/md_theme_onPrimary_highContrast"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/pronunciation" />
+                    android:textColor="@color/md_theme_onPrimary_highContrast" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <!-- Each of the information sections -->
             <!-- Starts with a container to set background color-->
