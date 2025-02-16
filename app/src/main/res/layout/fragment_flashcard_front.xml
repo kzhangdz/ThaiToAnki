@@ -65,7 +65,8 @@
                         android:background="@android:color/transparent"
                         android:contentDescription="Previous"
                         android:elevation="2dp"
-                        android:src="@drawable/baseline_arrow_left_64" />
+                        android:src="@drawable/baseline_arrow_left_64"
+                        app:tint="@color/md_theme_background"/>
 
                     <TextView
                         android:id="@+id/word"
@@ -86,7 +87,8 @@
                         android:background="@android:color/transparent"
                         android:contentDescription="Next"
                         android:elevation="2dp"
-                        android:src="@drawable/baseline_arrow_right_64" />
+                        android:src="@drawable/baseline_arrow_right_64"
+                        app:tint="@color/md_theme_background" />
 
                 </LinearLayout>
 
