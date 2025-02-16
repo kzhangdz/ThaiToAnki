@@ -28,6 +28,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
+import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.services.FloatingService
 import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.services.registerDraggableTouchListener
@@ -89,6 +90,28 @@ class FlashcardWindow(
     // state variables
     var currentDefinitionIndex = 0;
 
+    /**
+     * State manipulation functions
+     */
+    private fun increaseCurrentDefinitionIndex(definitionList: List<Definition>){
+        currentDefinitionIndex += 1
+        if (currentDefinitionIndex >= definitionList.size){
+            currentDefinitionIndex = 0
+        }
+        setUpWindow() // reload the window view with the new configuration
+
+        // TODO: reset exampleIndex and sentenceIndex to 0
+    }
+
+    private fun decreaseCurrentDefinitionIndex(definitionList: List<Definition>){
+        currentDefinitionIndex -= 1
+        if (currentDefinitionIndex < 0){
+            val maxIndex = definitionList.size - 1
+            currentDefinitionIndex = maxIndex
+        }
+        setUpWindow() // reload the window view with the new configuration
+    }
+
     // NOTE: initWindow was running before the viewModel was generated, so a separate function was created
     //override fun initWindow() {
     fun setUpWindow(){
@@ -99,11 +122,11 @@ class FlashcardWindow(
         // Actually, it seems like the flow is only collecting after running this setUpWindow() function
         // init + initWindow() -> setUpWindow() -> flow collection
         lifecycleScope.launch {
-            flashcardViewModel.definitionsState.collect { def ->
+            flashcardViewModel.definitionsState.collect { definitionList ->
                 // Update View with the latest defns
-                Log.d("FlashcardWindow collection", def.toString())
+                Log.d("FlashcardWindow collection", definitionList.toString())
 
-                if(def.isNotEmpty()) {
+                if(definitionList.isNotEmpty()) {
                     /*
 2025-01-26 14:27:21.051 11435-11435 FlashcardW...collection com.example.thaitoanki               D  []
 2025-01-26 14:27:21.053 11435-11435 FlashcardWindow         com.example.thaitoanki               D  ขนม
@@ -121,7 +144,9 @@ class FlashcardWindow(
 
                     updateFlashcardFrontView(
                         view = rootView,
-                        currentFlashcard = def[currentDefinitionIndex], //def[flashcardViewModel.uiState.value.currentDefinitionIndex],
+                        currentDefinitionIndex = currentDefinitionIndex,
+                        definitionCount = definitionList.size,
+                        currentFlashcard = definitionList[currentDefinitionIndex], //def[flashcardViewModel.uiState.value.currentDefinitionIndex],
                         currentDefinitionExampleIndex = 0,
                         currentDefinitionSentenceIndex = 0,
                         onClick = {
@@ -142,11 +167,7 @@ class FlashcardWindow(
 //                                flashcardViewModel.uiState.value.currentDefinitionIndex.toString()
 //                            )
 
-                            currentDefinitionIndex += 1
-                            if (currentDefinitionIndex >= def.size){
-                                currentDefinitionIndex = 0
-                            }
-                            setUpWindow() // reload the window view with the new configuration
+                            increaseCurrentDefinitionIndex(definitionList)
 
 
 
@@ -171,6 +192,12 @@ class FlashcardWindow(
 //                                    val displayText: String = partOfSpeech + currentFlashcard.definition
 //                                    definitionTextView.text = displayText
 //                                })
+                        },
+                        onLeftClick = {
+                            decreaseCurrentDefinitionIndex(definitionList)
+                        },
+                        onRightClick = {
+                            increaseCurrentDefinitionIndex(definitionList)
                         },
                         onExampleClick = {},
                         onSentenceClick = {}

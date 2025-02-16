@@ -146,6 +146,8 @@ fun Flashcard(
         currentExampleIndices,
         currentSentenceIndices,
         onClick = onFlashcardClick,
+        onLeftClick = onLeftButtonClick,
+        onRightClick = onRightButtonClick,
         onExampleClick = onExampleClick,
         onSentenceClick = onSentenceClick,
         modifier = Modifier

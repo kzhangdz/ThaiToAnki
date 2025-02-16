@@ -189,6 +189,8 @@ fun FlashcardFront(
     currentExampleIndices: List<Int?>,
     currentSentenceIndices: List<Int?>,
     onClick: () -> Unit = {},
+    onLeftClick: () -> Unit = {},
+    onRightClick: () -> Unit = {},
     onExampleClick: () -> Unit = {},
     onSentenceClick: () -> Unit = {},
     modifier: Modifier = Modifier
@@ -205,10 +207,14 @@ fun FlashcardFront(
         update = { view ->
             updateFlashcardFrontView(
                 view,
+                currentDefinitionIndex = currentDefinitionIndex,
+                definitionCount = flashcardInfo.size,
                 currentFlashcard,
                 currentDefinitionExampleIndex,
                 currentSentenceIndex,
                 onClick,
+                onLeftClick,
+                onRightClick,
                 onExampleClick,
                 onSentenceClick
             )

@@ -10,14 +10,17 @@ import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.toSpannable
 import androidx.core.text.toSpanned
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
@@ -28,10 +31,14 @@ import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 // TODO: move these functions out if needed in the service
 fun updateFlashcardFrontView(
     view: View,
+    currentDefinitionIndex: Int,
+    definitionCount: Int,
     currentFlashcard: Definition,
     currentDefinitionExampleIndex: Int?,
     currentDefinitionSentenceIndex: Int?,
     onClick: () -> Unit,
+    onLeftClick: () -> Unit,
+    onRightClick: () -> Unit,
     onExampleClick: () -> Unit,
     onSentenceClick: () -> Unit,
 ){
@@ -49,6 +56,11 @@ fun updateFlashcardFrontView(
         Log.d("flashcard", "clicking works")
     }
 
+    /**
+     * Header section
+     *
+     */
+
     // set the header text with word info
     // word
     val titleTextView = view.findViewById<TextView>(R.id.word)
@@ -58,6 +70,26 @@ fun updateFlashcardFrontView(
 
         // update the index by one
         onClick()
+    }
+
+    // Counter
+    val counterView = view.findViewById<CardView>(R.id.counter)
+    val counterTextView = counterView.getChildAt(0) as TextView
+    val counterText = if(definitionCount > 0) "${currentDefinitionIndex + 1}/${definitionCount}" else "0/0"
+    counterTextView.setText(counterText)
+    //change view color
+    counterTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_background))
+
+    // Left Button
+    val leftView = view.findViewById<ImageButton>(R.id.left_button)
+    leftView.setOnClickListener(){
+        onLeftClick()
+    }
+
+    // Right Button
+    val rightView = view.findViewById<ImageButton>(R.id.right_button)
+    rightView.setOnClickListener(){
+        onRightClick()
     }
 
     // pronunciation
@@ -90,7 +122,9 @@ fun updateFlashcardFrontView(
             )
         })
 
-    // information sections
+    /**
+     * Information sections
+     */
 
     // definition
     val definitionSectionViewId = R.id.definition_container

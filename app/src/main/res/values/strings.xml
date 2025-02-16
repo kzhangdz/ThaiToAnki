@@ -14,7 +14,7 @@
 
     <!-- Flashcard -->
     <string name="default_part_of_speech_and_definition">No Definition</string>
-    <string name="default_word_title">No Word Found</string>
+    <string name="default_word_title">No Results</string>
     <string name="pronunciation_label"><i><u>Pronunciation</u></i></string>
     <string name="romanization_label"><i><u>Romanization</u></i></string>
     <string name="classifier_label">Classifier</string>
