@@ -6,26 +6,17 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
-import android.widget.EditText
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.ThaiLanguageRepository
-import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.services.registerDraggableTouchListener
-import com.example.thaitoanki.ui.AppViewModelProvider
-import com.example.thaitoanki.ui.screens.ThaiViewModel
-import kotlinx.coroutines.launch
 
 // implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
 open class Window(

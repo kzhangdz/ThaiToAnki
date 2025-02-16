@@ -1,4 +1,4 @@
-package com.example.thaitoanki.data.HtmlConverterFactory
+package com.example.thaitoanki.data.network.HtmlConverterFactory
 
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup

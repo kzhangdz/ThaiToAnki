@@ -1,4 +1,4 @@
-package com.example.thaitoanki.data
+package com.example.thaitoanki.data.anki
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,7 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
@@ -309,12 +310,15 @@ class AnkiDroidHelper(context: Context) {
 
     fun definitionToMap(definition: Definition): Map<String, String>{
         // TODO: format synonym, relatedwords, etc.
-        val classifiers = HTMLFormatting.formatToPillHTML(definition.classifiers, type = "classifier")
+        val classifiers =
+            HTMLFormatting.formatToPillHTML(definition.classifiers, type = "classifier")
         val components = HTMLFormatting.formatToPillHTML(definition.components, type = "component")
         val synonyms = HTMLFormatting.formatToPillHTML(definition.synonyms, type = "synonym")
-        val relatedWords = HTMLFormatting.formatToPillHTML(definition.relatedWords, type = "related-word")
+        val relatedWords =
+            HTMLFormatting.formatToPillHTML(definition.relatedWords, type = "related-word")
         val examples = HTMLFormatting.formatExamplesToHTML(definition.examples, definition.baseWord)
-        val sentences = HTMLFormatting.formatSentencesToHTML(definition.sentences, definition.baseWord)
+        val sentences =
+            HTMLFormatting.formatSentencesToHTML(definition.sentences, definition.baseWord)
 
         Log.i(LOG_TAG, "Examples: $examples")
 

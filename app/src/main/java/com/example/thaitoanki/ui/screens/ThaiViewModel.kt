@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.data.network.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.ThaiLanguageData

@@ -47,7 +47,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.AnkiDroidHelper
+import com.example.thaitoanki.data.anki.AnkiDroidHelper
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
