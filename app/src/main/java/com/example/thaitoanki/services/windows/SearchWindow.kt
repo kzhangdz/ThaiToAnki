@@ -40,7 +40,9 @@ class SearchWindow(
     context = context,
     serviceContext = serviceContext,
     applicationContext = applicationContext,
-    layoutId = R.layout.window_search
+    layoutId = R.layout.window_search,
+    windowWidth = 300,
+    windowHeight = 80
 ) {
 
     // TODO: pass in viewModel instead?

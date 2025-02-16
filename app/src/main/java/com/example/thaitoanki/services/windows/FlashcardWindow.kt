@@ -52,7 +52,9 @@ class FlashcardWindow(
     context = context,
     serviceContext = serviceContext,
     applicationContext = applicationContext,
-    layoutId = R.layout.window_flashcard
+    layoutId = R.layout.window_flashcard,
+    windowWidth = 300,
+    windowHeight = 400
 ) {
     // TODO: pass in viewModel instead?
     //val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)

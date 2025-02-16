@@ -33,7 +33,8 @@ open class Window(
     serviceContext: Context,
     applicationContext: Context,
     @LayoutRes val layoutId: Int,
-
+    val windowWidth: Int = 300,
+    val windowHeight: Int = 400
     ):
     SavedStateRegistryOwner,
     ViewModelStoreOwner {
@@ -42,7 +43,7 @@ open class Window(
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     protected val rootView = layoutInflater.inflate(layoutId, null) as WindowContentLayout // allows us to access setListener()
 
-    //val viewMoel
+    //val viewModel
 
     private val windowParams = WindowManager.LayoutParams(
         0,
@@ -85,7 +86,7 @@ open class Window(
 
 
     private fun initWindowParams() {
-        calculateSizeAndPosition(windowParams, 300, 400)
+        calculateSizeAndPosition(windowParams, windowWidth, windowHeight)
     }
 
 
