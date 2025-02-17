@@ -44,7 +44,7 @@ class FlashcardWindow(
     val word: String,
     context: ContextWrapper,
     val serviceContext: Context,
-    val applicationContext: Context,
+    override val applicationContext: Context, // todo: instead of overriding,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository

@@ -1,5 +1,6 @@
 package com.example.thaitoanki
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -49,5 +50,9 @@ class MainActivity : ComponentActivity() {
                 ThaiToAnkiApp()
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
     }
 }

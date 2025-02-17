@@ -17,7 +17,7 @@ fun View.registerDraggableTouchListener(
     WindowHeaderTouchListener(context, this, initialPosition, positionListener)
 }
 
-const val LOG_TAG = "WindowHeaderTouchListener"
+private const val LOG_TAG = "WindowHeaderTouchListener"
 
 class WindowHeaderTouchListener(
     context: Context,
