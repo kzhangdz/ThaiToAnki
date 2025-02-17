@@ -30,6 +30,9 @@ class WindowContentLayout : LinearLayout, OrientationConfigurationListener {
         this.orientationListener = orientationListener
     }
 
+    /**
+     * From LinearLayout
+     */
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) listener?.invoke(true)
         if (event.action == MotionEvent.ACTION_OUTSIDE) listener?.invoke(false)
@@ -42,6 +45,9 @@ class WindowContentLayout : LinearLayout, OrientationConfigurationListener {
         return super.onInterceptTouchEvent(event)
     }
 
+    /**
+     * From implementing OrientationConfigurationListener
+     */
     override fun onConfigurationChanged(orientation: Configuration) {
         orientationListener?.invoke(orientation)
         super.onConfigurationChanged(orientation)

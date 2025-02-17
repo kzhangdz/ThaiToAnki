@@ -103,13 +103,27 @@ open class Window(
 //            initialPosition = { Point(windowParams.x, windowParams.y) },
 //            positionListener = {x, y -> setPosition(x, y)}
 //        )
+        // todo: refactor to be configuration listener
         rootView.setOrientationListener { orientation ->
-            if (orientation.orientation == Configuration.ORIENTATION_PORTRAIT){
-                setPosition(100, 100)
-            }
-            else if (orientation.orientation == Configuration.ORIENTATION_LANDSCAPE){
-                setPosition(0, 0)
-            }
+
+            // calculate the best position to move to based on percentages of windowParams.x and y
+            // triggers after the configuration change, so the widthPercent compare x against the original width in portrait, now represented as height in landscape
+            Log.d("Window", "width: ${getCurrentDisplayMetrics().widthPixels} height: ${getCurrentDisplayMetrics().heightPixels}")
+            Log.d("Window", "(${windowParams.x}, ${windowParams.y})")
+            val widthPercent = windowParams.x.toDouble() / getCurrentDisplayMetrics().heightPixels
+            val heightPercent = windowParams.y.toDouble() / getCurrentDisplayMetrics().widthPixels
+
+            val targetX = widthPercent * getCurrentDisplayMetrics().widthPixels
+            val targetY = heightPercent * getCurrentDisplayMetrics().heightPixels
+
+            setPosition(targetX.toInt(), targetY.toInt())
+            //setPosition(windowParams.y, windowParams.x)
+//            if (orientation.orientation == Configuration.ORIENTATION_PORTRAIT){
+//                setPosition(100, 200)
+//            }
+//            else if (orientation.orientation == Configuration.ORIENTATION_LANDSCAPE){
+//                setPosition(0, 0)
+//            }
         }
 
         rootView.setListener {
