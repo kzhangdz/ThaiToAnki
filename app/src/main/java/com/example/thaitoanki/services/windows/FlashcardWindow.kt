@@ -11,8 +11,10 @@ import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
@@ -119,6 +121,12 @@ class FlashcardWindow(
     fun setUpWindow(){
         // super init
         super.initWindow()
+
+        // Ensure correct color for layout counter, even if no results
+        val counterView = rootView.findViewById<CardView>(R.id.counter)
+        val counterTextView = counterView.getChildAt(0) as TextView
+        //change view color
+        counterTextView.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.md_theme_background))
 
         // TODO: flow isn't collecting anything. Try to make a direct query for words
         // Actually, it seems like the flow is only collecting after running this setUpWindow() function
