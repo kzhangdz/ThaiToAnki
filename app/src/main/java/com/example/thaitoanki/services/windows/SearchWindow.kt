@@ -2,26 +2,15 @@ package com.example.thaitoanki.services.windows
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.PixelFormat
-import android.graphics.Point
-import android.os.Build
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.EditText
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
-import com.example.thaitoanki.services.FloatingService
 import com.example.thaitoanki.services.ServiceViewModelProvider
-import com.example.thaitoanki.services.registerDraggableTouchListener
-import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import kotlinx.coroutines.launch
 

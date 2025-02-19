@@ -1,9 +1,7 @@
 package com.example.thaitoanki.services.windows
 
-import android.R.attr.tag
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
@@ -19,8 +17,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
-import com.example.thaitoanki.services.registerDraggableTouchListener
-import com.example.thaitoanki.services.registerOrientationChangeListener
+import com.example.thaitoanki.services.listeners.registerDraggableTouchListener
 
 
 // implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
@@ -187,6 +184,12 @@ open class Window(
         }
     }
 
+    open fun minimize(){
+        // switch to a different smaller window, or set the visibility of the content to none?
+
+        // FloatingApps takes the view off screen and adds a new view called the bubble
+        // I can probably set the bubble on the left at the same y coord as before.
+    }
 
     open fun close() {
         try {

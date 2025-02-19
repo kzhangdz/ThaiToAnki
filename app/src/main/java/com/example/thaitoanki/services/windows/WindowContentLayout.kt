@@ -5,7 +5,7 @@ import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.LinearLayout
-import com.example.thaitoanki.services.OrientationConfigurationListener
+import com.example.thaitoanki.services.listeners.OrientationConfigurationListener
 
 /*
 Wrapper class to be used in XML, i.e. <WindowContentLayout></WindowContentLayout>
