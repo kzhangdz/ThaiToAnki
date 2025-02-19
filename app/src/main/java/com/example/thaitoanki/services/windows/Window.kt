@@ -139,7 +139,7 @@ open class Window(
     }
 
 
-    private fun enableKeyboard() {
+    protected fun enableKeyboard() {
         if (windowParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE != 0) {
             windowParams.flags =
                 windowParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
@@ -148,7 +148,7 @@ open class Window(
     }
 
 
-    private fun disableKeyboard() {
+    protected fun disableKeyboard() {
         if (windowParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE == 0) {
             windowParams.flags = windowParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
             update()
@@ -156,14 +156,14 @@ open class Window(
     }
 
 
-    private fun setPosition(x: Int, y: Int) {
+    protected fun setPosition(x: Int, y: Int) {
         windowParams.x = x
         windowParams.y = y
         update()
     }
 
 
-    private fun update() {
+    protected fun update() {
         try {
             windowManager.updateViewLayout(rootView, windowParams)
         } catch (e: Exception) {

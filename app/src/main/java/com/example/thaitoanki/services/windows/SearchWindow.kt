@@ -2,8 +2,11 @@ package com.example.thaitoanki.services.windows
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -50,68 +53,89 @@ class SearchWindow(
         // super init for window commands, like closing and minimizing
         super.initWindow()
 
-        rootView.findViewById<View>(R.id.search_button).setOnClickListener {
-            with(rootView.findViewById<EditText>(R.id.search_input)) {
-                //db.insert(text.toString(), true)
-
-                //wordsRepository.insertWord(text.toString())
-
-                lifecycleScope.launch {
-                    //val results = languageRepository.searchDictionary(text.toString())
-                    //Log.d("Service", results.html())
-                    val searchValue = text.toString()
-                    viewModel.updateSearchValue(searchValue)
-
-                    // TODO: need to add a version of search Dictionary that suspends and does not start another coroutine
-                    //viewModel.searchDictionary()
-
-                    viewModel.sendDictionaryQuery()
-
-                    // test
-                    //close()
-                    //open()
-
-                    setText("")
-
-                    //SavedStateHandle().set("word", searchValue)
-
-                    val flashcardWindow = FlashcardWindow(
-                        searchValue,
-                        ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
-                        serviceContext,
-                        applicationContext,
-                        lifecycleScope = lifecycleScope,
-                        languageRepository = languageRepository,
-                        wordsRepository = wordsRepository
-                    )
-                    flashcardWindow.setUpWindow()
-                    flashcardWindow.open()
-
-                    // closing and opening the window affected the search insertion somehow
-                    // rather than closing the window, should I move it offscreen and show another one?
-
-                    // have the definition window open off screen?
-                    // then after a word is saved, use a broadcast receiver notify the definition window and retrieve definitions?
-                    // try to do it by collecting from the flow first
-
-                    // I think I can open multiple windows. max is 300
-                    // can probably put it directly over the searchWindow's
-
-                    // next step for now is to make an inheritable window
-
-                    // An overlay is just a layout, without an underlying activity
+//        rootView.setKeyEventListener{ keyCode, event ->
+//            Log.d("Search Window", "keyCode: ${keyCode}, event: ${event}")
+//        }
 
 
+        rootView.findViewById<EditText>(R.id.search_input).setOnEditorActionListener { _, actionId, _ ->
+            var handled: Boolean = false
 
-                    // Can I actually just do an overlay activity instead?
-                    // This link uses an intent to start a second activity that's based in a window manager
-                    // https://stackoverflow.com/questions/18843868/android-overlay-on-window-over-activities-of-a-task
-                }
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                search()
+
+                disableKeyboard()
+
+                handled = true
             }
+
+            return@setOnEditorActionListener handled
         }
 
+        rootView.findViewById<View>(R.id.search_button).setOnClickListener {
+            search()
+        }
     }
 
+    private fun search(){
+        with(rootView.findViewById<EditText>(R.id.search_input)) {
+            //db.insert(text.toString(), true)
+
+            //wordsRepository.insertWord(text.toString())
+
+            lifecycleScope.launch {
+                //val results = languageRepository.searchDictionary(text.toString())
+                //Log.d("Service", results.html())
+                val searchValue = text.toString()
+                viewModel.updateSearchValue(searchValue)
+
+                // TODO: need to add a version of search Dictionary that suspends and does not start another coroutine
+                //viewModel.searchDictionary()
+
+                viewModel.sendDictionaryQuery()
+
+                // test
+                //close()
+                //open()
+
+                setText("")
+
+                //SavedStateHandle().set("word", searchValue)
+
+                val flashcardWindow = FlashcardWindow(
+                    searchValue,
+                    ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
+                    serviceContext,
+                    applicationContext,
+                    lifecycleScope = lifecycleScope,
+                    languageRepository = languageRepository,
+                    wordsRepository = wordsRepository
+                )
+                flashcardWindow.setUpWindow()
+                flashcardWindow.open()
+
+                // closing and opening the window affected the search insertion somehow
+                // rather than closing the window, should I move it offscreen and show another one?
+
+                // have the definition window open off screen?
+                // then after a word is saved, use a broadcast receiver notify the definition window and retrieve definitions?
+                // try to do it by collecting from the flow first
+
+                // I think I can open multiple windows. max is 300
+                // can probably put it directly over the searchWindow's
+
+                // next step for now is to make an inheritable window
+
+                // An overlay is just a layout, without an underlying activity
+
+
+
+                // Can I actually just do an overlay activity instead?
+                // This link uses an intent to start a second activity that's based in a window manager
+                // https://stackoverflow.com/questions/18843868/android-overlay-on-window-over-activities-of-a-task
+            }
+        }
+    }
 
     init {
         //initWindowParams()
