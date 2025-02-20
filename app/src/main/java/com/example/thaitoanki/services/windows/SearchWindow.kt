@@ -53,11 +53,6 @@ class SearchWindow(
         // super init for window commands, like closing and minimizing
         super.initWindow()
 
-//        rootView.setKeyEventListener{ keyCode, event ->
-//            Log.d("Search Window", "keyCode: ${keyCode}, event: ${event}")
-//        }
-
-
         rootView.findViewById<EditText>(R.id.search_input).setOnEditorActionListener { _, actionId, _ ->
             var handled: Boolean = false
 

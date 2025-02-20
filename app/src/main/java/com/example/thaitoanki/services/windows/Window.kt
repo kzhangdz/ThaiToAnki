@@ -88,6 +88,8 @@ open class Window(
     open fun initWindow() {
         // Using kotlin extension for views caused error, so good old findViewById is used
 
+        rootView.findViewById<View>(R.id.window_minimize).setOnClickListener{ minimize() }
+
         rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
 
         rootView.findViewById<View>(R.id.header).registerDraggableTouchListener(
@@ -184,11 +186,19 @@ open class Window(
         }
     }
 
+    val HIDDEN_WINDOW_X = 10000
+    val HIDDEN_WINDOW_Y = 10000
+    protected fun hide(){
+        setPosition(HIDDEN_WINDOW_X, HIDDEN_WINDOW_Y)
+    }
+
     open fun minimize(){
         // switch to a different smaller window, or set the visibility of the content to none?
 
         // FloatingApps takes the view off screen and adds a new view called the bubble
         // I can probably set the bubble on the left at the same y coord as before.
+
+        hide()
     }
 
     open fun close() {
