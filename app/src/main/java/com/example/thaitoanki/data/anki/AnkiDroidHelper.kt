@@ -303,7 +303,7 @@ class AnkiDroidHelper(context: Context) {
             Log.d(LOG_TAG, "successful insertion")
         }
         else if(added == 0){
-
+            // TODO
         }
         else {
             // API indicates that <0 return value is an error
@@ -312,17 +312,23 @@ class AnkiDroidHelper(context: Context) {
         return added
     }
 
-    fun definitionToMap(definition: Definition): Map<String, String>{
-        // TODO: format synonym, relatedwords, etc.
+    /**
+     * Converts a Definition to an Anki key-value pair of field-name and value
+     */
+    fun definitionToMap(definition: Definition, exampleIndex: Int?, sentenceIndex: Int?): Map<String, String>{
         val classifiers =
             HTMLFormatting.formatToPillHTML(definition.classifiers, type = "classifier")
         val components = HTMLFormatting.formatToPillHTML(definition.components, type = "component")
         val synonyms = HTMLFormatting.formatToPillHTML(definition.synonyms, type = "synonym")
         val relatedWords =
             HTMLFormatting.formatToPillHTML(definition.relatedWords, type = "related-word")
-        val examples = HTMLFormatting.formatExamplesToHTML(definition.examples, definition.baseWord)
+
+        val singleExampleList: List<Definition> = if (exampleIndex != null) listOf(definition.examples[exampleIndex]) else listOf()
+        val examples = HTMLFormatting.formatExamplesToHTML(singleExampleList, definition.baseWord)
+
+        val singleSentenceList: List<Definition> = if (sentenceIndex != null) listOf(definition.sentences[sentenceIndex]) else listOf()
         val sentences =
-            HTMLFormatting.formatSentencesToHTML(definition.sentences, definition.baseWord)
+            HTMLFormatting.formatSentencesToHTML(singleSentenceList, definition.baseWord)
 
         Log.i(LOG_TAG, "Examples: $examples")
 
@@ -344,15 +350,34 @@ class AnkiDroidHelper(context: Context) {
         return map
     }
 
-    fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>>{
+    /**
+     * Converts a list of Definitions to a list of Anki key-value pair of field-name and value
+     *
+     * For our design, we will generally only pass in a list of one Definition though
+     */
+    fun definitionListToMapList(
+        definitions: List<Definition>,
+        exampleIndices: List<Int?>,
+        sentenceIndices: List<Int?>
+    ): List<Map<String, String>>{
         val mapList: MutableList<Map<String, String>> = mutableListOf()
-        for (definition in definitions){
-            val map = definitionToMap(definition)
-            mapList.add(map)
 
-            // TODO: for now, only add the first definition
-            break
+        for (i in definitions.indices){
+            val definition = definitions[i]
+            val exampleIndex = exampleIndices[i]
+            val sentenceIndex = sentenceIndices[i]
+
+            val map = definitionToMap(definition, exampleIndex, sentenceIndex)
+            mapList.add(map)
         }
+
+//        for (definition in definitions){
+//            val map = definitionToMap(definition)
+//            mapList.add(map)
+//
+//            // TODO: for now, only add the first definition
+//            break
+//        }
         return mapList
     }
 

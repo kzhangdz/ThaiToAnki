@@ -86,8 +86,6 @@ interface AnkiRepository {
 
     fun getFields(): Array<String>
 
-    fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>>
-
     // definitionToMap
 
     // definitionListToMapList

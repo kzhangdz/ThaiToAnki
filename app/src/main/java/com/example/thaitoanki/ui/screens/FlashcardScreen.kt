@@ -120,13 +120,8 @@ fun FlashcardScreen(
                 //onSaveFlashcardButtonClick = onSaveFlashcardButtonClick
                 onSaveFlashcardButtonClick = {
                     val responseCode = flashcardViewModel.saveCard(
-                        context,
-                        onSuccess = {
-
-                        },
-                        onFailure = {
-
-                        }
+                        context
+                        // TODO: add deckname, modelname?
                     )
 
                     if (responseCode > 0){

@@ -18,24 +18,14 @@ package com.example.thaitoanki.ui.screens
 
 import android.content.Context
 import android.util.Log
-import android.view.View
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thaitoanki.data.anki.AnkiDroidRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.entities.toDefinition
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.services.getActivity
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,7 +33,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 /**
  * ViewModel to retrieve words from the Room database.
@@ -223,11 +212,11 @@ class FlashcardViewModel(
     // TODO: read configured deck from settings?
     fun saveCard(
         context: Context,
-        onSuccess: () -> Unit,
-        onFailure: () -> Unit,
         deckName: String = "ThaiToAnki",
         modelName: String = "ThaiToAnki"
     ): Int {
+        // TODO: may need to handle this request permission differently from service
+        // or, don't handle it at all and specify in the settings that it is necessary
         val shouldRequestReadWritePermission = flashcardRepository.shouldRequestPermission()
         if (shouldRequestReadWritePermission) {
             flashcardRepository.requestPermission(context.getActivity(), 0)
@@ -250,10 +239,17 @@ class FlashcardViewModel(
                 Log.d(LOG_TAG, "deckId or modelId is null")
             } else {
                 // only upload the highlighted flashcard
+                val currentDefinitionIndex = uiState.value.currentDefinitionIndex
                 val currentFlashcard: List<Definition> =
-                    listOf(uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex])
+                    listOf(uiState.value.currentDefinitions[currentDefinitionIndex])
+                val currentExampleIndex = listOf(uiState.value.currentExampleIndices[currentDefinitionIndex])
+                val currentSentenceIndex = listOf(uiState.value.currentSentenceIndices[currentDefinitionIndex])
                 val flashcardInfo =
-                    flashcardRepository.definitionListToMapList(definitions = currentFlashcard) //uiState.currentDefinitions)
+                    flashcardRepository.definitionListToMapList(
+                        definitions = currentFlashcard,
+                        exampleIndices = currentExampleIndex,
+                        sentenceIndices = currentSentenceIndex
+                    ) //uiState.currentDefinitions)
 
                 val responseCode = flashcardRepository.addCardsToAnkiDroid(
                     deckId, modelId,

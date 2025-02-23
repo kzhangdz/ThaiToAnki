@@ -1,7 +1,6 @@
 package com.example.thaitoanki.data.anki
 
 import android.app.Activity
-import com.example.thaitoanki.data.database.WordDao
 import com.example.thaitoanki.data.network.Definition
 import java.util.LinkedList
 
@@ -70,8 +69,12 @@ class AnkiDroidRepository(
         return ankiDroidHelper.FIELDS
     }
 
-    override fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>> {
-        return ankiDroidHelper.definitionListToMapList(definitions)
+    fun definitionListToMapList(
+        definitions: List<Definition>,
+        exampleIndices: List<Int?>,
+        sentenceIndices: List<Int?>
+    ): List<Map<String, String>> {
+        return ankiDroidHelper.definitionListToMapList(definitions, exampleIndices, sentenceIndices)
     }
 
 }
