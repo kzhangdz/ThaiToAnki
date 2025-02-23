@@ -49,6 +49,7 @@ fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     onSuccessfulFlashcardSave: () -> Unit,
     onFailedFlashcardSave: () -> Unit,
+    onCancelButtonClicked: () -> Unit,
     errorRetryAction: () -> Unit,
     modifier: Modifier = Modifier,
     flashcardViewModel: FlashcardViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -134,7 +135,8 @@ fun FlashcardScreen(
                     else{
                         onFailedFlashcardSave()
                     }
-                }
+                },
+                onCancelButtonClicked = onCancelButtonClicked
             )
         }
     }
@@ -428,6 +430,7 @@ fun FlashcardBack(
 @Composable
 fun FlashcardScreenButtonGroup(
     onSaveFlashcardButtonClick: () -> Unit,
+    onCancelButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
@@ -442,17 +445,10 @@ fun FlashcardScreenButtonGroup(
         ) {
             Text(stringResource(R.string.upload_to_anki_button))
         }
-        Button(
-            onClick = { },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.save_locally_button))
-        }
         OutlinedButton(
-            onClick = { },
+            onClick = {
+                onCancelButtonClicked()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.cancel))
@@ -475,7 +471,8 @@ fun FlashcardScreenPreview() {
         //onSaveFlashcardButtonClick = {},
         errorRetryAction = {},
         onSuccessfulFlashcardSave = {},
-        onFailedFlashcardSave = {}
+        onFailedFlashcardSave = {},
+        onCancelButtonClicked = {},
     )
 }
 
@@ -497,6 +494,7 @@ fun FlashcardScreenBackPreview() {
         //onSaveFlashcardButtonClick = {},
         errorRetryAction = {},
         onSuccessfulFlashcardSave = {},
-        onFailedFlashcardSave = {}
+        onFailedFlashcardSave = {},
+        onCancelButtonClicked = {},
     )
 }

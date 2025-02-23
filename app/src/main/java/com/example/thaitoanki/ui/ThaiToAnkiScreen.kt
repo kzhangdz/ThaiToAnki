@@ -331,6 +331,9 @@ fun ThaiToAnkiApp(
                             }
                         }
                     },
+                    onCancelButtonClicked = {
+                        navController.popBackStack()
+                    },
                     errorRetryAction = {
                         viewModel.searchDictionary()
                     },
