@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class FlashcardWindow(
     val word: String,
     context: ContextWrapper,
-    val serviceContext: Context,
+    override val serviceContext: Context,
     override val applicationContext: Context, // todo: instead of overriding,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,

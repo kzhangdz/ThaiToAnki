@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class SearchWindow(
     context: ContextWrapper,
-    val serviceContext: Context,
+    override val serviceContext: Context,
     override val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,

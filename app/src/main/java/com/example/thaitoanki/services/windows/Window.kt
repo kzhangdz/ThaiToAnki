@@ -17,13 +17,15 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
+import com.example.thaitoanki.services.bubbles.BubbleLayout
+import com.example.thaitoanki.services.bubbles.BubblesManager
 import com.example.thaitoanki.services.listeners.registerDraggableTouchListener
 
 
 // implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
 open class Window(
-    context: ContextWrapper,
-    serviceContext: Context,
+    val context: ContextWrapper,
+    open val serviceContext: Context,
     open val applicationContext: Context,
     @LayoutRes val layoutId: Int,
     val windowWidth: Int = 300,
@@ -36,9 +38,11 @@ open class Window(
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     protected val rootView = layoutInflater.inflate(layoutId, null) as WindowContentLayout // allows us to access setListener()
 
+    private val bubblesManager: BubblesManager = BubblesManager.Builder(context).build()
+
     //val viewModel
 
-    private val windowParams = WindowManager.LayoutParams(
+    protected val windowParams = WindowManager.LayoutParams(
         0,
         0,
         0,
@@ -86,13 +90,16 @@ open class Window(
     Function to set the behavior of the window, such as buttons
      */
     open fun initWindow() {
+        // initialize bubble manager
+        bubblesManager.initialize()
+
         // Using kotlin extension for views caused error, so good old findViewById is used
 
-        rootView.findViewById<View>(R.id.window_minimize).setOnClickListener{ minimize() }
+        rootView.findViewById<View>(R.id.window_minimize)?.setOnClickListener{ minimize() }
 
-        rootView.findViewById<View>(R.id.window_close).setOnClickListener { close() }
+        rootView.findViewById<View>(R.id.window_close)?.setOnClickListener { close() }
 
-        rootView.findViewById<View>(R.id.header).registerDraggableTouchListener(
+        rootView.findViewById<View>(R.id.header)?.registerDraggableTouchListener(
             initialPosition = { Point(windowParams.x, windowParams.y) },
             positionListener = { x, y -> setPosition(x, y) }
         )
@@ -188,8 +195,14 @@ open class Window(
 
     val HIDDEN_WINDOW_X = 10000
     val HIDDEN_WINDOW_Y = 10000
-    protected fun hide(){
+    protected fun hide(): Point{
+        val original_x = windowParams.x
+        val original_y = windowParams.y
+
         setPosition(HIDDEN_WINDOW_X, HIDDEN_WINDOW_Y)
+
+        // return the original position
+        return Point(original_x, original_y)
     }
 
     open fun minimize(){
@@ -198,26 +211,30 @@ open class Window(
         // FloatingApps takes the view off screen and adds a new view called the bubble
         // I can probably set the bubble on the left at the same y coord as before.
 
-        hide()
+        //hide()
+
+        val minimizedWindow = MinimizedWindow(
+            ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
+            serviceContext,
+            applicationContext,
+        )
+        minimizedWindow.open()
+
+//        val bubbleView = layoutInflater.inflate(R.layout.window_minimized, null) as BubbleLayout
+//        bubblesManager.addBubble(bubbleView, 60, 20)
+
     }
 
     open fun close() {
+        // close bubble manager
+        bubblesManager.recycle()
+
         try {
             windowManager.removeView(rootView)
         } catch (e: Exception) {
             // Ignore exception for now, but in production, you should have some
             // warning for the user here.
         }
-    }
-
-    private fun getLayoutParams(): WindowManager.LayoutParams {
-        return WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            PixelFormat.TRANSLUCENT
-        )
     }
 
     override val viewModelStore: ViewModelStore = ViewModelStore()

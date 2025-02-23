@@ -98,6 +98,9 @@ dependencies {
 //    implementation("com.github.smarteist:Android-Image-Slider:Tag")
 //    implementation("io.github.antwhale:AntwhaleImageSlider:1.0.1")
 
+    // Bubbles
+    //implementation("com.github.txusballesteros:bubbles-for-android:1.2.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
