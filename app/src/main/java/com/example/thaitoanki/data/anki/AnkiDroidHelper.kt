@@ -298,11 +298,15 @@ class AnkiDroidHelper(context: Context) {
         // Remove any duplicates from the LinkedLists and then add over the API
         removeDuplicates(fields, tags, modelId)
         val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
-        if (added != 0) {
+        if (added > 0) {
             // successful
             Log.d(LOG_TAG, "successful insertion")
-        } else {
-            // API indicates that a 0 return value is an error
+        }
+        else if(added == 0){
+
+        }
+        else {
+            // API indicates that <0 return value is an error
             Log.d(LOG_TAG, "failed insertion")
         }
         return added

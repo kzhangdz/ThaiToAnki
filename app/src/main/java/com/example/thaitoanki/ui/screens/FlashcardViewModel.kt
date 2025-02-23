@@ -16,6 +16,10 @@
 
 package com.example.thaitoanki.ui.screens
 
+import android.content.Context
+import android.util.Log
+import android.view.View
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -25,9 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.thaitoanki.data.anki.AnkiDroidRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.entities.toDefinition
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.services.getActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,13 +43,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel to retrieve words from the Room database.
  */
 class FlashcardViewModel(
     savedStateHandle: SavedStateHandle,
-    private val wordsRepository: WordsRepository
+    private val wordsRepository: WordsRepository,
+    private val flashcardRepository: AnkiDroidRepository
 ) : ViewModel() {
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
@@ -86,10 +96,10 @@ class FlashcardViewModel(
             matchingDefinitions
         }
         .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = listOf()
-            )
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = listOf()
+        )
 
     // currentExampleIndices
 //    var currentExampleIndices: MutableState<List<Int>> by mutableStateOf(
@@ -104,36 +114,32 @@ class FlashcardViewModel(
     // public variable that acts as our getter method for the state. read-only state flow
     val uiState: StateFlow<FlashcardUiState> = _uiState.asStateFlow()
 
-    fun initializeExampleIndices(){
+    fun initializeExampleIndices() {
         val indexList = mutableListOf<Int?>()
-        for (definition in _uiState.value.currentDefinitions){
-            if (definition.examples.isNotEmpty()){
+        for (definition in _uiState.value.currentDefinitions) {
+            if (definition.examples.isNotEmpty()) {
                 indexList.add(0)
-            }
-            else{
+            } else {
                 indexList.add(null)
             }
         }
-        _uiState.update {
-                currentState ->
+        _uiState.update { currentState ->
             currentState.copy(
                 currentExampleIndices = indexList
             )
         }
     }
 
-    fun initializeSentenceIndices(){
+    fun initializeSentenceIndices() {
         val indexList = mutableListOf<Int?>()
-        for (definition in _uiState.value.currentDefinitions){
-            if (definition.sentences.isNotEmpty()){
+        for (definition in _uiState.value.currentDefinitions) {
+            if (definition.sentences.isNotEmpty()) {
                 indexList.add(0)
-            }
-            else{
+            } else {
                 indexList.add(null)
             }
         }
-        _uiState.update {
-                currentState ->
+        _uiState.update { currentState ->
             currentState.copy(
                 currentSentenceIndices = indexList
             )
@@ -144,78 +150,123 @@ class FlashcardViewModel(
 //        List(size = flashcardUiState.value.currentDefinitions.size) { 0 }
 //    )
 
-    private fun increaseIndex(baseList: List<Any>, valueToChange: Int): Int{
+    private fun increaseIndex(baseList: List<Any>, valueToChange: Int): Int {
         val maxIndex = baseList.size - 1
         var updatedIndex = valueToChange + 1
-        if(updatedIndex > maxIndex){
+        if (updatedIndex > maxIndex) {
             updatedIndex = 0
         }
         return updatedIndex
     }
 
-    private fun decreaseIndex(baseList: List<Any>, valueToChange: Int): Int{
+    private fun decreaseIndex(baseList: List<Any>, valueToChange: Int): Int {
         var updatedIndex = valueToChange - 1
-        if(updatedIndex < 0){
+        if (updatedIndex < 0) {
             val maxIndex = baseList.size - 1
             updatedIndex = maxIndex
         }
         return updatedIndex
     }
 
-    fun increaseCurrentDefinitionIndex(){
-        val updatedIndex = increaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
-        _uiState.update {
-                currentState ->
+    fun increaseCurrentDefinitionIndex() {
+        val updatedIndex =
+            increaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
+        _uiState.update { currentState ->
             currentState.copy(currentDefinitionIndex = updatedIndex)
         }
     }
 
-    fun decreaseCurrentDefinitionIndex(){
-        val updatedIndex = decreaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
-        _uiState.update {
-                currentState ->
+    fun decreaseCurrentDefinitionIndex() {
+        val updatedIndex =
+            decreaseIndex(uiState.value.currentDefinitions, uiState.value.currentDefinitionIndex)
+        _uiState.update { currentState ->
             currentState.copy(currentDefinitionIndex = updatedIndex)
         }
     }
 
-    fun updateDefinitions(definitions: List<Definition>){
-        _uiState.update {
-                currentState ->
+    fun updateDefinitions(definitions: List<Definition>) {
+        _uiState.update { currentState ->
             currentState.copy(currentDefinitions = definitions)
         }
     }
 
-    fun increaseCurrentExampleIndex(){
+    fun increaseCurrentExampleIndex() {
         val currentDefinitionIndex = uiState.value.currentDefinitionIndex
 
         val currentExamples = uiState.value.currentDefinitions[currentDefinitionIndex].examples
         val currentExampleIndices = uiState.value.currentExampleIndices.toMutableList()
         val currentExampleIndex = currentExampleIndices[currentDefinitionIndex]
-        if (currentExampleIndex != null){
+        if (currentExampleIndex != null) {
             val updatedIndex = increaseIndex(currentExamples, currentExampleIndex)
             currentExampleIndices[currentDefinitionIndex] = updatedIndex
-            _uiState.update {
-                    currentState ->
+            _uiState.update { currentState ->
                 currentState.copy(currentExampleIndices = currentExampleIndices)
             }
         }
     }
 
-    fun increaseCurrentSentenceIndex(){
+    fun increaseCurrentSentenceIndex() {
         val currentDefinitionIndex = uiState.value.currentDefinitionIndex
 
         val currentSentences = uiState.value.currentDefinitions[currentDefinitionIndex].sentences
         val currentSentenceIndices = uiState.value.currentSentenceIndices.toMutableList()
         val currentSentenceIndex = currentSentenceIndices[currentDefinitionIndex]
-        if (currentSentenceIndex != null){
+        if (currentSentenceIndex != null) {
             val updatedIndex = increaseIndex(currentSentences, currentSentenceIndex)
             currentSentenceIndices[currentDefinitionIndex] = updatedIndex
-            _uiState.update {
-                    currentState ->
+            _uiState.update { currentState ->
                 currentState.copy(currentSentenceIndices = currentSentenceIndices)
             }
         }
     }
+
+    // TODO: read configured deck from settings?
+    fun saveCard(
+        context: Context,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit,
+        deckName: String = "ThaiToAnki",
+        modelName: String = "ThaiToAnki"
+    ): Int {
+        val shouldRequestReadWritePermission = flashcardRepository.shouldRequestPermission()
+        if (shouldRequestReadWritePermission) {
+            flashcardRepository.requestPermission(context.getActivity(), 0)
+        } else {
+            var deckId: Long? = flashcardRepository.findDeckIdByName(deckName)
+            var modelId: Long? = flashcardRepository.findModelIdByName(
+                modelName,
+                numFields = flashcardRepository.getFields().size
+            )
+
+            if (deckId == null) {
+                deckId = flashcardRepository.createDeck(deckName)
+            }
+
+            if (modelId == null && deckId != null) {
+                modelId = flashcardRepository.createModel(modelName, deckId)
+            }
+
+            if (deckId == null || modelId == null) {
+                Log.d(LOG_TAG, "deckId or modelId is null")
+            } else {
+                // only upload the highlighted flashcard
+                val currentFlashcard: List<Definition> =
+                    listOf(uiState.value.currentDefinitions[uiState.value.currentDefinitionIndex])
+                val flashcardInfo =
+                    flashcardRepository.definitionListToMapList(definitions = currentFlashcard) //uiState.currentDefinitions)
+
+                val responseCode = flashcardRepository.addCardsToAnkiDroid(
+                    deckId, modelId,
+                    data = flashcardInfo,
+                )
+
+                return responseCode
+            }
+        }
+
+        return 0
+    }
+}
 
 //    fun increaseCurrentDefinitionIndex(){
 //        currentDefinitionIndex = increaseIndex(flashcardUiState.value.currentDefinitions, currentDefinitionIndex)
@@ -228,7 +279,6 @@ class FlashcardViewModel(
 //    fun increaseCurrentExampleIndex(){
 //        currentExampleIndices[0] = increaseIndex(flashcardUiState.value., currentExampleIndex)
 //    }
-}
 
 /**
  * Ui State for HistoryScreen

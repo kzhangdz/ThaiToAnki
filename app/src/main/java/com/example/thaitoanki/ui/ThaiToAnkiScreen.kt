@@ -303,71 +303,31 @@ fun ThaiToAnkiApp(
                     loadingStatus = viewModel.loadingStatus,
                     //flashcardInfo = flashcardUiState.currentDefinitions, //uiState.currentDefinitions,
                     //currentDefinitionIndex = flashcardUiState.currentDefinitionIndex, //uiState.currentDefinitionIndex,
-                    onSaveFlashcardButtonClick = {
-                        if (!hasReadWritePermission) {
-                            // TODO: request read/write permission
-                            // am I supposed to do that with a launcher, like above? Is there a way to put that inside the Helper?
-                            readWritePermissionsLauncher.launch(ankiDroidHelper.READ_WRITE_PERMISSION)
+                    onSuccessfulFlashcardSave = {
+                        // I believe the snackbar needs the Scaffold present to properly show
+
+                        coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
+                            // taking the `snackbarHostState` from the attached `scaffoldState`
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = "Successfully saved",
+                                actionLabel = "Dismiss"
+                            )
+                            when (snackbarResult) {
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
+                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
+                            }
                         }
-                        else{
-                            //TODO: add cards to AnkiDroid
-                            // https://github.com/ankidroid/apisample/blob/main/app/src/main/java/com/ichi2/apisample/MainActivity.java#L280
-                            // can probably put deck id and model id in the view model
-                            // pass them to addCardsToAnki
-
-                            val tempDeckName = "test" // TODO: change from a temp deck
-                            val tempModelName = "testModelName"
-
-                            var deckId: Long? = ankiDroidHelper.findDeckIdByName(tempDeckName)
-                            var modelId: Long? = ankiDroidHelper.findModelIdByName(tempModelName, numFields = ankiDroidHelper.FIELDS.size)
-
-                            if (deckId == null){
-                                deckId = ankiDroidHelper.createDeck(tempDeckName)
-                            }
-
-                            if (modelId == null && deckId != null){
-                                modelId = ankiDroidHelper.createModel(tempModelName, deckId)
-                            }
-
-                            if (deckId == null || modelId == null){
-                                Log.d(LOG_TAG, "deckId or modelId is null")
-                            }
-                            else{
-                                // only upload the highlighted flashcard
-                                val currentFlashcard: List<Definition> = listOf(uiState.currentDefinitions[uiState.currentDefinitionIndex])
-                                val flashcardInfo = ankiDroidHelper.definitionListToMapList(definitions = currentFlashcard) //uiState.currentDefinitions)
-
-                                val responseCode = ankiDroidHelper.addCardsToAnkiDroid(
-                                    deckId, modelId,
-                                    data = flashcardInfo,
-                                )
-
-                                if (responseCode != 0) {
-                                    coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
-                                        // taking the `snackbarHostState` from the attached `scaffoldState`
-                                        val snackbarResult = snackbarHostState.showSnackbar(
-                                            message = "Successfully saved",
-                                            actionLabel = "Dismiss"
-                                        )
-                                        when (snackbarResult) {
-                                            SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                            SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                                        }
-                                    }
-                                }
-                                else{
-                                    coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
-                                        // taking the `snackbarHostState` from the attached `scaffoldState`
-                                        val snackbarResult = snackbarHostState.showSnackbar(
-                                            message = "Issue saving flashcard",
-                                            actionLabel = "Dismiss"
-                                        )
-                                        when (snackbarResult) {
-                                            SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                            SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                                        }
-                                    }
-                                }
+                    },
+                    onFailedFlashcardSave = {
+                        coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
+                            // taking the `snackbarHostState` from the attached `scaffoldState`
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = "Issue saving flashcard",
+                                actionLabel = "Dismiss"
+                            )
+                            when (snackbarResult) {
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
+                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
                             }
                         }
                     },

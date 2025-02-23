@@ -1,12 +1,22 @@
 package com.example.thaitoanki.data.anki
 
+import android.app.Activity
+import com.example.thaitoanki.data.network.Definition
 import java.util.LinkedList
 
 interface AnkiRepository {
 
-    // shouldRequestPermission()
+    /**
+     * Whether or not we should request full access to the AnkiDroid API
+     */
+    fun shouldRequestPermission(): Boolean
 
-    // requestPermission()
+    /**
+     * Request permission from the user to access the AnkiDroid API (for SDK 23+)
+     * @param callbackActivity An Activity which implements onRequestPermissionsResult()
+     * @param callbackCode The callback code to be used in onRequestPermissionsResult()
+     */
+    fun requestPermission(callbackActivity: Activity?, callbackCode: Int)
 
     /**
      * Save a mapping from deckName to getDeckId in the SharedPreferences
@@ -73,6 +83,10 @@ interface AnkiRepository {
      * @return response code. 0: error.
      */
     fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>): Int
+
+    fun getFields(): Array<String>
+
+    fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>>
 
     // definitionToMap
 

@@ -1,11 +1,21 @@
 package com.example.thaitoanki.data.anki
 
+import android.app.Activity
 import com.example.thaitoanki.data.database.WordDao
+import com.example.thaitoanki.data.network.Definition
 import java.util.LinkedList
 
 class AnkiDroidRepository(
     private val ankiDroidHelper: AnkiDroidHelper
 ): AnkiRepository {
+    override fun shouldRequestPermission(): Boolean {
+        return ankiDroidHelper.shouldRequestPermission()
+    }
+
+    override fun requestPermission(callbackActivity: Activity?, callbackCode: Int) {
+        ankiDroidHelper.requestPermission(callbackActivity, callbackCode)
+    }
+
     override fun storeDeckReference(deckName: String?, deckId: Long) {
         ankiDroidHelper.storeDeckReference(deckName, deckId)
     }
@@ -54,6 +64,14 @@ class AnkiDroidRepository(
     ): Int {
         val responseCode = ankiDroidHelper.addCardsToAnkiDroid(deckId, modelId, data)
         return responseCode
+    }
+
+    override fun getFields(): Array<String> {
+        return ankiDroidHelper.FIELDS
+    }
+
+    override fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>> {
+        return ankiDroidHelper.definitionListToMapList(definitions)
     }
 
 }

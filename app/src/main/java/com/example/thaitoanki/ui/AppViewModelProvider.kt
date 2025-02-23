@@ -43,7 +43,8 @@ object AppViewModelProvider {
         // Initializer for FlashcardViewModel
         initializer {
             val wordsRepository = thaiLanguageApplication().container.wordsRepository
-            FlashcardViewModel(this.createSavedStateHandle(), wordsRepository)
+            val flashcardRepository = thaiLanguageApplication().container.flashcardRepository
+            FlashcardViewModel(this.createSavedStateHandle(), wordsRepository, flashcardRepository)
         }
         // Initializer for HistoryViewModel
         initializer {
