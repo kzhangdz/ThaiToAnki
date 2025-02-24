@@ -103,6 +103,7 @@ class AnkiDroidHelper(context: Context) {
      * @param tags List of tags to remove duplicates from
      * @param modelId ID of model to search for duplicates on
      */
+    // TODO: review more carefully how this works. Then modify to base duplicates on word and definition
     fun removeDuplicates(
         fields: LinkedList<Array<String>>,
         tags: LinkedList<Set<String?>?>,

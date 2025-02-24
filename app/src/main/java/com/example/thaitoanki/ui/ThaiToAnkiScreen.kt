@@ -306,6 +306,9 @@ fun ThaiToAnkiApp(
                     onSuccessfulFlashcardSave = {
                         // I believe the snackbar needs the Scaffold present to properly show
 
+                        // dismiss any previous messages
+                        snackbarHostState.currentSnackbarData?.dismiss()
+
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             val snackbarResult = snackbarHostState.showSnackbar(
@@ -319,6 +322,8 @@ fun ThaiToAnkiApp(
                         }
                     },
                     onFailedFlashcardSave = {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             val snackbarResult = snackbarHostState.showSnackbar(
