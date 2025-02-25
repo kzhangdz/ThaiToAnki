@@ -1,10 +1,14 @@
 package com.example.thaitoanki.ui.screens.components
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Html
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -17,16 +21,18 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.toSpannable
 import androidx.core.text.toSpanned
-import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.getThaiLanguageUrl
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
+
 
 // TODO: move these functions out if needed in the service
 fun updateFlashcardFrontView(
@@ -271,6 +277,36 @@ fun updateFlashcardFrontView(
         containerId = referencesSectionViewId,
         build = {
             val parent = view.findViewById<LinearLayout>(R.id.references_content)
+
+            buildSection(view,
+                sectionInfo = currentFlashcard.definition.toList(),
+                containerId = referencesSectionViewId,
+                build = {
+                    val referencesTextView = TextView(context)
+                    val linkText = SpannableString("thai-language.com ")
+                    linkText.setSpan(UnderlineSpan(), 0, linkText.length - 1, 0)
+                    referencesTextView.text = linkText //Html.fromHtml("""<a href="https://google.com">thai-language.com</a>""") //Html.fromHtml("""<a href="${currentFlashcard.getThaiLanguageUrl()}">thai-language.com</a>""")
+
+                    // allows clickable links
+                    //referencesTextView.isClickable = true
+                    //referencesTextView.movementMethod = LinkMovementMethod.getInstance()
+
+                    referencesTextView.setOnClickListener{
+                        val browserIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(currentFlashcard.getThaiLanguageUrl().toString()))
+                        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(browserIntent)
+                    }
+
+                    // place an icon next to the text view
+                    referencesTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.link, 0);
+
+                    // update seems to run on each state rebuild
+                    // check the childcount so it's not added multiple times
+                    if (parent.childCount < 1){
+                        parent.addView(referencesTextView)
+                    }
+                })
 
             // generate a references data class on load?
 //            {
