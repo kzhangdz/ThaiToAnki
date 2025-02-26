@@ -31,6 +31,7 @@ import com.example.thaitoanki.R
 import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.data.network.getThaiLanguageUrl
+import com.example.thaitoanki.data.network.getWiktionaryUrl
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 
 
@@ -282,29 +283,26 @@ fun updateFlashcardFrontView(
                 sectionInfo = currentFlashcard.definition.toList(),
                 containerId = referencesSectionViewId,
                 build = {
-                    val referencesTextView = TextView(context)
-                    val linkText = SpannableString("thai-language.com ")
-                    linkText.setSpan(UnderlineSpan(), 0, linkText.length - 1, 0)
-                    referencesTextView.text = linkText //Html.fromHtml("""<a href="https://google.com">thai-language.com</a>""") //Html.fromHtml("""<a href="${currentFlashcard.getThaiLanguageUrl()}">thai-language.com</a>""")
-
-                    // allows clickable links
-                    //referencesTextView.isClickable = true
-                    //referencesTextView.movementMethod = LinkMovementMethod.getInstance()
-
-                    referencesTextView.setOnClickListener{
-                        val browserIntent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(currentFlashcard.getThaiLanguageUrl().toString()))
-                        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(browserIntent)
-                    }
-
-                    // place an icon next to the text view
-                    referencesTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.link, 0);
+                    val thaiLanguageTextView = buildReference(
+                        parent,
+                        context,
+                        "thai-language.com ",
+                        currentFlashcard.getThaiLanguageUrl().toString()
+                    )
+                    val wiktionaryTextView = buildReference(
+                        parent,
+                        context,
+                        "Wiktionary ",
+                        currentFlashcard.getWiktionaryUrl().toString()
+                    )
+                    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT)
 
                     // update seems to run on each state rebuild
                     // check the childcount so it's not added multiple times
-                    if (parent.childCount < 1){
-                        parent.addView(referencesTextView)
+                    if (parent.childCount < 2){
+                        parent.addView(thaiLanguageTextView, layoutParams)
+                        parent.addView(wiktionaryTextView, layoutParams)
                     }
                 })
 
@@ -384,4 +382,26 @@ fun buildPillSection(view: View, context: Context, layoutInflater: LayoutInflate
     if (parent.childCount < 1){
         parent.addView(recyclerView)
     }
+}
+
+fun buildReference(parent: LinearLayout, context: Context, urlDisplayText: String, url: String): TextView{
+    val referencesTextView = TextView(context)
+    val linkText = SpannableString(urlDisplayText)
+    linkText.setSpan(UnderlineSpan(), 0, linkText.length - 1, 0)
+    referencesTextView.text = linkText //Html.fromHtml("""<a href="https://google.com">thai-language.com</a>""") //Html.fromHtml("""<a href="${currentFlashcard.getThaiLanguageUrl()}">thai-language.com</a>""")
+
+    referencesTextView.setTextColor(context.getResources().getColor(R.color.md_theme_onBackground))
+
+    // allows clickable links
+    referencesTextView.setOnClickListener{
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(browserIntent)
+    }
+
+    // place an icon next to the text view
+    referencesTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.link, 0)
+
+    return referencesTextView
 }
