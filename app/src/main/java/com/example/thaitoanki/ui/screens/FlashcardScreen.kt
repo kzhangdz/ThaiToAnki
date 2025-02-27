@@ -117,6 +117,7 @@ fun FlashcardScreen(
             )
             FlashcardScreenButtonGroup(
                 //onSaveFlashcardButtonClick = onSaveFlashcardButtonClick
+                definitionCount = flashcardUiState.currentDefinitions.size,
                 onSaveFlashcardButtonClick = {
                     val responseCode = if (flashcardUiState.currentDefinitions.isNotEmpty()) flashcardViewModel.saveCard(
                         context
@@ -184,208 +185,6 @@ fun Flashcard(
     )
 }
 
-//@Composable
-//fun Flashcard(
-//    flashcardInfo: List<Definition>,
-//    currentDefinitionIndex: Int,
-//    onFlashcardClick: () -> Unit,
-//    onLeftButtonClick: () -> Unit,
-//    onRightButtonClick: () -> Unit,
-//    modifier: Modifier = Modifier
-//){
-//    var isRotated by rememberSaveable { mutableStateOf(false) }
-//
-//    val rotation by animateFloatAsState(
-//        targetValue = if (isRotated) 180f else 0f,
-//        animationSpec = tween(500)
-//    )
-//
-//    val animateFront by animateFloatAsState(
-//        targetValue = if (!isRotated) 1f else 0f,
-//        animationSpec = tween(500)
-//    )
-//
-//    val animateBack by animateFloatAsState(
-//        targetValue = if (isRotated) 1f else 0f,
-//        animationSpec = tween(500)
-//    )
-//
-//    // TODO: make the column scrollable? or clickable to expand
-//    Box(
-//        modifier = modifier
-//    ) {
-//        Card(
-//            colors = CardDefaults.cardColors(
-//                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-//            ),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(300.dp)
-//
-//        ) {
-//            // push action row to bottom
-//            Spacer(modifier = Modifier.weight(1f))
-//            // TODO: refactor FlashcardActions into composable
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                IconButton(
-//                    onClick = {
-//                        isRotated = !isRotated
-//                    }
-//                ) {
-//                    Icon(
-//                        painter = painterResource(R.drawable.ic_flip),
-//                        contentDescription = "Flip flashcard"
-//                    )
-//                }
-//                IconButton(
-//                    onClick = onLeftButtonClick
-//                ) {
-//                    Icon(
-//                        painter = painterResource(R.drawable.arrow_left_24px),
-//                        contentDescription = "Previous definition"
-//                    )
-//                }
-//                IconButton(
-//                    onClick = onRightButtonClick
-//                ) {
-//                    Icon(
-//                        painter = painterResource(R.drawable.arrow_right_24px),
-//                        contentDescription = "Next definition"
-//                    )
-//                }
-//                Spacer(modifier = Modifier.weight(1f))
-//                // TODO: tap to jump to page?
-//                Text(
-//                    "${currentDefinitionIndex + 1} of ${flashcardInfo.size}",
-//                    modifier = Modifier
-//                        .padding(
-//                            horizontal = dimensionResource(R.dimen.padding_small)
-//                        )
-//                )
-//            }
-//        }
-//        Box(
-//            modifier = Modifier
-//                .graphicsLayer {
-//                    rotationY = rotation
-//                    cameraDistance = 8 * density
-//                }
-//                .clickable {
-//                    //isRotated = !isRotated
-//                    onFlashcardClick()
-//                }
-//        ) {
-//            ElevatedCard(
-////                colors = CardDefaults.cardColors(
-////                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-////                ),
-//                elevation = CardDefaults.cardElevation(
-//                    defaultElevation = 6.dp
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(250.dp)
-//            ) {
-//                Column(
-//                    verticalArrangement = Arrangement.Center,
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    modifier = Modifier
-//                        .padding(dimensionResource(R.dimen.padding_small))
-//                        .fillMaxWidth()
-//                        .weight(1f) // take up remaining space
-//                    //.fillMaxSize()
-//                ) {
-//                    if (isRotated) {
-//                        FlashcardBack(
-//                            flashcardInfo,
-//                            currentDefinitionIndex,
-//                            modifier = Modifier
-//                                .graphicsLayer {
-//                                    alpha = animateBack
-//                                    rotationY = rotation
-//                                }
-//                        )
-//                    } else {
-//                        FlashcardFront(
-//                            flashcardInfo,
-//                            currentDefinitionIndex,
-//                            modifier = Modifier
-//                                .graphicsLayer {
-//                                    alpha = animateFront
-//                                    rotationY = rotation
-//                                })
-//                    }
-//                    //Spacer(modifier = Modifier.weight(1.0f))
-//                }
-////                Row(
-////                    verticalAlignment = Alignment.CenterVertically,
-////                    modifier = Modifier
-////                        .padding(horizontal = dimensionResource(R.dimen.padding_small))
-////                        .padding(bottom = dimensionResource(R.dimen.padding_small))
-////                        .height(25.dp)
-////                        .fillMaxWidth()
-////                    //.padding(dimensionResource(R.dimen.padding_medium))
-////                ) {
-////                    IconButton(
-////                        onClick = {
-////                            isRotated = !isRotated
-////                        }
-////                    ) {
-////                        Icon(
-////                            painter = painterResource(R.drawable.ic_flip),
-////                            contentDescription = "Flip flashcard",
-////                            modifier = Modifier
-////                                .graphicsLayer {
-////                                    alpha = animateFront
-////                                    rotationY = rotation
-////                                }
-////                        )
-////                    }
-////                    Spacer(modifier = Modifier.weight(1f))
-////                    IconButton(
-////                        onClick = {
-////                            isRotated = !isRotated
-////                        }
-////                    ) {
-////                        Icon(
-////                            painter = painterResource(R.drawable.ic_flip),
-////                            contentDescription = "Flip flashcard",
-////                            modifier = Modifier
-////                                .graphicsLayer {
-////                                    alpha = animateBack
-////                                    rotationY = rotation
-////                                }
-////                        )
-////                    }
-////                }
-//            }
-//        }
-//    }
-//}
-
-//@Composable
-//fun FlashcardFront(
-//    flashcardInfo: List<Definition>,
-//    currentDefinitionIndex: Int,
-//    modifier: Modifier = Modifier
-//){
-//    val currentFlashcard = flashcardInfo[currentDefinitionIndex]
-//
-//    Column(
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = modifier
-//        ) {
-//        Text(
-//            currentFlashcard.baseWord,
-//            fontWeight = FontWeight.Bold,
-//            fontSize = 30.sp
-//        )
-//    }
-//}
-
 @Composable
 fun FlashcardBack(
     flashcardInfo: List<Definition>,
@@ -423,6 +222,7 @@ fun FlashcardBack(
 // TODO: button to merge flashcards into one
 @Composable
 fun FlashcardScreenButtonGroup(
+    definitionCount: Int,
     onSaveFlashcardButtonClick: () -> Unit,
     onCancelButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -430,14 +230,16 @@ fun FlashcardScreenButtonGroup(
     Column(
         modifier = modifier
     ){
-        Button(
-            onClick = onSaveFlashcardButtonClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.upload_to_anki_button))
+        if (definitionCount > 0) {
+            Button(
+                onClick = onSaveFlashcardButtonClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.upload_to_anki_button))
+            }
         }
         OutlinedButton(
             onClick = {

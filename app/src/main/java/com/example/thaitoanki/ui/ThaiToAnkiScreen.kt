@@ -337,7 +337,8 @@ fun ThaiToAnkiApp(
                         }
                     },
                     onCancelButtonClicked = {
-                        navController.popBackStack()
+                        // use navigateUp() rather than popBackStack() to avoid accidentally clearing home page content
+                        navController.navigateUp()
                     },
                     errorRetryAction = {
                         viewModel.searchDictionary()
