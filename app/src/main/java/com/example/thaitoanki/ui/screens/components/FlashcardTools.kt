@@ -390,7 +390,7 @@ fun buildReference(parent: LinearLayout, context: Context, urlDisplayText: Strin
     linkText.setSpan(UnderlineSpan(), 0, linkText.length - 1, 0)
     referencesTextView.text = linkText //Html.fromHtml("""<a href="https://google.com">thai-language.com</a>""") //Html.fromHtml("""<a href="${currentFlashcard.getThaiLanguageUrl()}">thai-language.com</a>""")
 
-    referencesTextView.setTextColor(context.getResources().getColor(R.color.md_theme_onBackground))
+    referencesTextView.setTextColor(ContextCompat.getColor(context, R.color.md_theme_onBackground))
 
     // allows clickable links
     referencesTextView.setOnClickListener{

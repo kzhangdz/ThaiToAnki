@@ -118,10 +118,10 @@ fun FlashcardScreen(
             FlashcardScreenButtonGroup(
                 //onSaveFlashcardButtonClick = onSaveFlashcardButtonClick
                 onSaveFlashcardButtonClick = {
-                    val responseCode = flashcardViewModel.saveCard(
+                    val responseCode = if (flashcardUiState.currentDefinitions.isNotEmpty()) flashcardViewModel.saveCard(
                         context
                         // TODO: add deckname, modelname?
-                    )
+                    ) else 0
 
                     if (responseCode > 0){
                         onSuccessfulFlashcardSave()
