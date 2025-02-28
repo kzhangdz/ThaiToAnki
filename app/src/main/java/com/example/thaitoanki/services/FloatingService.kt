@@ -406,6 +406,9 @@ class ServiceViewModelProvider(serviceContext: Context, applicationContext: Cont
         val languageRepo = container.thaiLanguageRepository //ThaiLanguageApplication().container.thaiLanguageRepository
 
         val wordRepo = container.wordsRepository
+
+        val flashcardRepo = container.flashcardRepository
+
         // Initializer for ThaiViewModel
         initializer {
             ThaiViewModel(languageRepo, wordRepo)
@@ -443,7 +446,7 @@ class ServiceViewModelProvider(serviceContext: Context, applicationContext: Cont
             //this[SAVED_STATE_REGISTRY_OWNER_KEY] = serviceContext as SavedStateRegistryOwner
 
             val savedStateHandle: SavedStateHandle = this.createSavedStateHandle()
-            FlashcardViewModel(savedStateHandle, wordRepo)
+            FlashcardViewModel(savedStateHandle, wordRepo, flashcardRepo)
         }
         // Initializer for HistoryViewModel
         initializer {

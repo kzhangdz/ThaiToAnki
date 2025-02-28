@@ -1,11 +1,16 @@
 package com.example.thaitoanki.data
 
 import android.content.Context
-import com.example.thaitoanki.data.HtmlConverterFactory.HtmlConverterFactory
+import androidx.compose.ui.platform.LocalContext
+import com.example.thaitoanki.data.anki.AnkiDroidHelper
+import com.example.thaitoanki.data.anki.AnkiDroidRepository
+import com.example.thaitoanki.data.network.HtmlConverterFactory.HtmlConverterFactory
 import com.example.thaitoanki.data.database.WordsDatabase
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.database.OfflineWordsRepository
+import com.example.thaitoanki.data.network.NetworkThaiLanguageRepository
 import com.example.thaitoanki.data.network.ThaiLanguageApiService
+import com.example.thaitoanki.data.network.ThaiLanguageRepository
 import retrofit2.Retrofit
 
 interface AppContainer {
@@ -14,6 +19,9 @@ interface AppContainer {
 
     // database for words
     val wordsRepository: WordsRepository
+
+    // place to save flashcards to. In our case, AnkiDroid
+    val flashcardRepository: AnkiDroidRepository
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
@@ -41,4 +49,8 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
 
     // TODO: add the ankiDroidHelper here?
     // a new data source for thai language data would probably be another Container
+    override val flashcardRepository: AnkiDroidRepository by lazy {
+        val ankiDroidHelper = AnkiDroidHelper(context)
+        AnkiDroidRepository(ankiDroidHelper)
+    }
 }

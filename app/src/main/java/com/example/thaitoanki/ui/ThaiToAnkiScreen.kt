@@ -47,7 +47,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.AnkiDroidHelper
+import com.example.thaitoanki.data.anki.AnkiDroidHelper
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.ui.screens.FlashcardScreen
 import com.example.thaitoanki.ui.screens.HistoryScreen
@@ -303,73 +303,42 @@ fun ThaiToAnkiApp(
                     loadingStatus = viewModel.loadingStatus,
                     //flashcardInfo = flashcardUiState.currentDefinitions, //uiState.currentDefinitions,
                     //currentDefinitionIndex = flashcardUiState.currentDefinitionIndex, //uiState.currentDefinitionIndex,
-                    onSaveFlashcardButtonClick = {
-                        if (!hasReadWritePermission) {
-                            // TODO: request read/write permission
-                            // am I supposed to do that with a launcher, like above? Is there a way to put that inside the Helper?
-                            readWritePermissionsLauncher.launch(ankiDroidHelper.READ_WRITE_PERMISSION)
-                        }
-                        else{
-                            //TODO: add cards to AnkiDroid
-                            // https://github.com/ankidroid/apisample/blob/main/app/src/main/java/com/ichi2/apisample/MainActivity.java#L280
-                            // can probably put deck id and model id in the view model
-                            // pass them to addCardsToAnki
+                    onSuccessfulFlashcardSave = {
+                        // I believe the snackbar needs the Scaffold present to properly show
 
-                            val tempDeckName = "test" // TODO: change from a temp deck
-                            val tempModelName = "testModelName"
+                        // dismiss any previous messages
+                        snackbarHostState.currentSnackbarData?.dismiss()
 
-                            var deckId: Long? = ankiDroidHelper.findDeckIdByName(tempDeckName)
-                            var modelId: Long? = ankiDroidHelper.findModelIdByName(tempModelName, numFields = ankiDroidHelper.FIELDS.size)
-
-                            if (deckId == null){
-                                deckId = ankiDroidHelper.createDeck(tempDeckName)
-                            }
-
-                            if (modelId == null && deckId != null){
-                                modelId = ankiDroidHelper.createModel(tempModelName, deckId)
-                            }
-
-                            if (deckId == null || modelId == null){
-                                Log.d(LOG_TAG, "deckId or modelId is null")
-                            }
-                            else{
-                                // only upload the highlighted flashcard
-                                val currentFlashcard: List<Definition> = listOf(uiState.currentDefinitions[uiState.currentDefinitionIndex])
-                                val flashcardInfo = ankiDroidHelper.definitionListToMapList(definitions = currentFlashcard) //uiState.currentDefinitions)
-
-                                val responseCode = ankiDroidHelper.addCardsToAnkiDroid(
-                                    deckId, modelId,
-                                    data = flashcardInfo,
-                                )
-
-                                if (responseCode != 0) {
-                                    coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
-                                        // taking the `snackbarHostState` from the attached `scaffoldState`
-                                        val snackbarResult = snackbarHostState.showSnackbar(
-                                            message = "Successfully saved",
-                                            actionLabel = "Dismiss"
-                                        )
-                                        when (snackbarResult) {
-                                            SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                            SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                                        }
-                                    }
-                                }
-                                else{
-                                    coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
-                                        // taking the `snackbarHostState` from the attached `scaffoldState`
-                                        val snackbarResult = snackbarHostState.showSnackbar(
-                                            message = "Issue saving flashcard",
-                                            actionLabel = "Dismiss"
-                                        )
-                                        when (snackbarResult) {
-                                            SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                            SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                                        }
-                                    }
-                                }
+                        coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
+                            // taking the `snackbarHostState` from the attached `scaffoldState`
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = "Successfully saved",
+                                actionLabel = "Dismiss"
+                            )
+                            when (snackbarResult) {
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
+                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
                             }
                         }
+                    },
+                    onFailedFlashcardSave = {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+
+                        coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
+                            // taking the `snackbarHostState` from the attached `scaffoldState`
+                            val snackbarResult = snackbarHostState.showSnackbar(
+                                message = "Issue saving flashcard",
+                                actionLabel = "Dismiss"
+                            )
+                            when (snackbarResult) {
+                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
+                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
+                            }
+                        }
+                    },
+                    onCancelButtonClicked = {
+                        // use navigateUp() rather than popBackStack() to avoid accidentally clearing home page content
+                        navController.navigateUp()
                     },
                     errorRetryAction = {
                         viewModel.searchDictionary()

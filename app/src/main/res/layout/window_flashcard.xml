@@ -7,4 +7,6 @@
     <include layout="@layout/fragment_window_header"/>
 
     <include layout="@layout/fragment_flashcard_front"/>
+
+<!--    <include layout="@layout/fragment_button"/>-->
 </com.example.thaitoanki.services.windows.WindowContentLayout>

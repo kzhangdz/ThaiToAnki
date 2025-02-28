@@ -2,26 +2,40 @@ package com.example.thaitoanki.services.windows
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.PixelFormat
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.*
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.VIEW_MODEL_KEY
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.data.network.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.services.FloatingService
 import com.example.thaitoanki.services.ServiceViewModelProvider
+import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.FlashcardViewModel
+import com.example.thaitoanki.ui.screens.ThaiViewModel
+import com.example.thaitoanki.ui.screens.components.buildSection
 import com.example.thaitoanki.ui.screens.components.updateFlashcardFrontView
 import kotlinx.coroutines.launch
 
@@ -30,7 +44,7 @@ class FlashcardWindow(
     val word: String,
     context: ContextWrapper,
     override val serviceContext: Context,
-    override val applicationContext: Context, // todo: instead of overriding,
+    override val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository
@@ -105,12 +119,6 @@ class FlashcardWindow(
     fun setUpWindow(){
         // super init
         super.initWindow()
-
-        // Ensure correct color for layout counter, even if no results
-        val counterView = rootView.findViewById<CardView>(R.id.counter)
-        val counterTextView = counterView.getChildAt(0) as TextView
-        //change view color
-        counterTextView.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.md_theme_background))
 
         // TODO: flow isn't collecting anything. Try to make a direct query for words
         // Actually, it seems like the flow is only collecting after running this setUpWindow() function
@@ -196,6 +204,10 @@ class FlashcardWindow(
                         onExampleClick = {},
                         onSentenceClick = {}
                     )
+
+                    // set button
+                    val buttonView = Button(applicationContext)
+                    rootView.addView(buttonView)
                 }
             }
 

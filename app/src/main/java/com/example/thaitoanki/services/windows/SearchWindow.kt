@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.example.thaitoanki.R
-import com.example.thaitoanki.data.ThaiLanguageRepository
+import com.example.thaitoanki.data.network.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.ui.screens.ThaiViewModel

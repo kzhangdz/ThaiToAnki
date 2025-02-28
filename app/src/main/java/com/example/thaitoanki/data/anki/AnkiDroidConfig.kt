@@ -1,4 +1,4 @@
-package com.example.thaitoanki.data
+package com.example.thaitoanki.data.anki
 
 
 /** Some fields to store configuration details for AnkiDroid  */

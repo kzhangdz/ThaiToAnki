@@ -22,6 +22,7 @@ import com.example.thaitoanki.services.bubbles.BubblesManager
 import com.example.thaitoanki.services.listeners.registerDraggableTouchListener
 
 
+
 // implement this to save view models. Allows us to initialize and pass our ViewModels to the Windows. Things like ComponentActivity and Fragment implement this
 open class Window(
     val context: ContextWrapper,

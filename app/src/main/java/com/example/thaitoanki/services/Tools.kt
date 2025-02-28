@@ -2,6 +2,7 @@ package com.example.thaitoanki.services
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
@@ -12,6 +13,7 @@ import android.text.style.StyleSpan
 import android.text.style.SubscriptSpan
 import android.text.style.SuperscriptSpan
 import android.text.style.UnderlineSpan
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -119,6 +121,15 @@ fun Context.readArrayFromAsset(fileName : String) : Array<String>{
     bReader.close()
 
     return values.toTypedArray()
+}
+
+/**
+ * Function for Jetpack Compose to retrieve the main activity through the context
+ */
+fun Context.getActivity(): ComponentActivity? = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
 
 // TODO: check if this does not result in overlaps

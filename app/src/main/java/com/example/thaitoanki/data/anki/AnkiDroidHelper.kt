@@ -1,4 +1,4 @@
-package com.example.thaitoanki.data
+package com.example.thaitoanki.data.anki
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,7 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
 import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
@@ -102,6 +103,7 @@ class AnkiDroidHelper(context: Context) {
      * @param tags List of tags to remove duplicates from
      * @param modelId ID of model to search for duplicates on
      */
+    // TODO: review more carefully how this works. Then modify to base duplicates on word and definition
     fun removeDuplicates(
         fields: LinkedList<Array<String>>,
         tags: LinkedList<Set<String?>?>,
@@ -297,24 +299,37 @@ class AnkiDroidHelper(context: Context) {
         // Remove any duplicates from the LinkedLists and then add over the API
         removeDuplicates(fields, tags, modelId)
         val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
-        if (added != 0) {
+        if (added > 0) {
             // successful
             Log.d(LOG_TAG, "successful insertion")
-        } else {
-            // API indicates that a 0 return value is an error
+        }
+        else if(added == 0){
+            // TODO
+        }
+        else {
+            // API indicates that <0 return value is an error
             Log.d(LOG_TAG, "failed insertion")
         }
         return added
     }
 
-    fun definitionToMap(definition: Definition): Map<String, String>{
-        // TODO: format synonym, relatedwords, etc.
-        val classifiers = HTMLFormatting.formatToPillHTML(definition.classifiers, type = "classifier")
+    /**
+     * Converts a Definition to an Anki key-value pair of field-name and value
+     */
+    fun definitionToMap(definition: Definition, exampleIndex: Int?, sentenceIndex: Int?): Map<String, String>{
+        val classifiers =
+            HTMLFormatting.formatToPillHTML(definition.classifiers, type = "classifier")
         val components = HTMLFormatting.formatToPillHTML(definition.components, type = "component")
         val synonyms = HTMLFormatting.formatToPillHTML(definition.synonyms, type = "synonym")
-        val relatedWords = HTMLFormatting.formatToPillHTML(definition.relatedWords, type = "related-word")
-        val examples = HTMLFormatting.formatExamplesToHTML(definition.examples, definition.baseWord)
-        val sentences = HTMLFormatting.formatSentencesToHTML(definition.sentences, definition.baseWord)
+        val relatedWords =
+            HTMLFormatting.formatToPillHTML(definition.relatedWords, type = "related-word")
+
+        val singleExampleList: List<Definition> = if (exampleIndex != null) listOf(definition.examples[exampleIndex]) else listOf()
+        val examples = HTMLFormatting.formatExamplesToHTML(singleExampleList, definition.baseWord)
+
+        val singleSentenceList: List<Definition> = if (sentenceIndex != null) listOf(definition.sentences[sentenceIndex]) else listOf()
+        val sentences =
+            HTMLFormatting.formatSentencesToHTML(singleSentenceList, definition.baseWord)
 
         Log.i(LOG_TAG, "Examples: $examples")
 
@@ -336,15 +351,34 @@ class AnkiDroidHelper(context: Context) {
         return map
     }
 
-    fun definitionListToMapList(definitions: List<Definition>): List<Map<String, String>>{
+    /**
+     * Converts a list of Definitions to a list of Anki key-value pair of field-name and value
+     *
+     * For our design, we will generally only pass in a list of one Definition though
+     */
+    fun definitionListToMapList(
+        definitions: List<Definition>,
+        exampleIndices: List<Int?>,
+        sentenceIndices: List<Int?>
+    ): List<Map<String, String>>{
         val mapList: MutableList<Map<String, String>> = mutableListOf()
-        for (definition in definitions){
-            val map = definitionToMap(definition)
-            mapList.add(map)
 
-            // TODO: for now, only add the first definition
-            break
+        for (i in definitions.indices){
+            val definition = definitions[i]
+            val exampleIndex = exampleIndices[i]
+            val sentenceIndex = sentenceIndices[i]
+
+            val map = definitionToMap(definition, exampleIndex, sentenceIndex)
+            mapList.add(map)
         }
+
+//        for (definition in definitions){
+//            val map = definitionToMap(definition)
+//            mapList.add(map)
+//
+//            // TODO: for now, only add the first definition
+//            break
+//        }
         return mapList
     }
 

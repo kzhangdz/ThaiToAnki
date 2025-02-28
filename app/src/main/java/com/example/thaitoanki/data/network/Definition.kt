@@ -7,6 +7,7 @@ import com.example.thaitoanki.data.database.entities.RelatedWord
 import com.example.thaitoanki.data.database.entities.Sentence
 import com.example.thaitoanki.data.database.entities.Synonym
 import com.example.thaitoanki.data.database.entities.Word
+import java.net.URL
 
 data class Definition(
     val baseWord: String,
@@ -21,8 +22,19 @@ data class Definition(
     val relatedWords: List<Definition> = emptyList(),
     val examples: List<Definition> = emptyList(),
     val sentences: List<Definition> = emptyList(),
-    val wordId: Int? = null
+    val wordId: Int? = null,
 )
+
+fun Definition.getThaiLanguageUrl(): URL? {
+    if (wordId != null){
+        return URL("http://www.thai-language.com/id/${wordId}")
+    }
+    return null
+}
+
+fun Definition.getWiktionaryUrl(): URL {
+    return URL("https://wiktionary.org/wiki/${baseWord}")
+}
 
 // TODO: add extension function to convert Definition to db Word entity
 //fun ItemDetails.toItem(): Item = Item(
