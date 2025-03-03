@@ -209,6 +209,14 @@ class FlashcardWindow(
 //                    val buttonView = Button(applicationContext)
 //                    rootView.addView(buttonView)
 //                    rootView.invalidate()
+                    rootView.findViewById<Button>(R.id.save_button).setOnClickListener{
+                        flashcardViewModel.saveCard(
+                            context = applicationContext,
+                            flashcardData = definitionList[currentDefinitionIndex],
+                            exampleIndex = null,
+                            sentenceIndex = null
+                        )
+                    }
                 }
             }
 

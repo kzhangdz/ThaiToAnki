@@ -213,7 +213,10 @@ class FlashcardViewModel(
     fun saveCard(
         context: Context,
         deckName: String = "ThaiToAnki",
-        modelName: String = "ThaiToAnki"
+        modelName: String = "ThaiToAnki",
+        flashcardData: Definition? = null,
+        exampleIndex: Int? = null,
+        sentenceIndex: Int? = null
     ): Int {
         // TODO: may need to handle this request permission differently from service
         // or, don't handle it at all and specify in the settings that it is necessary
@@ -238,25 +241,50 @@ class FlashcardViewModel(
             if (deckId == null || modelId == null) {
                 Log.d(LOG_TAG, "deckId or modelId is null")
             } else {
-                // only upload the highlighted flashcard
-                val currentDefinitionIndex = uiState.value.currentDefinitionIndex
-                val currentFlashcard: List<Definition> =
-                    listOf(uiState.value.currentDefinitions[currentDefinitionIndex])
-                val currentExampleIndex = listOf(uiState.value.currentExampleIndices[currentDefinitionIndex])
-                val currentSentenceIndex = listOf(uiState.value.currentSentenceIndices[currentDefinitionIndex])
-                val flashcardInfo =
-                    flashcardRepository.definitionListToMapList(
-                        definitions = currentFlashcard,
-                        exampleIndices = currentExampleIndex,
-                        sentenceIndices = currentSentenceIndex
-                    ) //uiState.currentDefinitions)
+                if(flashcardData == null) {
+                    // only upload the highlighted flashcard
+                    val currentDefinitionIndex = uiState.value.currentDefinitionIndex
+                    val currentFlashcard: List<Definition> =
+                        listOf(uiState.value.currentDefinitions[currentDefinitionIndex])
+                    val currentExampleIndex =
+                        listOf(uiState.value.currentExampleIndices[currentDefinitionIndex])
+                    val currentSentenceIndex =
+                        listOf(uiState.value.currentSentenceIndices[currentDefinitionIndex])
+                    val flashcardInfo =
+                        flashcardRepository.definitionListToMapList(
+                            definitions = currentFlashcard,
+                            exampleIndices = currentExampleIndex,
+                            sentenceIndices = currentSentenceIndex
+                        ) //uiState.currentDefinitions)
 
-                val responseCode = flashcardRepository.addCardsToAnkiDroid(
-                    deckId, modelId,
-                    data = flashcardInfo,
-                )
+                    val responseCode = flashcardRepository.addCardsToAnkiDroid(
+                        deckId, modelId,
+                        data = flashcardInfo,
+                    )
 
-                return responseCode
+                    return responseCode
+                }
+                else{
+                    val currentFlashcard: List<Definition> =
+                        listOf(flashcardData)
+                    val currentExampleIndex =
+                        listOf(exampleIndex)
+                    val currentSentenceIndex =
+                        listOf(sentenceIndex)
+                    val flashcardInfo =
+                        flashcardRepository.definitionListToMapList(
+                            definitions = currentFlashcard,
+                            exampleIndices = currentExampleIndex,
+                            sentenceIndices = currentSentenceIndex
+                        ) //uiState.currentDefinitions)
+
+                    val responseCode = flashcardRepository.addCardsToAnkiDroid(
+                        deckId, modelId,
+                        data = flashcardInfo,
+                    )
+
+                    return responseCode
+                }
             }
         }
 
