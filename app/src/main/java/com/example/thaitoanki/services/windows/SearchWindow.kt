@@ -1,5 +1,7 @@
 package com.example.thaitoanki.services.windows
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
@@ -7,6 +9,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -52,6 +55,27 @@ class SearchWindow(
     override fun initWindow() {
         // super init for window commands, like closing and minimizing
         super.initWindow()
+
+
+        // Create menu https://developer.android.com/develop/ui/views/components/menus
+        // Paste data https://developer.android.com/develop/ui/views/touch-and-input/copy-paste
+        rootView.findViewById<EditText>(R.id.search_input).setOnLongClickListener {
+            var clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            var pasteData: String = ""
+
+            val item: ClipData.Item? = clipboard.primaryClip?.getItemAt(0)
+
+            if(item != null){
+                // Gets the clipboard as text.
+                pasteData = item.text.toString()
+                Log.d("Paste Data", pasteData)
+
+                true
+            }
+            else{
+                false
+            }
+        }
 
         rootView.findViewById<EditText>(R.id.search_input).setOnEditorActionListener { _, actionId, _ ->
             var handled: Boolean = false
