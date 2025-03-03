@@ -43,14 +43,60 @@
                 android:paddingVertical="4dp"
                 android:paddingHorizontal="4dp">
 
-                <include
-                    android:id="@+id/counter"
-                    layout="@layout/fragment_pill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_margin="4dp"
-                    />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/save_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/upload_to_anki_button"
+                        android:elevation="2dp"
+                        android:src="@drawable/save_24px"
+                        app:tint="@color/md_theme_background"
+
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/counter"/>
+
+                    <include
+                        android:id="@+id/counter"
+                        layout="@layout/fragment_pill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_margin="4dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/save_button"-->
+<!--                        android:layout_width="48dp"-->
+<!--                        android:layout_height="48dp"-->
+<!--                        android:background="@android:color/transparent"-->
+<!--                        android:contentDescription="@string/upload_to_anki_button"-->
+<!--                        android:elevation="2dp"-->
+<!--                        android:src="@drawable/save_24px"-->
+<!--                        app:tint="@color/md_theme_background"/>-->
+
+<!--                    <include-->
+<!--                        android:id="@+id/counter"-->
+<!--                        layout="@layout/fragment_pill"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_vertical|end"-->
+<!--                        android:layout_margin="4dp"-->
+<!--                        />-->
+<!--                </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"

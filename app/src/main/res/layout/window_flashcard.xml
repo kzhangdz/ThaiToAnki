@@ -14,8 +14,8 @@
         android:layout_weight="1" />
 
     <!-- TODO: Can add a Save icon into the flashcard's header instead -->
-    <include layout="@layout/fragment_button"
-        android:id="@+id/save_button"/>
+<!--    <include layout="@layout/fragment_button"-->
+<!--        android:id="@+id/save_button"/>-->
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:layout_width="match_parent"-->
