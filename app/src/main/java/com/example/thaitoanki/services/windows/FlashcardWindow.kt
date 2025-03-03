@@ -37,6 +37,7 @@ import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import com.example.thaitoanki.ui.screens.components.buildSection
 import com.example.thaitoanki.ui.screens.components.updateFlashcardFrontView
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
@@ -90,28 +91,100 @@ class FlashcardWindow(
     )[FlashcardViewModel::class]
 
     // state variables
-    var currentDefinitionIndex = 0;
+    var currentDefinitionIndex: Int = 0
+    var currentExampleIndex: Int? = null
+    var currentSentenceIndex: Int? = null
 
     /**
      * State manipulation functions
      */
-    private fun increaseCurrentDefinitionIndex(definitionList: List<Definition>){
-        currentDefinitionIndex += 1
-        if (currentDefinitionIndex >= definitionList.size){
-            currentDefinitionIndex = 0
+    private fun increaseIndex(baseList: List<Any>, valueToChange: Int): Int {
+        val maxIndex = baseList.size - 1
+        var updatedIndex = valueToChange + 1
+        if (updatedIndex > maxIndex) {
+            updatedIndex = 0
         }
+        return updatedIndex
+    }
+
+    private fun decreaseIndex(baseList: List<Any>, valueToChange: Int): Int {
+        var updatedIndex = valueToChange - 1
+        if (updatedIndex < 0) {
+            val maxIndex = baseList.size - 1
+            updatedIndex = maxIndex
+        }
+        return updatedIndex
+    }
+
+    private fun increaseCurrentDefinitionIndex(definitionList: List<Definition>){
+        val updatedIndex =
+            increaseIndex(definitionList, currentDefinitionIndex)
+        currentDefinitionIndex = updatedIndex
+//        currentDefinitionIndex += 1
+//        if (currentDefinitionIndex >= definitionList.size){
+//            currentDefinitionIndex = 0
+//        }
+
+        resetExampleSentenceIndices()
+
         setUpWindow() // reload the window view with the new configuration
 
         // TODO: reset exampleIndex and sentenceIndex to 0
     }
 
     private fun decreaseCurrentDefinitionIndex(definitionList: List<Definition>){
-        currentDefinitionIndex -= 1
-        if (currentDefinitionIndex < 0){
-            val maxIndex = definitionList.size - 1
-            currentDefinitionIndex = maxIndex
-        }
+        val updatedIndex = decreaseIndex(definitionList, currentDefinitionIndex)
+        currentDefinitionIndex = updatedIndex
+//        currentDefinitionIndex -= 1
+//        if (currentDefinitionIndex < 0){
+//            val maxIndex = definitionList.size - 1
+//            currentDefinitionIndex = maxIndex
+//        }
+
+        resetExampleSentenceIndices()
+
         setUpWindow() // reload the window view with the new configuration
+    }
+
+    private fun increaseCurrentExampleIndex(exampleList: List<Definition>){
+        if (currentExampleIndex != null) {
+            val updatedIndex = increaseIndex(exampleList, currentExampleIndex!!)
+            currentExampleIndex = updatedIndex
+        }
+
+        setUpWindow()
+    }
+
+    private fun decreaseCurrentExampleIndex(exampleList: List<Definition>){
+        if (currentExampleIndex != null) {
+            val updatedIndex = decreaseIndex(exampleList, currentExampleIndex!!)
+            currentExampleIndex = updatedIndex
+        }
+
+        setUpWindow()
+    }
+
+    private fun increaseCurrentSentenceIndex(sentenceList: List<Definition>){
+        if (currentSentenceIndex != null) {
+            val updatedIndex = increaseIndex(sentenceList, currentSentenceIndex!!)
+            currentSentenceIndex = updatedIndex
+        }
+
+        setUpWindow()
+    }
+
+    private fun decreaseCurrentSentenceIndex(sentenceList: List<Definition>){
+        if (currentSentenceIndex != null) {
+            val updatedIndex = decreaseIndex(sentenceList, currentSentenceIndex!!)
+            currentSentenceIndex = updatedIndex
+        }
+
+        setUpWindow()
+    }
+
+    private fun resetExampleSentenceIndices(){
+        currentExampleIndex = null
+        currentSentenceIndex = null
     }
 
     // NOTE: initWindow was running before the viewModel was generated, so a separate function was created
@@ -142,15 +215,23 @@ class FlashcardWindow(
 //                    //temp
 //                    titleView.text = def[0].definition
 
+                    val currentFlashcard = definitionList[currentDefinitionIndex]
 
+                    if (currentFlashcard.examples.isNotEmpty() && currentExampleIndex == null){
+                        currentExampleIndex = 0
+                    }
+
+                    if (currentFlashcard.sentences.isNotEmpty() && currentSentenceIndex == null){
+                        currentSentenceIndex = 0
+                    }
 
                     updateFlashcardFrontView(
                         view = rootView,
                         currentDefinitionIndex = currentDefinitionIndex,
                         definitionCount = definitionList.size,
-                        currentFlashcard = definitionList[currentDefinitionIndex], //def[flashcardViewModel.uiState.value.currentDefinitionIndex],
-                        currentDefinitionExampleIndex = 0,
-                        currentDefinitionSentenceIndex = 0,
+                        currentFlashcard = currentFlashcard, //def[flashcardViewModel.uiState.value.currentDefinitionIndex],
+                        currentDefinitionExampleIndex = currentExampleIndex,
+                        currentDefinitionSentenceIndex = currentSentenceIndex,
                         onClick = {
                             // in this function, manually modify the results as desired by selecting the view
 
@@ -201,8 +282,12 @@ class FlashcardWindow(
                         onRightClick = {
                             increaseCurrentDefinitionIndex(definitionList)
                         },
-                        onExampleClick = {},
-                        onSentenceClick = {}
+                        onExampleClick = {
+                            increaseCurrentExampleIndex(currentFlashcard.examples)
+                        },
+                        onSentenceClick = {
+                            increaseCurrentSentenceIndex(currentFlashcard.sentences)
+                        }
                     )
 
                     // set button
@@ -213,8 +298,8 @@ class FlashcardWindow(
                         flashcardViewModel.saveCard(
                             context = applicationContext,
                             flashcardData = definitionList[currentDefinitionIndex],
-                            exampleIndex = null,
-                            sentenceIndex = null
+                            exampleIndex = currentExampleIndex,
+                            sentenceIndex = currentSentenceIndex
                         )
                     }
                 }
