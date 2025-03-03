@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/padding_small">
 
-    <Button
-        android:id="@+id/button"
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:backgroundTint="@color/md_theme_primary"
+        android:text="@string/upload_to_anki_button"/>
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="@color/md_theme_primary"-->
+<!--        android:text="Button" />-->
 </LinearLayout>

@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.example.thaitoanki.services.windows.WindowContentLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/fragment_window_header"/>
 
-    <include layout="@layout/fragment_flashcard_front"/>
+    <!-- layout_weight necessary to ensure the button gets pushed to the bottom -->
+    <include layout="@layout/fragment_flashcard_front"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-<!--    <include layout="@layout/fragment_button"/>-->
+    <include layout="@layout/fragment_button"/>
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+<!--        <include layout="@layout/fragment_flashcard_front"-->
+<!--            android:id="@+id/card"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1" />-->
+
+<!--        <include layout="@layout/fragment_button"-->
+<!--            android:id="@+id/save_button"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/card"/>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
 </com.example.thaitoanki.services.windows.WindowContentLayout>

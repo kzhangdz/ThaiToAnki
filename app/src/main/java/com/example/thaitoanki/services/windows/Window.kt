@@ -53,7 +53,8 @@ open class Window(
         } else {
             WindowManager.LayoutParams.TYPE_PHONE
         },
-        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+        // TODO: minimized window can have an IN_SCREEN_FLAG-
+        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or //WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or //WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,

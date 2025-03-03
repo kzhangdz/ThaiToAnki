@@ -206,8 +206,9 @@ class FlashcardWindow(
                     )
 
                     // set button
-                    val buttonView = Button(applicationContext)
-                    rootView.addView(buttonView)
+//                    val buttonView = Button(applicationContext)
+//                    rootView.addView(buttonView)
+//                    rootView.invalidate()
                 }
             }
 
