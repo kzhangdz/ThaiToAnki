@@ -34,4 +34,6 @@
     <string name="notification_subtitle">May need to restart app to access floating window</string>
 
     <string name="overlay_settings">Overlay Permissions</string>
+
+    <string name="paste">Paste</string>
 </resources>

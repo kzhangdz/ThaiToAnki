@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -56,10 +57,15 @@ class SearchWindow(
         // super init for window commands, like closing and minimizing
         super.initWindow()
 
+        //Attempt to invoke virtual method 'android.content.res.Resources android.content.Context.getResources()' on a null object reference
+        val popupMenu = PopupMenu(applicationContext, rootView)
+        popupMenu.inflate(R.menu.copy_paste_menu)
 
         // Create menu https://developer.android.com/develop/ui/views/components/menus
         // Paste data https://developer.android.com/develop/ui/views/touch-and-input/copy-paste
         rootView.findViewById<EditText>(R.id.search_input).setOnLongClickListener {
+//            popupMenu.show()
+//            true
             var clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             var pasteData: String = ""
 
