@@ -58,8 +58,8 @@ class SearchWindow(
         super.initWindow()
 
         //Attempt to invoke virtual method 'android.content.res.Resources android.content.Context.getResources()' on a null object reference
-        val popupMenu = PopupMenu(applicationContext, rootView)
-        popupMenu.inflate(R.menu.copy_paste_menu)
+//        val popupMenu = PopupMenu(applicationContext, rootView)
+//        popupMenu.inflate(R.menu.copy_paste_menu)
 
         // Create menu https://developer.android.com/develop/ui/views/components/menus
         // Paste data https://developer.android.com/develop/ui/views/touch-and-input/copy-paste

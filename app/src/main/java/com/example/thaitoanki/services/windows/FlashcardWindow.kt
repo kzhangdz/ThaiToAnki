@@ -2,6 +2,7 @@ package com.example.thaitoanki.services.windows
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.res.ColorStateList
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
@@ -11,9 +12,13 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
@@ -192,6 +197,17 @@ class FlashcardWindow(
     fun setUpWindow(){
         // super init
         super.initWindow()
+
+        // Save button
+        val saveButtonView = rootView.findViewById<ImageButton>(R.id.save_button)
+        //change view color
+        ImageViewCompat.setImageTintList(saveButtonView, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_background)));
+
+        // Counter
+        val counterView = rootView.findViewById<CardView>(R.id.counter)
+        val counterTextView = counterView.getChildAt(0) as TextView
+        //change view color
+        counterTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.md_theme_background))
 
         // TODO: flow isn't collecting anything. Try to make a direct query for words
         // Actually, it seems like the flow is only collecting after running this setUpWindow() function

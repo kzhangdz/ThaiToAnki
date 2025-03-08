@@ -2,7 +2,9 @@ package com.example.thaitoanki.ui.screens.components
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.media.Image
 import android.net.Uri
 import android.text.Html
 import android.text.Spannable
@@ -25,6 +27,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.toSpannable
 import androidx.core.text.toSpanned
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
@@ -78,6 +81,11 @@ fun updateFlashcardFrontView(
         // update the index by one
         onClick()
     }
+
+    // Save button
+    val saveButtonView = view.findViewById<ImageButton>(R.id.save_button)
+    //change view color
+    ImageViewCompat.setImageTintList(saveButtonView, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_background)));
 
     // Counter
     val counterView = view.findViewById<CardView>(R.id.counter)
