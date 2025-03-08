@@ -30,7 +30,8 @@ open class Window(
     open val applicationContext: Context,
     @LayoutRes val layoutId: Int,
     val windowWidth: Int = 300,
-    val windowHeight: Int = 400
+    val windowHeight: Int = 400,
+    val inScreen: Boolean = false
     ):
     SavedStateRegistryOwner,
     ViewModelStoreOwner {
@@ -54,7 +55,7 @@ open class Window(
             WindowManager.LayoutParams.TYPE_PHONE
         },
         // TODO: minimized window can have an IN_SCREEN_FLAG-
-        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or //WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or //WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+        (if (inScreen) WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN else WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) or //WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or //WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
@@ -213,7 +214,7 @@ open class Window(
         // FloatingApps takes the view off screen and adds a new view called the bubble
         // I can probably set the bubble on the left at the same y coord as before.
 
-        //hide()
+        hide()
 
         val minimizedWindow = MinimizedWindow(
             ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),

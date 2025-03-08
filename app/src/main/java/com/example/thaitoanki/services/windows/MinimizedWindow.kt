@@ -29,8 +29,9 @@ class MinimizedWindow(
     serviceContext = serviceContext,
     applicationContext = applicationContext,
     layoutId = R.layout.window_minimized,
-    windowWidth = 300,
-    windowHeight = 80
+    windowWidth = 52,//80, //1000,//300, // if we use a width that's too large, the window will have a giant blank section that stops when it hits the right edge. Therefore, we only want a window just as big as the icon itself
+    windowHeight = 52,//80, //1000,//80,
+    inScreen = true // minimized bubble will always stay on screen
 ) {
 
     override fun initWindow() {
