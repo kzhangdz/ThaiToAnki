@@ -132,6 +132,7 @@ class SearchWindow(
 
                 //SavedStateHandle().set("word", searchValue)
 
+                // todo: openNextWindow() param. WindowGroup will pass in a function that performs these actions
                 val flashcardWindow = FlashcardWindow(
                     searchValue,
                     ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),

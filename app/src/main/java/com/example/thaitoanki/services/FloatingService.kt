@@ -59,6 +59,7 @@ import com.example.thaitoanki.data.database.WordsDatabase
 import com.example.thaitoanki.services.windows.FlashcardWindow
 import com.example.thaitoanki.services.windows.SearchWindow
 import com.example.thaitoanki.services.windows.Window
+import com.example.thaitoanki.services.windows.WindowGroup
 import com.example.thaitoanki.ui.ThaiToAnkiAppBar
 import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.HistoryViewModel
@@ -329,15 +330,24 @@ class FloatingService: LifecycleService(),
 
                 // Pass ContextThemeWrapper so you can inflate components with Material Themes
                 //https://stackoverflow.com/questions/38712073/android-set-theme-for-view-that-created-by-service
-                val window = SearchWindow(
-                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
+
+
+//                val window = SearchWindow(
+//                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
+//                    serviceContext = this,
+//                    applicationContext = applicationContext,
+//                    lifecycleScope = lifecycleScope,
+//                    languageRepository = languageRepo,
+//                    wordsRepository = wordRepo
+//                )
+//                window.open()
+
+                val windowGroup = WindowGroup(
                     serviceContext = this,
                     applicationContext = applicationContext,
-                    lifecycleScope = lifecycleScope,
-                    languageRepository = languageRepo,
-                    wordsRepository = wordRepo
+                    lifecycleScope = lifecycleScope
                 )
-                window.open()
+                windowGroup.start()
 
 
                 // TODO: test opening another window
