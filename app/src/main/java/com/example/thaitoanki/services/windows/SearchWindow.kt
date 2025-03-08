@@ -70,6 +70,11 @@ class SearchWindow(
                 pasteData = item.text.toString()
                 Log.d("Paste Data", pasteData)
 
+                val editTextView = rootView.findViewById<EditText>(R.id.search_input)
+                editTextView.setText(pasteData)
+                // set cursor at end
+                editTextView.setSelection(editTextView.length())
+
                 true
             }
             else{
