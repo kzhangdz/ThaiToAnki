@@ -31,7 +31,8 @@ open class Window(
     @LayoutRes val layoutId: Int,
     val windowWidth: Int = 300,
     val windowHeight: Int = 400,
-    val inScreen: Boolean = false
+    val inScreen: Boolean = false,
+    open var onMinimize: () -> Unit = {}
     ):
     SavedStateRegistryOwner,
     ViewModelStoreOwner {
@@ -198,7 +199,7 @@ open class Window(
 
     val HIDDEN_WINDOW_X = 10000
     val HIDDEN_WINDOW_Y = 10000
-    protected fun hide(): Point{
+    fun hide(): Point{
         val original_x = windowParams.x
         val original_y = windowParams.y
 
@@ -213,15 +214,16 @@ open class Window(
 
         // FloatingApps takes the view off screen and adds a new view called the bubble
         // I can probably set the bubble on the left at the same y coord as before.
-
-        hide()
-
-        val minimizedWindow = MinimizedWindow(
-            ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
-            serviceContext,
-            applicationContext,
-        )
-        minimizedWindow.open()
+        //hide()
+        onMinimize()
+//        hide()
+//
+//        val minimizedWindow = MinimizedWindow(
+//            ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
+//            serviceContext,
+//            applicationContext,
+//        )
+//        minimizedWindow.open()
 
 //        val bubbleView = layoutInflater.inflate(R.layout.window_minimized, null) as BubbleLayout
 //        bubblesManager.addBubble(bubbleView, 60, 20)

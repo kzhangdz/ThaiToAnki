@@ -31,7 +31,7 @@ class SearchWindow(
     override val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
-    val wordsRepository: WordsRepository
+    val wordsRepository: WordsRepository,
 ): Window(
     context = context,
     serviceContext = serviceContext,
@@ -40,6 +40,8 @@ class SearchWindow(
     windowWidth = 300,
     windowHeight = 80
 ) {
+
+    lateinit var onSearchCompleted: () -> Unit
 
     // TODO: pass in viewModel instead?
     //val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
@@ -52,6 +54,10 @@ class SearchWindow(
 //            set(ThaiViewModel.MY_REPOSITORY_KEY, myRepository)
 //        },
     )[ThaiViewModel::class]
+
+    fun getSearchValue(): String{
+        return viewModel.searchValue
+    }
 
     override fun initWindow() {
         // super init for window commands, like closing and minimizing
@@ -132,18 +138,20 @@ class SearchWindow(
 
                 //SavedStateHandle().set("word", searchValue)
 
+                onSearchCompleted()
+
                 // todo: openNextWindow() param. WindowGroup will pass in a function that performs these actions
-                val flashcardWindow = FlashcardWindow(
-                    searchValue,
-                    ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
-                    serviceContext,
-                    applicationContext,
-                    lifecycleScope = lifecycleScope,
-                    languageRepository = languageRepository,
-                    wordsRepository = wordsRepository
-                )
-                flashcardWindow.setUpWindow()
-                flashcardWindow.open()
+//                val flashcardWindow = FlashcardWindow(
+//                    searchValue,
+//                    ContextThemeWrapper(context, R.style.Theme_ThaiToAnki),
+//                    serviceContext,
+//                    applicationContext,
+//                    lifecycleScope = lifecycleScope,
+//                    languageRepository = languageRepository,
+//                    wordsRepository = wordsRepository
+//                )
+//                flashcardWindow.setUpWindow()
+//                flashcardWindow.open()
 
                 // closing and opening the window affected the search insertion somehow
                 // rather than closing the window, should I move it offscreen and show another one?
