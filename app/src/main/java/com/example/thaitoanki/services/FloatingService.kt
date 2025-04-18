@@ -70,12 +70,12 @@ import java.security.Provider
 
 const val INTENT_COMMAND = "com.example.thaitoanki.COMMAND" //"com.localazy.quicknote.COMMAND"
 const val INTENT_COMMAND_EXIT = "EXIT"
-const val INTENT_COMMAND_NOTE = "NOTE"
+const val INTENT_COMMAND_DICTIONARY = "DICTIONARY"
 
 private const val NOTIFICATION_CHANNEL_GENERAL = "thaitoanki_general"
 private const val CODE_FOREGROUND_SERVICE = 1
 private const val CODE_EXIT_INTENT = 2
-private const val CODE_NOTE_INTENT = 3
+private const val CODE_DICTIONARY_INTENT = 3
 
 // https://stackoverflow.com/questions/63405673/how-to-call-suspend-function-from-service-android
 // Lifecycle service to allow use of lifecyclescope for coroutines
@@ -170,15 +170,15 @@ class FloatingService: LifecycleService(),
         }
 
         val noteIntent = Intent(this, FloatingService::class.java).apply {
-            putExtra(INTENT_COMMAND, INTENT_COMMAND_NOTE)
+            putExtra(INTENT_COMMAND, INTENT_COMMAND_DICTIONARY)
         }
 
         val exitPendingIntent = PendingIntent.getService(
             this, CODE_EXIT_INTENT, exitIntent, PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notePendingIntent = PendingIntent.getService(
-            this, CODE_NOTE_INTENT, noteIntent, PendingIntent.FLAG_IMMUTABLE
+        val dictionaryPendingIntent = PendingIntent.getService(
+            this, CODE_DICTIONARY_INTENT, noteIntent, PendingIntent.FLAG_IMMUTABLE
         )
 
         // From Android O, it's necessary to create a notification channel first.
@@ -219,12 +219,12 @@ class FloatingService: LifecycleService(),
             // TODO: change icon to a drawable
             setSmallIcon(R.mipmap.ic_launcher)
             priority = NotificationManager.IMPORTANCE_DEFAULT //Notification.PRIORITY_DEFAULT
-            //setContentIntent(notePendingIntent)
+            //setContentIntent(dictionaryPendingIntent)
             addAction(
                 NotificationCompat.Action(
                     R.drawable.ic_connection_error,
                     getString(R.string.notification_text),
-                    notePendingIntent
+                    dictionaryPendingIntent
                 )
             )
             addAction(
@@ -283,8 +283,8 @@ class FloatingService: LifecycleService(),
         // Don't worry, repeated calls have no effects.
         showNotification()
 
-        // Show the floating window for adding a new note.
-        if (command == INTENT_COMMAND_NOTE) {
+        // Show the floating window for opening the window dictionary.
+        if (command == INTENT_COMMAND_DICTIONARY) {
             if (!drawOverOtherAppsEnabled()) {
                 //startMainActivity()
 
@@ -331,17 +331,6 @@ class FloatingService: LifecycleService(),
                 // Pass ContextThemeWrapper so you can inflate components with Material Themes
                 //https://stackoverflow.com/questions/38712073/android-set-theme-for-view-that-created-by-service
 
-
-//                val window = SearchWindow(
-//                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
-//                    serviceContext = this,
-//                    applicationContext = applicationContext,
-//                    lifecycleScope = lifecycleScope,
-//                    languageRepository = languageRepo,
-//                    wordsRepository = wordRepo
-//                )
-//                window.open()
-
                 val windowGroup = WindowGroup(
                     serviceContext = this,
                     applicationContext = applicationContext,
@@ -349,16 +338,6 @@ class FloatingService: LifecycleService(),
                 )
                 windowGroup.start()
 
-
-                // TODO: test opening another window
-//                val flashcardWindow = FlashcardWindow(
-//                    ContextThemeWrapper(this, R.style.Theme_ThaiToAnki),
-//                    applicationContext,
-//                    lifecycleScope = lifecycleScope,
-//                    languageRepository = languageRepo,
-//                    wordsRepository = wordRepo
-//                )
-//                flashcardWindow.open()
             }
         }
 
