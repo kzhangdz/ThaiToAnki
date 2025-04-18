@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -314,12 +315,27 @@ class FlashcardWindow(
 //                    rootView.addView(buttonView)
 //                    rootView.invalidate()
                     rootView.findViewById<View>(R.id.save_button).setOnClickListener{
-                        flashcardViewModel.saveCard(
+                        val responseCode = flashcardViewModel.saveCard(
                             context = applicationContext,
                             flashcardData = definitionList[currentDefinitionIndex],
                             exampleIndex = currentExampleIndex,
                             sentenceIndex = currentSentenceIndex
                         )
+
+                        if (responseCode > 0){
+                            Toast.makeText(
+                                serviceContext,
+                                "Successfully saved",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else{
+                            Toast.makeText(
+                                serviceContext,
+                                "Issues saving flashcard",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
