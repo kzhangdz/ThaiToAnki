@@ -73,7 +73,8 @@ fun FlashcardFront(
                 onLeftClick,
                 onRightClick,
                 onExampleClick,
-                onSentenceClick
+                onSentenceClick,
+                displaySaveButton = false
             )
         }
     )

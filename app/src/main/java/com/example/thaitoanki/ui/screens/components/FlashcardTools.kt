@@ -51,6 +51,7 @@ fun updateFlashcardFrontView(
     onRightClick: () -> Unit,
     onExampleClick: () -> Unit,
     onSentenceClick: () -> Unit,
+    displaySaveButton: Boolean = true
 ){
     // variables used for adding views to sections
     val context = view.context.applicationContext
@@ -83,9 +84,18 @@ fun updateFlashcardFrontView(
     }
 
     // Save button
+    // If accessed from the main FlashcardScreen, remove the Save Button
     val saveButtonView = view.findViewById<ImageButton>(R.id.save_button)
-    //change view color
-    ImageViewCompat.setImageTintList(saveButtonView, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_background)));
+    if(!displaySaveButton){
+        saveButtonView.visibility = View.GONE
+    }
+    else {
+        //change view color
+        ImageViewCompat.setImageTintList(
+            saveButtonView,
+            ColorStateList.valueOf(ContextCompat.getColor(context, R.color.md_theme_background))
+        );
+    }
 
     // Counter
     val counterView = view.findViewById<CardView>(R.id.counter)
