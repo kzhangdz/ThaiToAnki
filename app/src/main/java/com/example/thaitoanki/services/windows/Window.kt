@@ -32,7 +32,10 @@ open class Window(
     val windowWidth: Int = 300,
     val windowHeight: Int = 400,
     val inScreen: Boolean = false,
-    open var onMinimize: () -> Unit = {}
+    val startingX: Int? = null,
+    val startingY: Int? = null,
+    open val onMinimize: () -> Unit = {},
+    open val onClose: (Window) -> Unit = {}
     ):
     SavedStateRegistryOwner,
     ViewModelStoreOwner {
@@ -43,9 +46,11 @@ open class Window(
 
     private val bubblesManager: BubblesManager = BubblesManager.Builder(context).build()
 
+    private var positionBeforeHiding: Point = Point(0, 0)
+
     //val viewModel
 
-    protected val windowParams = WindowManager.LayoutParams(
+    public val windowParams = WindowManager.LayoutParams(
         0,
         0,
         0,
@@ -81,8 +86,10 @@ open class Window(
         params.gravity = Gravity.TOP or Gravity.LEFT
         params.width = (widthInDp * dm.density).toInt()
         params.height = (heightInDp * dm.density).toInt()
-        params.x = (dm.widthPixels - params.width) / 2
-        params.y = (dm.heightPixels - params.height) / 2
+
+        // if starting coordinates weren't provided, the default position will be in the middle of the screen
+        params.x = startingX ?: ((dm.widthPixels - params.width) / 2)
+        params.y = startingY ?: ((dm.heightPixels - params.height) / 2)
     }
 
 
@@ -205,8 +212,14 @@ open class Window(
 
         setPosition(HIDDEN_WINDOW_X, HIDDEN_WINDOW_Y)
 
+        positionBeforeHiding = Point(original_x, original_y)
+
         // return the original position
-        return Point(original_x, original_y)
+        return positionBeforeHiding
+    }
+
+    fun reveal(){
+        setPosition(positionBeforeHiding.x, positionBeforeHiding.y)
     }
 
     open fun minimize(){
@@ -232,7 +245,7 @@ open class Window(
 
     open fun close() {
         // close bubble manager
-        bubblesManager.recycle()
+        // bubblesManager.recycle()
 
         try {
             windowManager.removeView(rootView)
@@ -240,6 +253,8 @@ open class Window(
             // Ignore exception for now, but in production, you should have some
             // warning for the user here.
         }
+
+        onClose(this)
     }
 
     override val viewModelStore: ViewModelStore = ViewModelStore()

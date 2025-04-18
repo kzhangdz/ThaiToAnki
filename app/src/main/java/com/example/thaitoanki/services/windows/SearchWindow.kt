@@ -32,16 +32,21 @@ class SearchWindow(
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository,
+    val onSearchCompleted: (String) -> Unit,
+    override val onMinimize: () -> Unit,
+    override val onClose: (Window) -> Unit
 ): Window(
     context = context,
     serviceContext = serviceContext,
     applicationContext = applicationContext,
     layoutId = R.layout.window_search,
     windowWidth = 300,
-    windowHeight = 80
+    windowHeight = 80,
+    onMinimize = onMinimize,
+    onClose = onClose
 ) {
 
-    lateinit var onSearchCompleted: () -> Unit
+    //lateinit var onSearchCompleted: (String) -> Unit
 
     // TODO: pass in viewModel instead?
     //val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)
@@ -138,7 +143,7 @@ class SearchWindow(
 
                 //SavedStateHandle().set("word", searchValue)
 
-                onSearchCompleted()
+                onSearchCompleted(searchValue)
 
                 // todo: openNextWindow() param. WindowGroup will pass in a function that performs these actions
 //                val flashcardWindow = FlashcardWindow(

@@ -53,14 +53,17 @@ class FlashcardWindow(
     override val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
     val languageRepository: ThaiLanguageRepository,
-    val wordsRepository: WordsRepository
+    val wordsRepository: WordsRepository,
+    override var onMinimize: () -> Unit,
+    override val onClose: (Window) -> Unit
 ): Window(
     context = context,
     serviceContext = serviceContext,
     applicationContext = applicationContext,
     layoutId = R.layout.window_flashcard,
     windowWidth = 300,
-    windowHeight = 400
+    windowHeight = 400,
+    onMinimize = onMinimize
 ) {
     // TODO: pass in viewModel instead?
     //val viewModel: ThaiViewModel = ThaiViewModel(languageRepository, wordsRepository)

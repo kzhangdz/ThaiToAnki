@@ -24,6 +24,9 @@ class MinimizedWindow(
     context: ContextWrapper,
     override val serviceContext: Context,
     override val applicationContext: Context,
+    val onClick: (MinimizedWindow) -> Unit = {},
+    startingX: Int? = null,
+    startingY: Int? = null
 ): Window(
     context = context,
     serviceContext = serviceContext,
@@ -31,7 +34,9 @@ class MinimizedWindow(
     layoutId = R.layout.window_minimized,
     windowWidth = 52,//80, //1000,//300, // if we use a width that's too large, the window will have a giant blank section that stops when it hits the right edge. Therefore, we only want a window just as big as the icon itself
     windowHeight = 52,//80, //1000,//80,
-    inScreen = true // minimized bubble will always stay on screen
+    inScreen = true, // minimized bubble will always stay on screen
+    startingX = startingX,
+    startingY = startingY
 ) {
 
     override fun initWindow() {
@@ -51,6 +56,7 @@ class MinimizedWindow(
         rootView.findViewById<View>(R.id.minimized_icon).setOnClickListener{
 
             // code to bring the hidden view back
+            onClick(this)
         }
     }
 
