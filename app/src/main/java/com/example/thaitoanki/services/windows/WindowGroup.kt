@@ -16,6 +16,7 @@ class WindowGroup(
     val serviceContext: Context,
     val applicationContext: Context,
     val lifecycleScope: LifecycleCoroutineScope,
+    val onClose: () -> Unit
 ) {
 
     val container = DefaultAppContainer(applicationContext)
@@ -124,6 +125,9 @@ class WindowGroup(
         }
 
         // TODO: if there are no windows remaining, should I remove this object from memory?
+        if (windows.isEmpty()){
+            onClose()
+        }
 
         Log.d("WindowGroup", windows.toString())
     }

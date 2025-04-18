@@ -98,6 +98,9 @@ class FloatingService: LifecycleService(),
     lateinit var layoutInflater: LayoutInflater
     var testView: View? = null
 
+    // variable to keep track of if floating window is open for closed
+    private var isWindowOpen: Boolean = false
+
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -331,12 +334,26 @@ class FloatingService: LifecycleService(),
                 // Pass ContextThemeWrapper so you can inflate components with Material Themes
                 //https://stackoverflow.com/questions/38712073/android-set-theme-for-view-that-created-by-service
 
-                val windowGroup = WindowGroup(
-                    serviceContext = this,
-                    applicationContext = applicationContext,
-                    lifecycleScope = lifecycleScope
-                )
-                windowGroup.start()
+                if (!isWindowOpen){
+                    val windowGroup = WindowGroup(
+                        serviceContext = this,
+                        applicationContext = applicationContext,
+                        lifecycleScope = lifecycleScope,
+                        onClose = {
+                            isWindowOpen = false
+                        }
+                    )
+                    windowGroup.start()
+
+                    isWindowOpen = true
+                }
+                else{
+                    Toast.makeText(
+                        this,
+                        "The dictionary is already open!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
 
             }
         }
