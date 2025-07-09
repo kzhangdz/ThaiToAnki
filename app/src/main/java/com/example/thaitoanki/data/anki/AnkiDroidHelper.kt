@@ -31,6 +31,8 @@ import java.util.LinkedList
 
 // TODO: pass this into the ThaiViewModel
 
+// TODO: need to check if user has AnkiDroid installed
+
 class AnkiDroidHelper(context: Context) {
     val api: AddContentApi
     private val mContext: Context = context.applicationContext

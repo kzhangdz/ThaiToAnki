@@ -7,11 +7,21 @@
 
     <include layout="@layout/fragment_window_header"/>
 
-    <!-- layout_weight necessary to ensure the button gets pushed to the bottom -->
-    <include layout="@layout/fragment_flashcard_front"
+    <com.example.thaitoanki.services.windows.WindowContentLayout
+        android:id="@+id/window_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+        <!-- layout_weight necessary to ensure the button gets pushed to the bottom -->
+        <include layout="@layout/fragment_flashcard_front" />
+    </com.example.thaitoanki.services.windows.WindowContentLayout>
+
+    <!--
+    <include layout="@layout/fragment_flashcard_front"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    -->
 
     <!-- TODO: Can add a Save icon into the flashcard's header instead -->
 <!--    <include layout="@layout/fragment_button"-->

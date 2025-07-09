@@ -143,12 +143,18 @@ open class Window(
 //            }
         }
 
-        rootView.setListener {
+        // If the internal window content WindowContentLayout is touched, bring up the keyboard
+        rootView.findViewById<WindowContentLayout>(R.id.window_content)?.setListener {
             if (it) {
                 enableKeyboard()
             } else {
                 disableKeyboard()
             }
+        }
+
+        // if the header WindowContentLayout is touched, get rid of the keyboard
+        rootView.setListener { activate ->
+            disableKeyboard()
         }
     }
 
