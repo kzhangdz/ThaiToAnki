@@ -6,5 +6,10 @@
 
     <include layout="@layout/fragment_window_header"/>
 
-    <include layout="@layout/fragment_search_bar"/>
+    <com.example.thaitoanki.services.windows.WindowContentLayout
+        android:id="@+id/window_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/fragment_search_bar"/>
+    </com.example.thaitoanki.services.windows.WindowContentLayout>
 </com.example.thaitoanki.services.windows.WindowContentLayout>
