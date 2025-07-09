@@ -285,7 +285,7 @@ class AnkiDroidHelper(context: Context) {
 
         // Remove any duplicates from the LinkedLists and then add over the API
         removeDuplicates(fields, tags, modelId)
-        // testing removing adding
+        // TODO: testing removing adding
         val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
         if (added > 0) {
             // successful
