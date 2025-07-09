@@ -114,7 +114,24 @@ class AnkiDroidHelper(context: Context) {
         for (f in fields) {
             f[0]?.let { keys.add(it) }
         }
+        Log.d(LOG_TAG, "Keys: $keys")
         val duplicateNotes: SparseArray<MutableList<NoteInfo?>>? = api.findDuplicateNotes(modelId, keys)
+
+        if (duplicateNotes != null) {
+            for (i in 0..< duplicateNotes.size()){
+                val duplicateNote = duplicateNotes[i]
+                for (note in duplicateNote) {
+                    if (note != null) {
+                        //Log.d(LOG_TAG, "Duplicate ${i}: ${note.getFields().toString()}")
+                        for (field in note.getFields()){
+                            Log.d(LOG_TAG, "Duplicate ${i}: ${field}")
+                        }
+                    }
+                }
+
+            }
+        }
+
         // Do some sanity checks
         check(tags.size == fields.size) { "List of tags must be the same length as the list of fields" }
         if (duplicateNotes == null || duplicateNotes.size() == 0 || fields.size == 0 || tags.size == 0) {
@@ -218,36 +235,6 @@ class AnkiDroidHelper(context: Context) {
         return null
     }
 
-//    fun addCardsToAnkiDroid(deckName: String, modelName: String, modelFields: Array<String>, data: List<Map<String, String>>){
-//        var deckId = findDeckIdByName(deckName)
-//        if(deckId == null) {
-//            deckId = api.addNewDeck(deckName)
-//            deckId?.let { storeDeckReference(deckName, it) }
-//        }
-//
-//        var modelId = findModelIdByName(
-//            modelName,
-//            numFields = modelFields.size
-//        )
-//        if (modelId == null){
-//            modelId = api.addNewCustomModel(
-//                modelName,
-//                fields = modelFields,
-//                cards = TODO(),
-//                qfmt = TODO(),
-//                afmt = TODO(),
-//                css = TODO(),
-//                did = TODO(),
-//                sortf = TODO()
-//            )
-//        }
-//
-//        if (deckId == null || modelId == null){
-//            return
-//        }
-//
-//    }
-
     fun createDeck(deckName: String): Long?{
         val deckId = api.addNewDeck(deckName)
         deckId?.let { storeDeckReference(deckName, it) }
@@ -298,6 +285,7 @@ class AnkiDroidHelper(context: Context) {
 
         // Remove any duplicates from the LinkedLists and then add over the API
         removeDuplicates(fields, tags, modelId)
+        // testing removing adding
         val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
         if (added > 0) {
             // successful
@@ -311,6 +299,7 @@ class AnkiDroidHelper(context: Context) {
             Log.d(LOG_TAG, "failed insertion")
         }
         return added
+        //return 0
     }
 
     /**
