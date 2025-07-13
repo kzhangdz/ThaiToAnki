@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 fun FlashcardScreen(
     loadingStatus: LoadingStatus,
     onSuccessfulFlashcardSave: () -> Unit,
-    onFailedFlashcardSave: () -> Unit,
+    onFailedFlashcardSave: (Int) -> Unit,
     onCancelButtonClicked: () -> Unit,
     errorRetryAction: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,13 +122,13 @@ fun FlashcardScreen(
                     val responseCode = if (flashcardUiState.currentDefinitions.isNotEmpty()) flashcardViewModel.saveCard(
                         context
                         // TODO: add deckname, modelname?
-                    ) else 0
+                    ) else -1
 
                     if (responseCode > 0){
                         onSuccessfulFlashcardSave()
                     }
                     else{
-                        onFailedFlashcardSave()
+                        onFailedFlashcardSave(responseCode)
                     }
                 },
                 onCancelButtonClicked = onCancelButtonClicked

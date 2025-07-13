@@ -14,6 +14,7 @@ import com.example.thaitoanki.services.readArrayFromAsset
 import com.example.thaitoanki.services.readTextFromAsset
 import com.ichi2.anki.api.AddContentApi
 import com.ichi2.anki.api.NoteInfo
+import java.util.Arrays
 import java.util.LinkedList
 
 
@@ -97,6 +98,50 @@ class AnkiDroidHelper(context: Context) {
     fun storeModelReference(modelName: String?, modelId: Long) {
         val modelsDb = mContext.getSharedPreferences(MODEL_REF_DB, Context.MODE_PRIVATE)
         modelsDb.edit().putLong(modelName, modelId).apply()
+    }
+
+    /**
+     *
+     */
+    fun checkForDuplicates(
+        fields: LinkedList<Array<String>>,
+        tags: LinkedList<Set<String?>?>,
+        modelId: Long
+    ): Boolean{
+        // Build a list of the duplicate keys (first fields) and find all notes that have a match with each key
+        val keys: MutableList<String> = ArrayList(fields.size)
+        for (f in fields) {
+            f[0]?.let { keys.add(it) }
+        }
+        Log.d(LOG_TAG, "Keys: $keys")
+        val duplicateNotes: SparseArray<MutableList<NoteInfo?>>? = api.findDuplicateNotes(modelId, keys)
+
+        // no duplicates
+        if (duplicateNotes == null || duplicateNotes.size() == 0 || fields.size == 0 || tags.size == 0) {
+            return false
+        }
+
+        // iterate through the duplicates and check if there is a fieldset with a matching word and definition
+        for (i in 0 ..< duplicateNotes.size()){
+            val duplicateNote = duplicateNotes[i]
+
+            for (noteInfo in duplicateNote){
+                // TODO: pass in the indices to check as function params
+                val word = noteInfo?.getFields()?.get(0)
+                val definition = noteInfo?.getFields()?.get(4)
+
+                Log.d(LOG_TAG, "Checking for duplicate word $word")
+                Log.d(LOG_TAG, "Checking for duplicate definition $definition")
+
+                for (fieldBundle in fields){
+                    if (word in fieldBundle && definition in fieldBundle){
+                        return true
+                    }
+                }
+            }
+        }
+
+        return false
     }
 
     /**
@@ -252,6 +297,11 @@ class AnkiDroidHelper(context: Context) {
         return modelId
     }
 
+    /**
+     * Final fields example
+     * Final Fields: [[แปลกใจ, แปฺลก, bplaaek<sup>L</sup>, [adjective], [is] amazed; astonished, , , <span id="synonym-0" class="pill" onclick="toggleElement('synonym-0-description')">ทึ่ง <span id="synonym-0-description" style="display: none"> [is] surprised; impressed; amazed; astonished; wonder</span></span><span id="synonym-1" class="pill" onclick="toggleElement('synonym-1-description')">อัศจรรย์ใจ<span id="synonym-1-description" style="display: none"> [is] amazed; impressed; astonished; incredulous</span></span>, , ผมออกจะ<span class="highlight">แปลกใจ</span>ที่ - "I must admit my surprise that..." — "I must tell you how astonished I am that...", <div><span class="highlight">แปลกใจ</span>ที่เห็นแกเลือกขึ้นรถไฟแทนที่จะเดินทางด้วยวิธีอื่น</div><div class="description">bplaaek<sup>L</sup> jai<sup>M</sup> thee<sup>F</sup> hen<sup>R</sup> gaae<sup>M</sup> leuuak<sup>F</sup> kheun<sup>F</sup> roht<sup>H</sup> fai<sup>M</sup> thaaen<sup>M</sup> thee<sup>F</sup> ja<sup>L</sup> deern<sup>M</sup> thaang<sup>M</sup> duay<sup>F</sup> wi<sup>H</sup> thee<sup>M</sup> euun<sup>L</sup></div><div class="description">"[I] was surprised to see that he chose to travel by train, rather than go by other means."</div>, 135449]]
+     *
+     */
     fun addCardsToAnkiDroid(deckId: Long, modelId: Long, data: List<Map<String, String>>): Int{
         // TODO: add a code output
         // TODO: look into YomiChan's data output format
@@ -285,23 +335,33 @@ class AnkiDroidHelper(context: Context) {
         val finalFields = fields.toList()
         //val finalTags = fields.toList()
 
+        Log.d(LOG_TAG, "Fields: $fields")
+        Log.d(LOG_TAG, "Tags: $tags")
+        Log.d(LOG_TAG, "Final Fields: ${Arrays.deepToString(finalFields.toTypedArray())}")
+        Log.d(LOG_TAG, "Final Tags: $finalTags")
+
+        val hasDuplicate = checkForDuplicates(fields, tags, modelId)
+        Log.d(LOG_TAG, "hasDuplicate: $hasDuplicate")
+        if (hasDuplicate){
+            // unsuccessful, duplicate found
+            Log.d(LOG_TAG, "duplicate found, no insertion")
+            return -2
+        }
+
         // Remove any duplicates from the LinkedLists and then add over the API
-        removeDuplicates(fields, tags, modelId)
-        // TODO: testing removing adding
+
+        // TODO: remove duplicates based on word and definition. Also, could return an int from the removeDuplicates fn?
+        //removeDuplicates(fields, tags, modelId)
         val added: Int = api.addNotes(modelId, deckId, finalFields, finalTags)
         if (added > 0) {
             // successful
             Log.d(LOG_TAG, "successful insertion")
         }
-        else if(added == 0){
-            // TODO
-        }
         else {
-            // API indicates that <0 return value is an error
+            // API indicates that <0 return value is an error. 0 might be included as well
             Log.d(LOG_TAG, "failed insertion")
         }
         return added
-        //return 0
     }
 
     /**

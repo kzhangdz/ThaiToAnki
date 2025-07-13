@@ -321,13 +321,19 @@ fun ThaiToAnkiApp(
                             }
                         }
                     },
-                    onFailedFlashcardSave = {
+                    onFailedFlashcardSave = { responseCode ->
+
+                        val message = when(responseCode){
+                            -2 -> "Duplicate flashcard already exists"
+                            else -> "Issue saving flashcard"
+                        }
+
                         snackbarHostState.currentSnackbarData?.dismiss()
 
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             val snackbarResult = snackbarHostState.showSnackbar(
-                                message = "Issue saving flashcard",
+                                message = message,
                                 actionLabel = "Dismiss"
                             )
                             when (snackbarResult) {
