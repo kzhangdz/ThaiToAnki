@@ -27,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -61,6 +62,8 @@ import com.example.thaitoanki.ui.screens.HistoryViewModel
 import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import com.example.thaitoanki.ui.screens.SettingsScreen
+import com.example.thaitoanki.ui.screens.components.AppSwipeableSnackbarWrapper
+import com.example.thaitoanki.ui.screens.components.handleSnackbar
 import kotlinx.coroutines.launch
 
 enum class ThaiToAnkiScreen(){
@@ -220,32 +223,6 @@ fun ThaiToAnkiApp(
     Snackbar variables
     https://stackoverflow.com/questions/68909340/how-to-show-snackbar-with-a-button-onclick-in-jetpack-compose
      */
-    //https://medium.com/@astamato/swipe-and-savor-building-a-swipeable-snackbar-in-compose-c696cbe72135
-    @Composable fun AppSwipeableSnackbarWrapper(
-        state: SnackbarHostState,
-        modifier: Modifier = Modifier,
-        dismissSnackbarState: DismissState = rememberDismissState { value ->
-            if (value != DismissValue.Default) {
-                state.currentSnackbarData?.dismiss()
-                true
-            } else {
-                false
-            }
-        },
-        dismissContent: @Composable RowScope.() -> Unit
-    ) {
-        LaunchedEffect(dismissSnackbarState.currentValue) {
-            if (dismissSnackbarState.currentValue != DismissValue.Default) {
-                dismissSnackbarState.reset()
-            }
-        }
-        SwipeToDismiss(
-            modifier = modifier,
-            state = dismissSnackbarState,
-            background = {},
-            dismissContent = dismissContent,
-        )
-    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -351,14 +328,10 @@ fun ThaiToAnkiApp(
 
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
-                            val snackbarResult = snackbarHostState.showSnackbar(
+                            handleSnackbar(
                                 message = "Successfully saved",
-                                actionLabel = "Dismiss"
+                                snackbarHostState = snackbarHostState
                             )
-                            when (snackbarResult) {
-                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                            }
                         }
                     },
                     onFailedFlashcardSave = { responseCode ->
@@ -372,14 +345,10 @@ fun ThaiToAnkiApp(
 
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
-                            val snackbarResult = snackbarHostState.showSnackbar(
+                            handleSnackbar(
                                 message = message,
-                                actionLabel = "Dismiss"
+                                snackbarHostState = snackbarHostState
                             )
-                            when (snackbarResult) {
-                                SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-                                SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
-                            }
                         }
                     },
                     onCancelButtonClicked = {
