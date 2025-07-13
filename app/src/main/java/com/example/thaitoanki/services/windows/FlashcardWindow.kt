@@ -332,7 +332,7 @@ class FlashcardWindow(
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        else if (responseCode < -2){
+                        else if (responseCode == -2){
                             Toast.makeText(
                                 serviceContext,
                                 FLASHCARD_DUPLICATE_MESSAGE,
