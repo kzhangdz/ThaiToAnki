@@ -1,5 +1,8 @@
 package com.example.thaitoanki.ui.screens.components
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.DismissState
@@ -13,6 +16,8 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat.startActivity
+
 
 //https://medium.com/@astamato/swipe-and-savor-building-a-swipeable-snackbar-in-compose-c696cbe72135
 @OptIn(ExperimentalMaterialApi::class)
@@ -47,14 +52,21 @@ const val FLASHCARD_SUCCESS_MESSAGE = "Successfully saved"
 const val FLASHCARD_DUPLICATE_MESSAGE = "Duplicate flashcard already exists"
 const val FLASHCARD_FAILURE_MESSAGE = "Issues saving flashcard"
 
-suspend fun handleSnackbar(message: String, snackbarHostState: SnackbarHostState){
+suspend fun handleSnackbar(context: Context, message: String, snackbarHostState: SnackbarHostState){
     val snackbarResult = snackbarHostState.showSnackbar(
         message = message,
-        actionLabel = "Dismiss",
+        actionLabel = "Open AnkiDroid",
         duration = SnackbarDuration.Short
     )
     when (snackbarResult) {
         SnackbarResult.Dismissed -> Log.d("Snackbar", "Snackbar dismissed")
-        SnackbarResult.ActionPerformed -> snackbarHostState.currentSnackbarData?.dismiss()
+        SnackbarResult.ActionPerformed -> {
+
+            val launchIntent: Intent? =
+                context.getPackageManager().getLaunchIntentForPackage("com.ichi2.anki")
+            if (launchIntent != null) {
+                context.startActivity(launchIntent) //null pointer check in case package name was not found
+            }
+        } //snackbarHostState.currentSnackbarData?.dismiss()
     }
 }

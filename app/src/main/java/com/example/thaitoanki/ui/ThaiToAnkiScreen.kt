@@ -332,6 +332,7 @@ fun ThaiToAnkiApp(
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             handleSnackbar(
+                                context = context,
                                 message = FLASHCARD_SUCCESS_MESSAGE,
                                 snackbarHostState = snackbarHostState
                             )
@@ -349,6 +350,7 @@ fun ThaiToAnkiApp(
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             handleSnackbar(
+                                context = context,
                                 message = message,
                                 snackbarHostState = snackbarHostState
                             )
