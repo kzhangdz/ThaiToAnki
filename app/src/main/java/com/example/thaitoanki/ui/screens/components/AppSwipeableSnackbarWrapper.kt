@@ -43,6 +43,10 @@ fun AppSwipeableSnackbarWrapper(
     )
 }
 
+const val FLASHCARD_SUCCESS_MESSAGE = "Successfully saved"
+const val FLASHCARD_DUPLICATE_MESSAGE = "Duplicate flashcard already exists"
+const val FLASHCARD_FAILURE_MESSAGE = "Issues saving flashcard"
+
 suspend fun handleSnackbar(message: String, snackbarHostState: SnackbarHostState){
     val snackbarResult = snackbarHostState.showSnackbar(
         message = message,

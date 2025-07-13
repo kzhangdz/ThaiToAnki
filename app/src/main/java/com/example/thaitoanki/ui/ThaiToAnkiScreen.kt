@@ -63,6 +63,9 @@ import com.example.thaitoanki.ui.screens.SearchScreen
 import com.example.thaitoanki.ui.screens.ThaiViewModel
 import com.example.thaitoanki.ui.screens.SettingsScreen
 import com.example.thaitoanki.ui.screens.components.AppSwipeableSnackbarWrapper
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_DUPLICATE_MESSAGE
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_FAILURE_MESSAGE
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_SUCCESS_MESSAGE
 import com.example.thaitoanki.ui.screens.components.handleSnackbar
 import kotlinx.coroutines.launch
 
@@ -329,7 +332,7 @@ fun ThaiToAnkiApp(
                         coroutineScope.launch { // using the `coroutineScope` to `launch` showing the snackbar
                             // taking the `snackbarHostState` from the attached `scaffoldState`
                             handleSnackbar(
-                                message = "Successfully saved",
+                                message = FLASHCARD_SUCCESS_MESSAGE,
                                 snackbarHostState = snackbarHostState
                             )
                         }
@@ -337,8 +340,8 @@ fun ThaiToAnkiApp(
                     onFailedFlashcardSave = { responseCode ->
 
                         val message = when(responseCode){
-                            -2 -> "Duplicate flashcard already exists"
-                            else -> "Issue saving flashcard"
+                            -2 -> FLASHCARD_DUPLICATE_MESSAGE
+                            else -> FLASHCARD_FAILURE_MESSAGE
                         }
 
                         snackbarHostState.currentSnackbarData?.dismiss()

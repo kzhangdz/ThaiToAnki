@@ -41,6 +41,9 @@ import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.ui.AppViewModelProvider
 import com.example.thaitoanki.ui.screens.FlashcardViewModel
 import com.example.thaitoanki.ui.screens.ThaiViewModel
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_DUPLICATE_MESSAGE
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_FAILURE_MESSAGE
+import com.example.thaitoanki.ui.screens.components.FLASHCARD_SUCCESS_MESSAGE
 import com.example.thaitoanki.ui.screens.components.buildSection
 import com.example.thaitoanki.ui.screens.components.updateFlashcardFrontView
 import kotlinx.coroutines.flow.update
@@ -325,14 +328,21 @@ class FlashcardWindow(
                         if (responseCode > 0){
                             Toast.makeText(
                                 serviceContext,
-                                "Successfully saved",
+                                FLASHCARD_SUCCESS_MESSAGE,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else if (responseCode < -2){
+                            Toast.makeText(
+                                serviceContext,
+                                FLASHCARD_DUPLICATE_MESSAGE,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
                         else{
                             Toast.makeText(
                                 serviceContext,
-                                "Issues saving flashcard",
+                                FLASHCARD_FAILURE_MESSAGE,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
