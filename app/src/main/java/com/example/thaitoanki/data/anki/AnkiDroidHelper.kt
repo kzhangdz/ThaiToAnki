@@ -341,7 +341,6 @@ class AnkiDroidHelper(context: Context) {
         Log.d(LOG_TAG, "Final Tags: $finalTags")
 
         val hasDuplicate = checkForDuplicates(fields, tags, modelId)
-        Log.d(LOG_TAG, "hasDuplicate: $hasDuplicate")
         if (hasDuplicate){
             // unsuccessful, duplicate found
             Log.d(LOG_TAG, "duplicate found, no insertion")

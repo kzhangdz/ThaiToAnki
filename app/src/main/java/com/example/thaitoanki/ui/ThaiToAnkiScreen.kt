@@ -15,8 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +32,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,6 +112,7 @@ fun ThaiToAnkiAppBar(
     //}
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ThaiToAnkiApp(
     viewModel: ThaiViewModel = viewModel(factory = AppViewModelProvider.Factory),
@@ -213,11 +220,44 @@ fun ThaiToAnkiApp(
     Snackbar variables
     https://stackoverflow.com/questions/68909340/how-to-show-snackbar-with-a-button-onclick-in-jetpack-compose
      */
+    //https://medium.com/@astamato/swipe-and-savor-building-a-swipeable-snackbar-in-compose-c696cbe72135
+    @Composable fun AppSwipeableSnackbarWrapper(
+        state: SnackbarHostState,
+        modifier: Modifier = Modifier,
+        dismissSnackbarState: DismissState = rememberDismissState { value ->
+            if (value != DismissValue.Default) {
+                state.currentSnackbarData?.dismiss()
+                true
+            } else {
+                false
+            }
+        },
+        dismissContent: @Composable RowScope.() -> Unit
+    ) {
+        LaunchedEffect(dismissSnackbarState.currentValue) {
+            if (dismissSnackbarState.currentValue != DismissValue.Default) {
+                dismissSnackbarState.reset()
+            }
+        }
+        SwipeToDismiss(
+            modifier = modifier,
+            state = dismissSnackbarState,
+            background = {},
+            dismissContent = dismissContent,
+        )
+    }
+
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            //SnackbarHost(snackbarHostState)
+            AppSwipeableSnackbarWrapper(
+                state = snackbarHostState,
+                dismissContent = { SnackbarHost(hostState = snackbarHostState) }
+            )
+                       },
         topBar = {
             ThaiToAnkiAppBar(
                 currentScreen = currentScreen,
