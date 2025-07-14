@@ -2,6 +2,7 @@ package com.example.thaitoanki.services.listeners
 
 import android.content.Context
 import android.graphics.Point
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -12,18 +13,20 @@ import kotlin.math.hypot
 
 fun View.registerDraggableTouchListener(
     initialPosition: () -> Point,
-    positionListener: (x: Int, y: Int) -> Unit
+    positionListener: (x: Int, y: Int) -> Unit,
+    isMagnetized: Boolean = false
 ) {
-    WindowHeaderTouchListener(context, this, initialPosition, positionListener)
+    WindowHeaderTouchListener(context, this, initialPosition, positionListener, isMagnetized)
 }
 
 private const val LOG_TAG = "WindowHeaderTouchListener"
 
 class WindowHeaderTouchListener(
-    context: Context,
+    val context: Context,
     private val view: View,
     private val initialPosition: () -> Point,
-    private val positionListener: (x: Int, y: Int) -> Unit
+    private val positionListener: (x: Int, y: Int) -> Unit,
+    private val isMagnetized: Boolean = false
 ) : View.OnTouchListener {
 
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
@@ -98,10 +101,43 @@ class WindowHeaderTouchListener(
             }
 
             MotionEvent.ACTION_UP -> {
+
+                if (isMagnetized){
+
+                    // Determine the nearest edge and snap
+                    val screenWidth: Float = context.resources.displayMetrics.widthPixels.toFloat() //getResources().getDisplayMetrics().widthPixels
+                    val viewCenterX = motionEvent.rawX.toInt() + view.width / 2
+
+                    Log.d(LOG_TAG, "screen width ${screenWidth})")
+                    Log.d(LOG_TAG, "viewCenterX ${viewCenterX})")
+
+                    if (viewCenterX < screenWidth / 2) {
+                        positionListener(0, motionEvent.rawY.toInt())
+                        Log.d(LOG_TAG, "moving to (0, ${motionEvent.rawY.toInt()})")
+
+                        // Snap to the left edge
+//                        view.animate()
+//                            .x(0f)
+//                            .setDuration(200) // Animation duration
+//                            .start()
+                    } else {
+                        val furthestX = screenWidth - view.width
+
+                        positionListener(furthestX.toInt(), motionEvent.rawY.toInt())
+                        Log.d(LOG_TAG, "moving to (200, ${motionEvent.rawY.toInt()})")
+                        // Snap to the right edge
+//                        view.animate()
+//                            .x(900f)
+//                            .setDuration(200)
+//                            .start()
+                    }
+                }
+
                 cancelLongClickTimer()
                 if (!moving && !longClickPerformed) {
                     view.performClick()
                 }
+
             }
 
         }
