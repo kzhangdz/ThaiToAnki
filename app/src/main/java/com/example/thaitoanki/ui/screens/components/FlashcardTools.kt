@@ -11,6 +11,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -33,6 +34,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.getBigWord
+import com.example.thaitoanki.data.network.getSmallDefinition
+import com.example.thaitoanki.data.network.getSmallRomanization
 import com.example.thaitoanki.data.network.getThaiLanguageUrl
 import com.example.thaitoanki.data.network.getWiktionaryUrl
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
@@ -269,15 +273,20 @@ fun updateFlashcardFrontView(
                 val sentencesTextView = view.findViewById<TextView>(R.id.sentences_text)
                 val color = context.getColor(R.color.md_theme_primary)
                 val sentenceText = HTMLFormatting.addHighlightSpannable(
-                    stringToModify = currentFlashcard.sentences[currentDefinitionSentenceIndex].baseWord + "\n",
+                    stringToModify = currentFlashcard.sentences[currentDefinitionSentenceIndex].baseWord,
                     word = currentFlashcard.baseWord,
                     color = color
                 )
-                val romanizationText = HtmlCompat.fromHtml(currentFlashcard.sentences[currentDefinitionSentenceIndex].romanization, HtmlCompat.FROM_HTML_MODE_COMPACT)
-                    .toSpannable()
-                val definitionText = "\n" + currentFlashcard.sentences[currentDefinitionSentenceIndex].definition
-                    .toSpannable()
-                val displayText = TextUtils.concat(sentenceText, romanizationText, definitionText)
+                sentenceText.setSpan(RelativeSizeSpan(1.2f), 0, sentenceText.length, 0)
+                val romanizationText = HtmlCompat.fromHtml(
+                    currentFlashcard.sentences[currentDefinitionSentenceIndex].getSmallRomanization(),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                ).toSpannable()
+                val definitionText = HtmlCompat.fromHtml(
+                    currentFlashcard.sentences[currentDefinitionSentenceIndex].getSmallDefinition(),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT
+                ).toSpannable()
+                val displayText = TextUtils.concat(sentenceText, "\n", romanizationText, "\n", definitionText)
                 sentencesTextView.text = displayText
 
                 // on click, bring up a dialog to switch to other examples

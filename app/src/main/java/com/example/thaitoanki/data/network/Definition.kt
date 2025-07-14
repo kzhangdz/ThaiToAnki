@@ -25,6 +25,21 @@ data class Definition(
     val wordId: Int? = null,
 )
 
+fun Definition.getBigWord(): String{
+    return "<big>$baseWord</big>"
+}
+
+fun Definition.getSmallDefinition(): String{
+    return "<small>$definition</small>"
+}
+
+fun Definition.getSmallRomanization(): String {
+    var smallRomanization = "<small>$romanization</small>"
+    smallRomanization = smallRomanization.replace("<sup>", "<sup><small>")
+    smallRomanization = smallRomanization.replace("</sup>", "</small></sup>")
+    return smallRomanization
+}
+
 fun Definition.getThaiLanguageUrl(): URL? {
     if (wordId != null){
         return URL("http://www.thai-language.com/id/${wordId}")
