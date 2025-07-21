@@ -144,7 +144,7 @@ fun updateFlashcardFrontView(
                 context = context,
                 textViewId = romanizationSectionViewId,
                 textLabelId = R.string.romanization_label,
-                data = currentFlashcard.romanization
+                data = currentFlashcard.getSmallRomanization(superscriptOnly = true)
             )
         })
 

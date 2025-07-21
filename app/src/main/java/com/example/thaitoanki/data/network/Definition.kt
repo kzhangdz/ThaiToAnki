@@ -33,8 +33,12 @@ fun Definition.getSmallDefinition(): String{
     return "<small>$definition</small>"
 }
 
-fun Definition.getSmallRomanization(): String {
-    var smallRomanization = "<small>$romanization</small>"
+fun Definition.getSmallRomanization(superscriptOnly: Boolean = false): String {
+    var smallRomanization = romanization
+
+    if(!superscriptOnly){
+        smallRomanization = "<small>$romanization</small>"
+    }
     smallRomanization = smallRomanization.replace("<sup>", "<sup><small>")
     smallRomanization = smallRomanization.replace("</sup>", "</small></sup>")
     return smallRomanization
