@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.view.ContextThemeWrapper
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.DefaultAppContainer
 
@@ -49,6 +48,47 @@ class WindowGroup(
                     lifecycleScope = lifecycleScope,
                     languageRepository = languageRepo,
                     wordsRepository = wordRepo,
+                    onDefinitionSectionClick = { currentFlashcardWindow ->
+                        val definitions = if (currentFlashcardWindow.definitions != null) currentFlashcardWindow.definitions else emptyList()
+
+                        Log.d("definitions", definitions.toString())
+
+                        if (definitions != null) {
+                            val definitionListWindow = DefinitionListWindow(
+                                definitions = definitions,
+                                context = ContextThemeWrapper(
+                                    serviceContext,
+                                    R.style.Theme_ThaiToAnki
+                                ),
+                                serviceContext = serviceContext,
+                                applicationContext = applicationContext,
+                                lifecycleScope = lifecycleScope,
+                                languageRepository = languageRepo,
+                                wordsRepository = wordRepo,
+                                onDefinitionClick = { currentWindow, index ->
+                                    // move the flashcard window to the selected index
+                                    currentFlashcardWindow.currentDefinitionIndex = index
+                                    currentFlashcardWindow.setUpWindow()
+
+                                    // close the definition block window
+                                    Log.d("WindowGroup", "CurrentWindow: ${currentWindow.toString()}")
+                                    currentWindow.close()
+                                },
+                                onMinimize = {
+                                    minimize()
+                                },
+                                onClose = { closedWindow ->
+                                    close(closedWindow)
+                                }
+                            )
+
+                            // TODO: hide flashcard window
+                            definitionListWindow.setUpWindow()
+                            definitionListWindow.open()
+                            windows.add(definitionListWindow)
+                            Log.d("WindowGroup", windows.toString())
+                        }
+                    },
                     onMinimize = {
                         minimize()
                     },

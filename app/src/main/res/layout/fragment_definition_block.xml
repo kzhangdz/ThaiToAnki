@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/definition_block"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small">
+        <!--style="@style/Theme.ThaiToAnki.TextAppearance.AppCompat"-->
+
+        <TextView
+            android:id="@+id/definition_block_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_part_of_speech_and_definition"/>
+    </LinearLayout>
+    <View style="@style/Divider"/>
+</LinearLayout>

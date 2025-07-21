@@ -4,13 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.media.Image
 import android.net.Uri
 import android.text.Html
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -24,7 +21,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.text.toSpannable
 import androidx.core.text.toSpanned
@@ -34,11 +30,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
-import com.example.thaitoanki.data.network.getBigWord
 import com.example.thaitoanki.data.network.getSmallDefinition
 import com.example.thaitoanki.data.network.getSmallRomanization
 import com.example.thaitoanki.data.network.getThaiLanguageUrl
 import com.example.thaitoanki.data.network.getWiktionaryUrl
+import com.example.thaitoanki.ui.screens.adapters.DefinitionListAdapter
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 
 
@@ -53,6 +49,7 @@ fun updateFlashcardFrontView(
     onClick: () -> Unit,
     onLeftClick: () -> Unit,
     onRightClick: () -> Unit,
+    onDefinitionClick: () -> Unit,
     onExampleClick: () -> Unit,
     onSentenceClick: () -> Unit,
     displaySaveButton: Boolean = true
@@ -166,6 +163,12 @@ fun updateFlashcardFrontView(
             val partOfSpeech: String = if (currentFlashcard.partOfSpeech.isEmpty()) "" else currentFlashcard.partOfSpeech + " "
             val displayText: String = partOfSpeech + currentFlashcard.definition
             definitionTextView.text = displayText
+
+            val definitionSectionView = view.findViewById<LinearLayout>(definitionSectionViewId)
+            definitionSectionView.setOnClickListener(){
+                // onDefinitionClick() to open DefinitionListWindow
+                onDefinitionClick()
+            }
         })
 
     // classifier
@@ -431,4 +434,36 @@ fun buildReference(parent: LinearLayout, context: Context, urlDisplayText: Strin
     referencesTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.link, 0)
 
     return referencesTextView
+}
+
+fun updateDefinitionListView(view: View, data: List<Definition>, definitionBlockOnClick: (Int) -> Unit){
+    // variables used for adding views to sections
+    val context = view.context.applicationContext
+    val layoutInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    // TODO refactor into build() function
+    val contentId = R.id.flashcard_base
+    val parent = view.findViewById<LinearLayout>(contentId)
+
+    // grab the vertical recyclerview and add an adapter on it for a definitions list
+    // the adapter will be for type viewholder
+    val recyclerView = view.findViewById<RecyclerView>(R.id.definition_recycler)
+    recyclerView.adapter = DefinitionListAdapter(
+        definitions = data,
+        definitionBlockOnClick = definitionBlockOnClick
+    )
+
+    recyclerView.setLayoutManager(
+        LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+    )
+
+    // update seems to run on each state rebuild
+    // check the childcount so it's not added multiple times
+    if (parent.childCount < 1){
+        parent.addView(recyclerView)
+    }
 }

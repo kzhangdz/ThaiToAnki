@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.thaitoanki.services.windows.WindowContentLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include layout="@layout/fragment_window_header"/>
+
+    <com.example.thaitoanki.services.windows.WindowContentLayout
+        android:id="@+id/window_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <!-- layout_weight necessary to ensure the button gets pushed to the bottom -->
+        <include layout="@layout/fragment_flashcard_base" />
+    </com.example.thaitoanki.services.windows.WindowContentLayout>
+
+</com.example.thaitoanki.services.windows.WindowContentLayout>
