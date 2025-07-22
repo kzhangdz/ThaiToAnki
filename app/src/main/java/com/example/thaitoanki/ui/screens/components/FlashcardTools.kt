@@ -30,11 +30,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.HTMLFormatting
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.DefinitionType
 import com.example.thaitoanki.data.network.getSmallDefinition
 import com.example.thaitoanki.data.network.getSmallRomanization
 import com.example.thaitoanki.data.network.getThaiLanguageUrl
 import com.example.thaitoanki.data.network.getWiktionaryUrl
 import com.example.thaitoanki.ui.screens.adapters.DefinitionListAdapter
+import com.example.thaitoanki.ui.screens.adapters.DefinitionListAdapterFactory
 import com.example.thaitoanki.ui.screens.adapters.PillListAdapter
 
 
@@ -436,7 +438,7 @@ fun buildReference(parent: LinearLayout, context: Context, urlDisplayText: Strin
     return referencesTextView
 }
 
-fun updateDefinitionListView(view: View, data: List<Definition>, definitionBlockOnClick: (Int) -> Unit){
+fun updateDefinitionListView(view: View, definitionType: DefinitionType, data: List<Definition>, definitionBlockOnClick: (Int) -> Unit){
     // variables used for adding views to sections
     val context = view.context.applicationContext
     val layoutInflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -448,7 +450,8 @@ fun updateDefinitionListView(view: View, data: List<Definition>, definitionBlock
     // grab the vertical recyclerview and add an adapter on it for a definitions list
     // the adapter will be for type viewholder
     val recyclerView = view.findViewById<RecyclerView>(R.id.definition_recycler)
-    recyclerView.adapter = DefinitionListAdapter(
+    recyclerView.adapter = DefinitionListAdapterFactory.createFromDefinitionType(
+        definitionType = definitionType,
         definitions = data,
         definitionBlockOnClick = definitionBlockOnClick
     )

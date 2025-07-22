@@ -6,6 +6,7 @@ import android.view.ContextThemeWrapper
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.DefaultAppContainer
+import com.example.thaitoanki.data.network.DefinitionType
 
 /**
  * Class to handle window opening and closing
@@ -56,6 +57,7 @@ class WindowGroup(
                         if (definitions != null) {
                             val definitionListWindow = DefinitionListWindow(
                                 definitions = definitions,
+                                definitionType = DefinitionType.DEFINITION,
                                 context = ContextThemeWrapper(
                                     serviceContext,
                                     R.style.Theme_ThaiToAnki
@@ -68,6 +70,96 @@ class WindowGroup(
                                 onDefinitionClick = { currentWindow, index ->
                                     // move the flashcard window to the selected index
                                     currentFlashcardWindow.currentDefinitionIndex = index
+                                    currentFlashcardWindow.setUpWindow()
+
+                                    // close the definition block window
+                                    Log.d("WindowGroup", "CurrentWindow: ${currentWindow.toString()}")
+                                    currentWindow.close()
+                                },
+                                onMinimize = {
+                                    minimize()
+                                },
+                                onClose = { closedWindow ->
+                                    close(closedWindow)
+                                }
+                            )
+
+                            // TODO: hide flashcard window
+                            definitionListWindow.setUpWindow()
+                            definitionListWindow.open()
+                            windows.add(definitionListWindow)
+                            Log.d("WindowGroup", windows.toString())
+                        }
+                    },
+                    onExampleSectionClick = { currentFlashcardWindow ->
+                        val definitions = if (currentFlashcardWindow.definitions != null) currentFlashcardWindow.definitions else emptyList()
+                        val currentDefinitionIndex = currentFlashcardWindow.currentDefinitionIndex
+
+                        if (definitions != null){
+                            val currentDefinition = definitions[currentDefinitionIndex]
+
+                            val examples = currentDefinition.examples
+
+                            val definitionListWindow = DefinitionListWindow(
+                                definitions = examples,
+                                definitionType = DefinitionType.EXAMPLE,
+                                context = ContextThemeWrapper(
+                                    serviceContext,
+                                    R.style.Theme_ThaiToAnki
+                                ),
+                                serviceContext = serviceContext,
+                                applicationContext = applicationContext,
+                                lifecycleScope = lifecycleScope,
+                                languageRepository = languageRepo,
+                                wordsRepository = wordRepo,
+                                onDefinitionClick = { currentWindow, index ->
+                                    // move the flashcard window to the selected index
+                                    currentFlashcardWindow.currentExampleIndex = index
+                                    currentFlashcardWindow.setUpWindow()
+
+                                    // close the definition block window
+                                    Log.d("WindowGroup", "CurrentWindow: ${currentWindow.toString()}")
+                                    currentWindow.close()
+                                },
+                                onMinimize = {
+                                    minimize()
+                                },
+                                onClose = { closedWindow ->
+                                    close(closedWindow)
+                                }
+                            )
+
+                            // TODO: hide flashcard window
+                            definitionListWindow.setUpWindow()
+                            definitionListWindow.open()
+                            windows.add(definitionListWindow)
+                            Log.d("WindowGroup", windows.toString())
+                        }
+                    },
+                    onSentenceSectionClick = { currentFlashcardWindow ->
+                        val definitions = if (currentFlashcardWindow.definitions != null) currentFlashcardWindow.definitions else emptyList()
+                        val currentDefinitionIndex = currentFlashcardWindow.currentDefinitionIndex
+
+                        if (definitions != null){
+                            val currentDefinition = definitions[currentDefinitionIndex]
+
+                            val sentences = currentDefinition.sentences
+
+                            val definitionListWindow = DefinitionListWindow(
+                                definitions = sentences,
+                                definitionType = DefinitionType.SENTENCE, // TODO: refactor definitionType as a member of a Definition?
+                                context = ContextThemeWrapper(
+                                    serviceContext,
+                                    R.style.Theme_ThaiToAnki
+                                ),
+                                serviceContext = serviceContext,
+                                applicationContext = applicationContext,
+                                lifecycleScope = lifecycleScope,
+                                languageRepository = languageRepo,
+                                wordsRepository = wordRepo,
+                                onDefinitionClick = { currentWindow, index ->
+                                    // move the flashcard window to the selected index
+                                    currentFlashcardWindow.currentSentenceIndex = index
                                     currentFlashcardWindow.setUpWindow()
 
                                     // close the definition block window

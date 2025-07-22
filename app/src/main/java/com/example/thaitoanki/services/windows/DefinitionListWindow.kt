@@ -36,6 +36,7 @@ import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.ThaiLanguageRepository
 import com.example.thaitoanki.data.database.WordsRepository
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.DefinitionType
 import com.example.thaitoanki.services.FloatingService
 import com.example.thaitoanki.services.ServiceViewModelProvider
 import com.example.thaitoanki.ui.AppViewModelProvider
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 
 class DefinitionListWindow(
     val definitions: List<Definition>,
+    val definitionType: DefinitionType,
     context: ContextWrapper,
     override val serviceContext: Context,
     override val applicationContext: Context,
@@ -113,7 +115,9 @@ class DefinitionListWindow(
         // super init
         super.initWindow()
 
-        updateDefinitionListView(rootView, definitions,
+        updateDefinitionListView(rootView,
+            definitionType,
+            definitions,
             definitionBlockOnClick = { index ->
                 // pass back the current window and the index
                 onDefinitionClick(this, index)

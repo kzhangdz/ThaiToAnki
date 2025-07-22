@@ -43,6 +43,8 @@ class FlashcardWindow(
     val languageRepository: ThaiLanguageRepository,
     val wordsRepository: WordsRepository,
     val onDefinitionSectionClick: (FlashcardWindow) -> Unit,
+    val onExampleSectionClick: (FlashcardWindow) -> Unit,
+    val onSentenceSectionClick: (FlashcardWindow) -> Unit,
     override var onMinimize: () -> Unit,
     override val onClose: (Window) -> Unit
 ): Window(
@@ -299,10 +301,12 @@ class FlashcardWindow(
                             onDefinitionSectionClick(this@FlashcardWindow)
                         },
                         onExampleClick = {
-                            increaseCurrentExampleIndex(currentFlashcard.examples)
+                            //increaseCurrentExampleIndex(currentFlashcard.examples)
+                            onExampleSectionClick(this@FlashcardWindow)
                         },
                         onSentenceClick = {
-                            increaseCurrentSentenceIndex(currentFlashcard.sentences)
+                            //increaseCurrentSentenceIndex(currentFlashcard.sentences)
+                            onSentenceSectionClick(this@FlashcardWindow)
                         }
                     )
 

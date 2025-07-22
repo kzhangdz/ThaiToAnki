@@ -11,8 +11,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thaitoanki.R
 import com.example.thaitoanki.data.network.Definition
+import com.example.thaitoanki.data.network.DefinitionType
 
-class DefinitionListAdapter(
+open class DefinitionListAdapter(
     private val definitions: List<Definition>,
     private val definitionBlockOnClick: (Int) -> Unit
 ) : RecyclerView.Adapter<DefinitionListAdapter.ViewHolder>() {
