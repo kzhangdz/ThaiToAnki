@@ -5,4 +5,18 @@ Anki is a commonly used flashcard application, often used by language learners t
 
 ThaiToAnki offers the following capabilities:
 - Dictionary searching, with definitions provided by [thai-language.com](http://thai-language.com/)
-- 
+- Flashcard previews, which show all available:
+  - Pronunciation
+  - Romization
+  - Definition
+  - Classifiers
+  - Word Components
+  - Synonyms
+  - Related Words
+  - Examples
+  - Sentences
+  - References to thai-language.com and Wiktionary
+- Example and sentence selection
+- Anki flashcard saving
+- Multitask mode, which allows floating windows to overlay over the user's current application
+
