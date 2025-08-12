@@ -34,6 +34,8 @@ https://github.com/user-attachments/assets/b2bd301b-2674-4b94-8658-7af8c51e9456
 
 While browsing horizontally, such as when watching a video, opening the keyboard may cover the whole screen. In these cases, the most efficient method to input a search may be to use voice typing.
 
+<img width="2400" height="1080" alt="floating_window_horizontal_keyboard" src="https://github.com/user-attachments/assets/6e0724b9-ef05-461e-8d12-b5ea51d44ed2" />
+<img width="2400" height="1080" alt="floating_window_horizontal" src="https://github.com/user-attachments/assets/34bbc43d-7b13-41e2-99b8-0596f8aa6fbc" />
 
 
 
