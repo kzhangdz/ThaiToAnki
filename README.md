@@ -28,9 +28,9 @@ ThaiToAnki offers the following capabilities:
 https://github.com/user-attachments/assets/92038f6d-d0b7-4057-9dd6-7f8320e9dfb2
 
 ### Multitask Mode
-
-
+Opening the application from the notifications bar opens a draggable, minimizable floating search bar. Typing in a word will open another window with the resulting flashcards. Pressing the floppy disk icon will save the current flashcard to Anki.
 
 https://github.com/user-attachments/assets/b2bd301b-2674-4b94-8658-7af8c51e9456
+
 
 
