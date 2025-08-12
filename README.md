@@ -20,3 +20,17 @@ ThaiToAnki offers the following capabilities:
 - Anki flashcard saving
 - Multitask mode, which allows floating windows to overlay over the user's current application
 
+## Usage
+## Main Usage
+
+
+
+https://github.com/user-attachments/assets/92038f6d-d0b7-4057-9dd6-7f8320e9dfb2
+
+### Multitask Mode
+
+
+
+https://github.com/user-attachments/assets/b2bd301b-2674-4b94-8658-7af8c51e9456
+
+
