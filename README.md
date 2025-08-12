@@ -49,6 +49,12 @@ Flashcards saved using ThaiToAnki are saved to AnkiDroid in the `ThaiToAnki` dec
   <img width="270" height="600" alt="anki_flashcard_back" src="https://github.com/user-attachments/assets/2165bae2-27e8-4537-afa3-a7b6e81e1528" />
 </div>
 
+## Built With
 
+[![Kotlin][kotlin-badge]][kotlin-url]
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[kotlin-badge]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
+[kotlin-url]: https://kotlinlang.org/
 
 
