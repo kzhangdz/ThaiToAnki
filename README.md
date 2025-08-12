@@ -96,12 +96,16 @@ Primarily connects to AnkiDroid using `AddContentApi` to add flashcards and `Not
 - CSS (based on a template by [cdmoro](https://github.com/cdmoro/anki-material-flashcard))
 - JavaScript
 
+## Data Flow
+-- TODO: place a flow chart of key classes here. Separate into layers that will help show off the containers, repositories, ViewModels, etc.
+
 <!-- MARKDOWN LINKS & IMAGES -->
 [thai-url]: http://thai-language.com/
 [android-badge]: https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white
 [android-url]: https://www.android.com/
 [kotlin-badge]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
 [kotlin-url]: https://kotlinlang.org/
+
 
 
 
