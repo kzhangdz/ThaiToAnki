@@ -20,7 +20,7 @@ ThaiToAnki offers the following capabilities:
   - References to thai-language.com and Wiktionary
 - Example and sentence selection
 - Anki flashcard saving
--  mode, which allows floating windows to overlay over the user's current application
+- Multitask mode, which allows floating windows to overlay over the user's current application
 
 ## Usage
 ### Core Application
@@ -107,6 +107,7 @@ Primarily connects to AnkiDroid using `AddContentApi` to add flashcards and `Not
 [android-url]: https://www.android.com/
 [kotlin-badge]: https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white
 [kotlin-url]: https://kotlinlang.org/
+
 
 
 
